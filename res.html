@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurant Details - TasteCart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .menu-tab.active {
+        @apply bg-red-500 text-white;
+      }
+    </style>
+  </head>
+  <body class="bg-white text-gray-800">
+    <header class="bg-red-500 text-white py-6 shadow-lg relative">
+      <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+        <div>
+          <h1 class="text-4xl font-bold">TasteCart Restaurant</h1>
+          <p class="text-lg mt-1">Discover a world of taste and flavor</p>
+        </div>
+        <!-- Cart Icon with Counter -->
+        <div>
+          <a href="cart.html" class="relative">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png"
+              alt="Cart"
+              class="w-10 h-10"
+            />
+            <span
+              id="cart-count"
+              class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-0.5 rounded-full"
+              >0</span
+            >
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-10">
+      <!-- Restaurant Info -->
+      <section
+        class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16"
+      >
+        <img
+          src="https://source.unsplash.com/800x500/?restaurant"
+          alt="Restaurant"
+          class="rounded-2xl shadow-lg"
+        />
+        <div>
+          <h2 class="text-3xl font-bold text-red-500 mb-4">
+            Dhaka Grill Corner
+          </h2>
+          <p class="text-lg text-gray-600 mb-4">
+            A delightful place to enjoy authentic grilled dishes, live kitchen
+            experience, and hand-picked culinary excellence by top chefs in
+            Dhaka.
+          </p>
+          <ul class="list-disc pl-5 text-gray-700">
+            <li>Outdoor seating available</li>
+            <li>Live cooking sessions</li>
+            <li>Custom spice levels</li>
+            <li>Eco-friendly packaging</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Menu Section -->
+      <section class="mb-16">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-6">Our Menu</h3>
+        <div class="flex space-x-4 mb-6">
+          <button
+            class="menu-tab active px-4 py-2 rounded shadow bg-red-500 text-white"
+            onclick="showMenu('breakfast')"
+          >
+            Breakfast
+          </button>
+          <button
+            class="menu-tab px-4 py-2 rounded shadow bg-gray-100"
+            onclick="showMenu('lunch')"
+          >
+            Lunch
+          </button>
+          <button
+            class="menu-tab px-4 py-2 rounded shadow bg-gray-100"
+            onclick="showMenu('dinner')"
+          >
+            Dinner
+          </button>
+        </div>
+        <div id="menuItems" class="grid md:grid-cols-3 gap-6"></div>
+      </section>
+
+      <!-- Kitchen Gallery -->
+      <section class="mb-16">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-4">
+          Kitchen Gallery
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <img
+            src="https://source.unsplash.com/400x300/?kitchen"
+            class="rounded-xl shadow"
+          />
+          <img
+            src="https://source.unsplash.com/400x300/?cooking"
+            class="rounded-xl shadow"
+          />
+          <img
+            src="https://source.unsplash.com/400x300/?grill"
+            class="rounded-xl shadow"
+          />
+          <img
+            src="https://source.unsplash.com/400x300/?restaurant-food"
+            class="rounded-xl shadow"
+          />
+        </div>
+      </section>
+
+      <!-- Chef Section -->
+      <section class="mb-16">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-4">Meet Our Chef</h3>
+        <div class="flex flex-col md:flex-row items-center gap-8">
+          <img
+            src="https://source.unsplash.com/200x200/?chef"
+            alt="Chef"
+            class="rounded-full shadow w-40 h-40 object-cover"
+          />
+          <div>
+            <h4 class="text-xl font-bold text-red-500">Chef Mohammad Rahman</h4>
+            <p class="text-gray-700">
+              25+ years of culinary experience, expert in grilling, known for
+              fusion Bangla-Western dishes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Live Kitchen -->
+      <section class="mb-16">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-4">
+          Live Kitchen Experience
+        </h3>
+        <p class="text-gray-700 text-lg">
+          Experience your meal being prepared in front of you with our open
+          kitchen setup. Feel the aroma, heat, and love go into every dish.
+        </p>
+      </section>
+
+      <!-- Restaurant Description -->
+      <section class="mb-16">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-4">
+          Why Choose Dhaka Grill Corner?
+        </h3>
+        <p class="text-gray-700 text-lg">
+          Dhaka Grill Corner brings you the finest grilled and traditional
+          dishes, fused with modern techniques. Our focus is not just food, but
+          the entire experience — the smell of spices, the sound of grilling,
+          and the smiles of our chefs as they cook live in front of you. Whether
+          you're here for a family dinner, a romantic evening, or a late-night
+          snack — we ensure you'll leave with a happy heart and a full stomach.
+        </p>
+      </section>
+    </main>
+
+    <script>
+      const menuData = {
+        breakfast: [
+          {
+            name: "Paratha & Egg",
+            price: 80,
+            image: "https://source.unsplash.com/200x150/?paratha",
+          },
+          {
+            name: "Grilled Sandwich",
+            price: 120,
+            image: "https://source.unsplash.com/200x150/?sandwich",
+          },
+          {
+            name: "Milk Tea",
+            price: 40,
+            image: "https://source.unsplash.com/200x150/?tea",
+          },
+        ],
+        lunch: [
+          {
+            name: "Grilled Chicken Set",
+            price: 300,
+            image: "https://source.unsplash.com/200x150/?grilled-chicken",
+          },
+          {
+            name: "Beef Steak",
+            price: 480,
+            image: "https://source.unsplash.com/200x150/?steak",
+          },
+          {
+            name: "Butter Naan & Curry",
+            price: 250,
+            image: "https://source.unsplash.com/200x150/?naan",
+          },
+        ],
+        dinner: [
+          {
+            name: "Kacchi Biryani",
+            price: 400,
+            image: "https://source.unsplash.com/200x150/?biryani",
+          },
+          {
+            name: "Fish Grill Platter",
+            price: 350,
+            image: "https://source.unsplash.com/200x150/?fish-grill",
+          },
+          {
+            name: "Chicken Kabab",
+            price: 300,
+            image: "https://source.unsplash.com/200x150/?kabab",
+          },
+        ],
+      };
+
+      function showMenu(category) {
+        const menuItems = document.getElementById("menuItems");
+        const tabs = document.querySelectorAll(".menu-tab");
+        tabs.forEach((tab) => tab.classList.remove("bg-red-500", "text-white"));
+        event.target.classList.add("bg-red-500", "text-white");
+
+        menuItems.innerHTML = menuData[category]
+          .map(
+            (item) => `
+            <div class="border rounded-xl shadow p-4">
+              <img src="${item.image}" alt="${
+              item.name
+            }" class="w-full h-40 object-cover rounded mb-2">
+              <h4 class="font-semibold text-lg">${item.name}</h4>
+              <p class="text-red-500">৳${item.price}</p>
+              <button class="mt-2 bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600" onclick='addToCart(${JSON.stringify(
+                item
+              )})'>Add to Cart</button>
+            </div>
+          `
+          )
+          .join("");
+      }
+
+      function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem("tasteCartCart")) || [];
+        document.getElementById("cart-count").textContent = cart.length;
+      }
+
+      function addToCart(item) {
+        const cart = JSON.parse(localStorage.getItem("tasteCartCart")) || [];
+        cart.push({ ...item, restaurantName: "Dhaka Grill Corner" });
+        localStorage.setItem("tasteCartCart", JSON.stringify(cart));
+        updateCartCount();
+      }
+
+      // Initial menu load & cart count
+      showMenu("breakfast");
+      updateCartCount();
+    </script>
+  </body>
+</html>

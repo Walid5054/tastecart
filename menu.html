@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TasteCart - Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      ::-webkit-scrollbar {
+        height: 8px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: #f87171;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body class="bg-white text-gray-800 font-sans">
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Header -->
+      <header
+        class="sticky top-0 bg-white z-50 flex items-center justify-between py-4 border-b shadow-sm"
+      >
+        <div class="text-3xl font-bold text-red-500">TasteCart</div>
+        <nav class="hidden md:flex space-x-6 text-gray-700 font-medium">
+          <a href="home.html" class="hover:text-red-500 transition">Home</a>
+          <a href="restaurants.html" class="hover:text-red-500 transition"
+            >Restaurants</a
+          >
+          <a
+            href="#"
+            class="bg-red-100 text-red-500 px-2 py-1 rounded transition"
+            >Menu</a
+          >
+          <a href="blog.html" class="hover:text-red-500 transition">Blog</a>
+          <a href="status.html" class="hover:text-red-500 transition">Status</a>
+          <a href="aboutUs.html" class="hover:text-red-500 transition"
+            >About us</a
+          >
+        </nav>
+        <div class="flex items-center space-x-4">
+          <button
+            id="cartButton"
+            class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition flex items-center space-x-2"
+          >
+            <a
+              href="cart.html"
+              id="cartButton"
+              class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition flex items-center space-x-2"
+            >
+              🛒 <span id="cartCount">0</span>
+            </a>
+          </button>
+          <button>
+            <img
+              src="https://i.pravatar.cc/40?img=5"
+              alt="Profile"
+              class="w-10 h-10 rounded-full border border-gray-300 hover:scale-105 transition-transform"
+            />
+          </button>
+          <button class="md:hidden text-2xl">&#9776;</button>
+        </div>
+      </header>
+
+      <!-- Hero -->
+      <section
+        class="bg-red-50 mt-8 rounded-lg p-8 md:p-16 text-center space-y-6"
+      >
+        <h1 class="text-4xl sm:text-5xl font-bold leading-tight">
+          Explore Our Delicious <span class="text-red-500">Menu</span>
+        </h1>
+        <p class="text-gray-600 max-w-2xl mx-auto">
+          Handpicked dishes from top Bangladeshi restaurants. Choose your meal
+          for Breakfast, Lunch, Dinner, and more!
+        </p>
+      </section>
+
+      <!-- Filter Bar -->
+      <section
+        class="mt-10 bg-white border rounded-lg p-4 flex flex-wrap items-center gap-4 justify-between"
+      >
+        <div class="flex flex-wrap gap-4">
+          <select
+            id="filterCategory"
+            class="border rounded px-3 py-2 focus:ring-red-400 focus:ring-2 transition"
+          >
+            <option value="">All Categories</option>
+            <option value="Breakfast">Breakfast</option>
+            <option value="Lunch">Lunch</option>
+            <option value="Dinner">Dinner</option>
+            <option value="Dessert">Dessert</option>
+          </select>
+          <select
+            id="filterPrice"
+            class="border rounded px-3 py-2 focus:ring-red-400 focus:ring-2 transition"
+          >
+            <option value="">Any Price</option>
+            <option value="200">Under 200৳</option>
+            <option value="300">Under 300৳</option>
+            <option value="400">Under 400৳</option>
+          </select>
+          <select
+            id="filterRating"
+            class="border rounded px-3 py-2 focus:ring-red-400 focus:ring-2 transition"
+          >
+            <option value="">All Ratings</option>
+            <option value="4">4★ & up</option>
+            <option value="4.5">4.5★ & up</option>
+            <option value="5">5★ only</option>
+          </select>
+        </div>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search dishes..."
+          class="border rounded px-3 py-2 w-full sm:w-auto focus:ring-red-400 focus:ring-2 transition"
+        />
+      </section>
+
+      <!-- Menu Sections -->
+      <section class="py-12 space-y-16">
+        <div id="sectionsContainer"></div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="bg-white border-t py-12 mt-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-gray-700">
+          <div>
+            <h3 class="text-2xl font-bold text-red-500 mb-4">TasteCart</h3>
+            <p class="text-sm mb-4">
+              Delivered on time with the largest network of active food delivery
+              riders.
+            </p>
+            <div class="flex space-x-4">
+              <a href="#"
+                ><img
+                  src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png"
+                  class="w-5 h-5"
+              /></a>
+              <a href="#"
+                ><img
+                  src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png"
+                  class="w-5 h-5"
+              /></a>
+              <a href="#"
+                ><img
+                  src="https://cdn-icons-png.flaticon.com/512/1384/1384062.png"
+                  class="w-5 h-5"
+              /></a>
+            </div>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-3">Get in Touch</h4>
+            <p>Park Street, L-62, Bangladesh</p>
+            <p>tastecartbd@email.com</p>
+            <p>+880 1234 567890</p>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-3">Features</h4>
+            <ul>
+              <li>
+                <a href="#" class="hover:text-red-500 transition">Menu</a>
+              </li>
+              <li>
+                <a href="#" class="hover:text-red-500 transition">Promo</a>
+              </li>
+              <li>
+                <a href="#" class="hover:text-red-500 transition">Contact</a>
+              </li>
+              <li>
+                <a href="#" class="hover:text-red-500 transition">About us</a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-3">Subscribe Our Newsletter</h4>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              class="w-full px-4 py-2 border rounded mb-2 focus:ring-red-400 focus:ring-2 transition"
+            />
+            <button
+              class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+            >
+              Subscribe
+            </button>
+          </div>
+        </div>
+        <div class="text-center text-gray-500 text-sm mt-6">
+          © 2025 TasteCart Bangladesh. All rights reserved.
+        </div>
+      </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      const cart = [];
+      const cartCount = document.getElementById("cartCount");
+      const sectionsContainer = document.getElementById("sectionsContainer");
+      const categoryFilter = document.getElementById("filterCategory");
+      const priceFilter = document.getElementById("filterPrice");
+      const ratingFilter = document.getElementById("filterRating");
+      const searchInput = document.getElementById("searchInput");
+
+      const data = {
+        "Top Orders": [
+          {
+            name: "Chicken Biriyani",
+            restaurantName: "Dhaka Biryani House",
+            price: 250,
+            rating: 4.8,
+            image: "/biriyani.jpg",
+            category: "Lunch",
+            freeDelivery: true,
+          },
+          {
+            name: "Beef Tehari",
+            restaurantName: "Rajshahi Spices",
+            price: 280,
+            rating: 4.7,
+            image: "./images/tehari.jpg",
+            category: "Lunch",
+          },
+          {
+            name: "Mutton Korma",
+            restaurantName: "Sylhet Curry Spot",
+            price: 350,
+            rating: 4.9,
+            image: "./images/korma.jpg",
+            category: "Dinner",
+          },
+          {
+            name: "Fried Rice with Chicken",
+            restaurantName: "Chittagong Delight",
+            price: 220,
+            rating: 4.6,
+            image: "./images/friedrice.jpg",
+            category: "Lunch",
+            freeDelivery: true,
+          },
+          {
+            name: "Veg Khichuri",
+            restaurantName: "Bangla Flavours",
+            price: 160,
+            rating: 4.5,
+            image: "./images/khichuri.jpg",
+            category: "Lunch",
+          },
+          {
+            name: "Paratha with Egg",
+            restaurantName: "Dhaka Breakfast Hub",
+            price: 120,
+            rating: 4.4,
+            image: "./images/paratha.jpg",
+            category: "Breakfast",
+          },
+          {
+            name: "Grilled Chicken Set",
+            restaurantName: "Dhaka Grill Corner",
+            price: 300,
+            rating: 4.7,
+            image: "./images/grill.jpg",
+            category: "Dinner",
+          },
+          {
+            name: "Fish Curry",
+            restaurantName: "Seafood Corner",
+            price: 220,
+            rating: 4.6,
+            image: "./images/fishcurry.jpg",
+            category: "Lunch",
+            freeDelivery: true,
+          },
+        ],
+
+        "People's Favourite": [
+          {
+            name: "Kacchi Biriyani",
+            restaurantName: "Dhaka Grill Corner",
+            price: 270,
+            rating: 4.9,
+            image: "./images/kacchi.jpg",
+            category: "Lunch",
+            freeDelivery: true,
+          },
+          {
+            name: "Butter Chicken",
+            restaurantName: "Indian Delight",
+            price: 300,
+            rating: 4.8,
+            image: "./images/butterchicken.jpg",
+            category: "Dinner",
+          },
+          {
+            name: "Shahi Paratha Set",
+            restaurantName: "Dhaka Breakfast Hub",
+            price: 150,
+            rating: 4.7,
+            image: "./images/paratha.jpg",
+            category: "Breakfast",
+          },
+          {
+            name: "Paneer Tikka",
+            restaurantName: "Veg Delight",
+            price: 220,
+            rating: 4.6,
+            image: "./images/paneer.jpg",
+            category: "Dinner",
+          },
+          {
+            name: "Dal Makhani",
+            restaurantName: "Sylhet Curry King",
+            price: 180,
+            rating: 4.8,
+            image: "./images/dal.jpg",
+            category: "Dinner",
+          },
+          {
+            name: "Chicken Tikka",
+            restaurantName: "Dhaka Fresh",
+            price: 240,
+            rating: 4.7,
+            image: "./images/tikka.jpg",
+            category: "Dinner",
+            freeDelivery: true,
+          },
+          {
+            name: "Veg Chowmein",
+            restaurantName: "Chittagong Chow",
+            price: 160,
+            rating: 4.5,
+            image: "./images/chowmein.jpg",
+            category: "Lunch",
+          },
+          {
+            name: "Mutton Rezala",
+            restaurantName: "Kebab Express",
+            price: 350,
+            rating: 4.8,
+            image: "./images/rezala.jpg",
+            category: "Dinner",
+          },
+        ],
+
+        "Your Favourite": [
+          {
+            name: "Beef Kebab",
+            restaurantName: "Kebab Express",
+            price: 300,
+            rating: 4.7,
+            image: "./images/beefkebab.jpg",
+            category: "Dinner",
+            freeDelivery: true,
+          },
+          {
+            name: "Chicken Bhuna",
+            restaurantName: "Bangla Flavours",
+            price: 240,
+            rating: 4.8,
+            image: "./images/bhuna.jpg",
+            category: "Lunch",
+          },
+          {
+            name: "Vegetable Pulao",
+            restaurantName: "Veg Delight",
+            price: 180,
+            rating: 4.6,
+            image: "./images/vegpulao.jpg",
+            category: "Lunch",
+          },
+          {
+            name: "Egg Curry",
+            restaurantName: "Dhaka Breakfast Hub",
+            price: 140,
+            rating: 4.5,
+            image: "./images/egg.jpg",
+            category: "Breakfast",
+          },
+          {
+            name: "Shorshe Ilish",
+            restaurantName: "Seafood Corner",
+            price: 400,
+            rating: 4.9,
+            image: "./images/ilish.jpg",
+            category: "Lunch",
+            freeDelivery: true,
+          },
+          {
+            name: "Chicken Pakora",
+            restaurantName: "Chittagong Delight",
+            price: 160,
+            rating: 4.4,
+            image: "./images/pakora.jpg",
+            category: "Snacks",
+          },
+          {
+            name: "Naan with Kebab",
+            restaurantName: "Kebab Express",
+            price: 200,
+            rating: 4.7,
+            image: "./images/naan.jpg",
+            category: "Dinner",
+          },
+          {
+            name: "Mixed Vegetable Curry",
+            restaurantName: "Bangla Flavours",
+            price: 160,
+            rating: 4.6,
+            image: "./images/mixedveg.jpg",
+            category: "Lunch",
+          },
+        ],
+
+        "Offer Menu": [
+          {
+            name: "Promo Chicken Biriyani",
+            restaurantName: "Dhaka Discount",
+            price: 200,
+            rating: 4.8,
+            image: "./images/offer1.jpg",
+            offer: "20% OFF",
+            category: "Lunch",
+            freeDelivery: true,
+          },
+          {
+            name: "Promo Beef Tehari",
+            restaurantName: "Chittagong Saver",
+            price: 220,
+            rating: 4.7,
+            image: "./images/offer2.jpg",
+            offer: "25% OFF",
+            category: "Dinner",
+          },
+          {
+            name: "Discount Breakfast Combo",
+            restaurantName: "Morning Bites",
+            price: 140,
+            rating: 4.5,
+            image: "./images/breakfastcombo.jpg",
+            offer: "15% OFF",
+            category: "Breakfast",
+            freeDelivery: true,
+          },
+          {
+            name: "Offer Butter Chicken",
+            restaurantName: "Indian Delight",
+            price: 250,
+            rating: 4.8,
+            image: "./images/offer3.jpg",
+            offer: "20% OFF",
+            category: "Dinner",
+          },
+          {
+            name: "Deal Fried Rice",
+            restaurantName: "Chittagong Delight",
+            price: 180,
+            rating: 4.6,
+            image: "./images/offer4.jpg",
+            offer: "10% OFF",
+            category: "Lunch",
+            freeDelivery: true,
+          },
+          {
+            name: "Discount Mutton Rezala",
+            restaurantName: "Kebab Express",
+            price: 320,
+            rating: 4.7,
+            image: "./images/offer5.jpg",
+            offer: "30% OFF",
+            category: "Dinner",
+          },
+          {
+            name: "Special Veg Khichuri",
+            restaurantName: "Bangla Flavours",
+            price: 150,
+            rating: 4.5,
+            image: "./images/offer6.jpg",
+            offer: "15% OFF",
+            category: "Lunch",
+          },
+          {
+            name: "Breakfast Deal Paratha Set",
+            restaurantName: "Dhaka Breakfast Hub",
+            price: 130,
+            rating: 4.4,
+            image: "./images/offer7.jpg",
+            offer: "20% OFF",
+            category: "Breakfast",
+          },
+        ],
+      };
+
+      function addToCart(item) {
+        let cart = JSON.parse(localStorage.getItem("tasteCartCart")) || [];
+        cart.push(item);
+        localStorage.setItem("tasteCartCart", JSON.stringify(cart));
+        cartCount.textContent = cart.length;
+      }
+
+      function createSection(title, items) {
+        let sectionHTML = `
+        <div>
+          <h2 class="text-2xl font-bold mb-4">${title}</h2>
+          <div class="relative">
+           <div class="flex overflow-x-auto flex-nowrap gap-6 pb-4 snap-x snap-mandatory scroll-smooth">
+
+        `;
+        items.forEach((item) => {
+          sectionHTML += `
+          <div class="bg-white rounded-lg shadow hover:shadow-lg transition transform hover:-translate-y-1 duration-300 min-w-[250px] snap-start flex-shrink-0">
+            <img src="${item.image}" alt="${
+            item.name
+          }" class="rounded-t object-cover w-full h-48">
+            <div class="p-4 flex flex-col">
+              <h3 class="font-bold text-lg mb-1">${item.name}</h3>
+              <p class="text-gray-600 mb-1">From: <span class="font-medium">${
+                item.restaurantName
+              }</span></p>
+              <p class="text-gray-600 mb-1">৳${item.price}</p>
+              <p class="text-yellow-500 mb-1">⭐️ ${item.rating}</p>
+              ${
+                item.offer
+                  ? `<span class="bg-red-100 text-red-500 px-2 py-1 rounded text-sm font-medium mb-2 inline-block">${item.offer}</span>`
+                  : ""
+              }
+              ${
+                item.freeDelivery
+                  ? `<span class="bg-green-100 text-green-500 px-2 py-1 rounded text-sm font-medium mb-2 inline-block">Free Delivery</span>`
+                  : ""
+              }
+              <button class="mt-auto bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition" onclick='addToCart(${JSON.stringify(
+                item
+              )})'>Add to Cart</button>
+            </div>
+          </div>
+        `;
+        });
+        sectionHTML += `</div></div></div>`;
+        return sectionHTML;
+      }
+
+      function renderSections() {
+        sectionsContainer.innerHTML = "";
+        const category = categoryFilter.value;
+        const price = parseInt(priceFilter.value);
+        const rating = parseFloat(ratingFilter.value);
+        const search = searchInput.value.toLowerCase();
+
+        Object.entries(data).forEach(([sectionTitle, items]) => {
+          const filtered = items
+            .filter((i) => !i.freeDelivery)
+            .filter((i) => !category || i.category === category)
+            .filter((i) => !price || i.price <= price)
+            .filter((i) => !rating || i.rating >= rating)
+            .filter((i) => !search || i.name.toLowerCase().includes(search));
+          if (filtered.length) {
+            sectionsContainer.innerHTML += createSection(
+              sectionTitle,
+              filtered
+            );
+          }
+        });
+
+        const allItems = Object.values(data).flat();
+        const freeDeliveryItems = allItems
+          .filter((i) => i.freeDelivery)
+          .filter((i) => !category || i.category === category)
+          .filter((i) => !price || i.price <= price)
+          .filter((i) => !rating || i.rating >= rating)
+          .filter((i) => !search || i.name.toLowerCase().includes(search));
+        if (freeDeliveryItems.length) {
+          sectionsContainer.innerHTML += createSection(
+            "Free Delivery Menu",
+            freeDeliveryItems
+          );
+        }
+      }
+
+      [categoryFilter, priceFilter, ratingFilter, searchInput].forEach((el) =>
+        el.addEventListener("input", renderSections)
+      );
+      renderSections();
+      const savedCart = JSON.parse(localStorage.getItem("tasteCartCart")) || [];
+      cartCount.textContent = savedCart.length;
+    </script>
+  </body>
+</html>
