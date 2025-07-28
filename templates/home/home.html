@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load static %}
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -30,11 +30,24 @@
           >
           <a href="menu.html" class="hover:text-red-500 transition">Menu</a>
           <a href="blog.html" class="hover:text-red-500 transition">Blog</a>
+          {% if user.is_authenticated %}
+          <a href="profile.html" class="hover:text-red-500 transition">Profile</a>
           <a href="status.html" class="hover:text-red-500 transition">Status</a>
+          {% endif %}
           <a href="aboutUs.html" class="hover:text-red-500 transition"
             >About us</a
           >
         </nav>
+        <div class="flex items-center space-x-4">
+          {% if user.is_authenticated %}
+          <a href="{% url "logout" %}" class="text-red-500 hover:underline"
+            >Logout</a
+          >
+          {% else %}
+          <a href="{% url "login" %}" class="text-red-500 hover:underline"
+            >Login</a
+          >
+          {% endif %}
         <div class="flex items-center space-x-2">
           <div class="relative w-96">
             <span
@@ -52,6 +65,7 @@
           <button class="md:hidden text-2xl">&#9776;</button>
         </div>
       </header>
+      {% include "kits/message.html" %}
 
       <!-- Hero -->
       <section
@@ -545,6 +559,9 @@
           );
         }
       });
+
     </script>
   </body>
 </html>
+
+

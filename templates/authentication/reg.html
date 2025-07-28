@@ -1,0 +1,114 @@
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - TasteCart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-50 min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md p-8 bg-white rounded-2xl shadow-md">
+      <h2 class="text-3xl font-bold text-center text-red-500 mb-6">Create Account</h2>
+
+      <!-- Role Switch -->
+      <div class="flex justify-center gap-4 mb-6">
+        <button onclick="showForm('user')" id="userBtn" class="px-4 py-2 rounded-full border border-red-500 text-red-500 hover:bg-red-100">User</button>
+        <button onclick="showForm('owner')" id="ownerBtn" class="px-4 py-2 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100">Owner</button>
+      </div>
+      <p class="text-red-500 text-sm mb-4">{{ error }}</p>
+
+      <!-- User Registration Form -->
+      <form id="userForm" method="POST" action="{% url 'registration' %}">
+        {% csrf_token %}
+        <input type="hidden" name="role" value="user">
+        <label class="block mb-2 font-medium text-gray-700">Name</label>
+        <input type="text" name="name" placeholder="Your name" class="w-full mb-4 px-4 py-2 border rounded focus:ring-2 focus:ring-red-400 outline-none" />
+
+        <label class="block mb-2 font-medium text-gray-700">Email</label>
+        <input type="email" name="email" placeholder="Your email" class="w-full mb-4 px-4 py-2 border rounded focus:ring-2 focus:ring-red-400 outline-none" />
+
+        <label class="block mb-2 font-medium text-gray-700">Password</label>
+        <input type="password" name="password" placeholder="Password" id="user_password" class="w-full mb-4 px-4 py-2 border rounded focus:ring-2 focus:ring-red-400 outline-none" />
+
+        <label class="block mb-2 font-medium text-gray-700">Confirm Password</label>
+        <input type="password" name="confirm_password" id="user_confirm_password" oninput="checkPasswordMatch()" placeholder="Confirm password" class="w-full mb-6 px-4 py-2 border rounded focus:ring-2 focus:ring-red-400 outline-none" />
+        <p id="user_passwordMatchMessage" class="text-red-500 text-sm mb-4 hidden">Passwords do not match.</p>
+        <button type="submit" class="w-full bg-red-500 text-white py-2 rounded-full hover:bg-red-600 transition">Register as User</button>
+      </form>
+
+      <!-- Owner Registration Form -->
+      <form id="ownerForm" class="hidden" method="POST" action="{% url 'registration' %}">
+        {% csrf_token %}
+        <input type="hidden" name="role" value="owner">
+        <label class="block mb-2 font-medium text-gray-700">Name</label>
+        <input type="text" name="name" placeholder="Enter your name" class="w-full mb-4 px-4 py-2 border rounded focus:ring-2 focus:ring-red-400 outline-none" />
+        <label class="block mb-2 font-medium text-gray-700">Restaurant Name</label>
+        <input type="text" name="restaurant_name" placeholder="Enter restaurant name" class="w-full mb-4 px-4 py-2 border rounded focus:ring-2 focus:ring-red-400 outline-none" />
+
+        <label class="block mb-2 font-medium text-gray-700">Owner Email</label>
+        <input type="email" name="email" placeholder="Owner email" class="w-full mb-4 px-4 py-2 border rounded focus:ring-2 focus:ring-red-400 outline-none" />
+
+        <label class="block mb-2 font-medium text-gray-700">Phone</label>
+        <input type="tel" name="phone" placeholder="Phone number" class="w-full mb-4 px-4 py-2 border rounded focus:ring-2 focus:ring-red-400 outline-none" />
+
+        <label class="block mb-2 font-medium text-gray-700">Password</label>
+        <input type="password" name="password" placeholder="Password" id="owner_password" class="w-full mb-4 px-4 py-2 border rounded focus:ring-2 focus:ring-red-400 outline-none" />
+
+        <label class="block mb-2 font-medium text-gray-700">Confirm Password</label>
+        <input type="password" name="confirm_password" id="owner_confirm_password" oninput="checkPasswordMatch()" placeholder="Confirm password" class="w-full mb-6 px-4 py-2 border rounded focus:ring-2 focus:ring-red-400 outline-none" />
+        <p id="owner_passwordMatchMessage" class="text-red-500 text-sm mb-4 hidden">Passwords do not match.</p>
+        <button type="submit" id="submitBtn" class="w-full bg-red-500 text-white py-2 rounded-full hover:bg-red-600 transition">Register as Owner</button>
+      </form>
+
+      <p class="mt-6 text-center text-sm text-gray-600">
+        Already have an account?
+        <a href="login.html" class="text-red-500 hover:underline">Login here</a>
+      </p>
+    </div>
+
+    <script>
+      function checkPasswordMatch() {
+        const forms = ['user', 'owner']
+      
+        forms.forEach((role) => {
+          const password = document.getElementById(`${role}_password`)?.value
+          const confirmPassword = document.getElementById(`${role}_confirm_password`)?.value
+          const message = document.getElementById(`${role}_passwordMatchMessage`)
+      
+          if (password && confirmPassword && password !== confirmPassword) {
+            message.classList.remove('hidden')
+          } else {
+            message.classList.add('hidden')
+          }
+        })
+      }
+      
+      function showForm(role) {
+        const userForm = document.getElementById('userForm')
+        const ownerForm = document.getElementById('ownerForm')
+        const userBtn = document.getElementById('userBtn')
+        const ownerBtn = document.getElementById('ownerBtn')
+      
+        if (role === 'user') {
+          userForm.classList.remove('hidden')
+          ownerForm.classList.add('hidden')
+      
+          userBtn.classList.add('bg-red-500', 'text-white')
+          userBtn.classList.remove('text-red-500')
+      
+          ownerBtn.classList.remove('bg-red-500', 'text-white')
+          ownerBtn.classList.add('text-gray-600')
+        } else {
+          ownerForm.classList.remove('hidden')
+          userForm.classList.add('hidden')
+      
+          ownerBtn.classList.add('bg-red-500', 'text-white')
+          ownerBtn.classList.remove('text-gray-600')
+      
+          userBtn.classList.remove('bg-red-500', 'text-white')
+          userBtn.classList.add('text-red-500')
+        }
+      }
+    </script>
+  </body>
+</html>

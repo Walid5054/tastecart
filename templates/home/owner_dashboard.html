@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load static %}
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -14,7 +14,7 @@
         <nav class="space-x-4">
           <a href="#" class="hover:underline">Dashboard</a>
           <a href="#" class="hover:underline">Orders</a>
-          <a href="#" class="hover:underline">Logout</a>
+          <a href="{% url "logout" %}" class="hover:underline">Logout</a>
         </nav>
       </div>
     </header>
