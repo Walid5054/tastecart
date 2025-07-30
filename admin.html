@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Profile - TasteCart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-50 min-h-screen p-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-red-500">Admin Dashboard</h1>
+        <button
+          class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        >
+          Logout
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Profile Overview -->
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <h2 class="text-xl font-semibold mb-4">Admin Profile</h2>
+          <img
+            src="https://i.pravatar.cc/100"
+            alt="Admin"
+            class="w-24 h-24 rounded-full mb-4"
+          />
+          <p><strong>Name:</strong> Admin Name</p>
+          <p><strong>Email:</strong> admin@tastecart.com</p>
+          <button class="mt-4 text-red-500 hover:underline">
+            Edit Profile
+          </button>
+        </div>
+
+        <!-- Restaurant Management -->
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <h2 class="text-xl font-semibold mb-4">Manage Restaurants</h2>
+          <ul class="space-y-2">
+            <li class="flex justify-between items-center">
+              <span>Restaurant A</span>
+              <button class="text-sm text-blue-500 hover:underline">
+                Edit
+              </button>
+            </li>
+            <li class="flex justify-between items-center">
+              <span>Restaurant B</span>
+              <button class="text-sm text-blue-500 hover:underline">
+                Edit
+              </button>
+            </li>
+          </ul>
+          <button
+            class="mt-4 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
+          >
+            Add New Restaurant
+          </button>
+        </div>
+
+        <!-- History -->
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <h2 class="text-xl font-semibold mb-4">Activity History</h2>
+          <ul class="text-sm text-gray-700 space-y-2 max-h-48 overflow-y-auto">
+            <li>✅ Restaurant B updated menu</li>
+            <li>✅ Restaurant A changed location</li>
+            <li>🕓 Admin updated user email</li>
+            <li>🕓 New restaurant approved</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Global Settings -->
+      <div class="mt-10 bg-white p-6 rounded-2xl shadow">
+        <h2 class="text-xl font-semibold mb-4">Global Control Panel</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-medium mb-1">Maintenance Mode</label>
+            <select class="w-full border px-3 py-2 rounded">
+              <option>Off</option>
+              <option>On</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-medium mb-1">User Limit Control</label>
+            <input
+              type="number"
+              class="w-full border px-3 py-2 rounded"
+              placeholder="Max Users"
+            />
+          </div>
+        </div>
+        <button
+          class="mt-6 bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600"
+        >
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </body>
+</html>
