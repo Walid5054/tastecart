@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Delivery Register - TasteCart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-8">
+      <h2 class="text-3xl font-bold text-center text-red-500 mb-6">
+        Delivery Register
+      </h2>
+
+      <form>
+        <label class="block mb-2 text-gray-700">Full Name</label>
+        <input
+          type="text"
+          placeholder="Your name"
+          class="w-full px-4 py-2 mb-4 border rounded focus:ring-2 focus:ring-red-400 outline-none"
+        />
+
+        <label class="block mb-2 text-gray-700">Email</label>
+        <input
+          type="email"
+          placeholder="Enter email"
+          class="w-full px-4 py-2 mb-4 border rounded focus:ring-2 focus:ring-red-400 outline-none"
+        />
+
+        <label class="block mb-2 text-gray-700">Mobile Number</label>
+        <input
+          type="text"
+          placeholder="Enter mobile"
+          class="w-full px-4 py-2 mb-4 border rounded focus:ring-2 focus:ring-red-400 outline-none"
+        />
+
+        <label class="block mb-2 text-gray-700">City</label>
+        <input
+          type="text"
+          placeholder="Select your city"
+          class="w-full px-4 py-2 mb-4 border rounded focus:ring-2 focus:ring-red-400 outline-none"
+        />
+
+        <label class="block mb-2 text-gray-700">Password</label>
+        <input
+          type="password"
+          placeholder="Enter password"
+          class="w-full px-4 py-2 mb-6 border rounded focus:ring-2 focus:ring-red-400 outline-none"
+        />
+
+        <button
+          type="submit"
+          class="w-full bg-red-500 text-white py-2 rounded-full hover:bg-red-600 transition"
+        >
+          Register
+        </button>
+      </form>
+
+      <p class="text-center text-sm text-gray-600 mt-6">
+        Already registered?
+        <a href="delivery-login.html" class="text-red-500 hover:underline"
+          >Login</a
+        >
+      </p>
+    </div>
+  </body>
+</html>

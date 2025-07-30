@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TasteCart | Delivery Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <!-- Navbar -->
+    <header
+      class="bg-white shadow p-4 flex justify-between items-center sticky top-0 z-50"
+    >
+      <h1 class="text-2xl font-bold text-red-500">TasteCart Delivery</h1>
+      <div class="flex items-center gap-4">
+        <!-- City Selector -->
+        <select
+          id="citySelect"
+          class="border px-3 py-1 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+        >
+          <option value="">Select City</option>
+          <option value="Dhaka">Dhaka</option>
+          <option value="Chattogram">Chattogram</option>
+          <option value="Rajshahi">Rajshahi</option>
+          <option value="Khulna">Khulna</option>
+        </select>
+
+        <!-- Availability Toggle -->
+        <label class="flex items-center gap-2 text-sm">
+          <input type="checkbox" class="toggle-checkbox h-4 w-4" checked />
+          Available
+        </label>
+
+        <!-- Edit Profile -->
+        <button
+          onclick="alert('Redirecting to Edit Profile')"
+          class="bg-gray-200 text-gray-700 px-4 py-1 rounded-full hover:bg-gray-300 text-sm"
+        >
+          Edit Profile
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto p-6 space-y-10">
+      <!-- New Order Notifications -->
+      <section>
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">🛎️ New Orders</h2>
+        <div class="space-y-4">
+          <div
+            class="bg-white rounded-xl shadow p-4 flex justify-between items-center"
+          >
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">Order #78910</h3>
+              <p class="text-sm text-gray-500">From: Spice Garden</p>
+              <p class="text-sm text-gray-500">To: Sector 10, Uttara</p>
+            </div>
+            <button
+              class="bg-green-500 text-white px-4 py-1 rounded-full hover:bg-green-600 text-sm"
+            >
+              Accept Order
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ongoing Deliveries -->
+      <section>
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">
+          🚚 Ongoing Deliveries
+        </h2>
+        <div
+          class="bg-white rounded-xl shadow p-4 flex justify-between items-center"
+        >
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800">Order #12345</h3>
+            <p class="text-sm text-gray-500">Picked From: Burger World</p>
+            <p class="text-sm text-gray-500">Deliver To: Bashundhara, Dhaka</p>
+          </div>
+          <button
+            class="bg-yellow-500 text-white px-4 py-1 rounded-full hover:bg-yellow-600 text-sm"
+          >
+            Mark as In Transit
+          </button>
+        </div>
+      </section>
+
+      <!-- Delivery History -->
+      <section>
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">
+          📦 Delivery History
+        </h2>
+        <div
+          class="bg-white rounded-xl shadow p-4 flex justify-between items-center"
+        >
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800">Order #45678</h3>
+            <p class="text-sm text-gray-500">Delivered: July 26, 2025</p>
+            <p class="text-sm text-gray-500">Area: Dhanmondi, Dhaka</p>
+          </div>
+          <span
+            class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm"
+            >Delivered</span
+          >
+        </div>
+      </section>
+
+      <!-- Earnings Overview -->
+      <section>
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">
+          💰 Earnings Overview
+        </h2>
+        <div class="bg-white rounded-xl shadow p-4">
+          <canvas id="earningsChart" height="100"></canvas>
+        </div>
+      </section>
+
+      <!-- Shift Tracking -->
+      <section>
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">⏱️ Shift Timer</h2>
+        <div
+          class="bg-white rounded-xl shadow p-4 flex items-center justify-between"
+        >
+          <div>
+            <p class="text-sm text-gray-700">Time In: 9:00 AM</p>
+            <p class="text-sm text-gray-700">Time Out: --</p>
+          </div>
+          <button
+            class="bg-blue-500 text-white px-4 py-1 rounded-full hover:bg-blue-600 text-sm"
+          >
+            End Shift
+          </button>
+        </div>
+      </section>
+
+      <!-- Ratings and Feedback -->
+      <!-- Ratings & Reviews -->
+      <section>
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">
+          🌟 Ratings & Feedback
+        </h2>
+
+        <div class="bg-white rounded-xl shadow p-6 space-y-6">
+          <!-- Summary -->
+          <div class="flex items-center gap-4">
+            <div class="text-5xl font-bold text-yellow-400">4.6</div>
+            <div class="flex flex-col">
+              <div class="flex items-center text-yellow-400">★★★★☆</div>
+              <span class="text-sm text-gray-500">Based on 58 ratings</span>
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <hr class="border-gray-200" />
+
+          <!-- Review List -->
+          <div class="space-y-4 max-h-64 overflow-y-auto">
+            <!-- Single Review -->
+            <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-semibold text-gray-800">Ayman Rahman</span>
+                <span class="text-yellow-400 text-sm">★★★★☆</span>
+              </div>
+              <p class="text-sm text-gray-600">
+                Delivered faster than expected! Very polite and professional.
+                Great job!
+              </p>
+              <p class="text-xs text-gray-400 text-right mt-2">2 days ago</p>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-semibold text-gray-800">Nadia Binte</span>
+                <span class="text-yellow-400 text-sm">★★★★★</span>
+              </div>
+              <p class="text-sm text-gray-600">
+                Super responsive and handled my order with care. Would
+                recommend!
+              </p>
+              <p class="text-xs text-gray-400 text-right mt-2">1 week ago</p>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-semibold text-gray-800">Rifat Khan</span>
+                <span class="text-yellow-400 text-sm">★★★☆☆</span>
+              </div>
+              <p class="text-sm text-gray-600">
+                A little late, but kept me informed. Appreciate the effort.
+              </p>
+              <p class="text-xs text-gray-400 text-right mt-2">3 weeks ago</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Emergency Contact -->
+      <section>
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">
+          🚨 Emergency Contact
+        </h2>
+        <div
+          class="bg-white rounded-xl shadow p-4 flex justify-between items-center"
+        >
+          <p class="text-sm text-gray-700">Need help? Reach admin quickly.</p>
+          <button
+            class="bg-red-500 text-white px-4 py-1 rounded-full hover:bg-red-600 text-sm"
+          >
+            Alert Admin
+          </button>
+        </div>
+      </section>
+
+      <!-- Gamification -->
+      <section>
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">
+          🏅 Achievements
+        </h2>
+        <div class="bg-white rounded-xl shadow p-4 flex gap-4">
+          <div
+            class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm"
+          >
+            10 Deliveries
+          </div>
+          <div
+            class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
+          >
+            5-Star Streak
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const ctx = document.getElementById("earningsChart").getContext("2d");
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          datasets: [
+            {
+              label: "Earnings (৳)",
+              data: [1200, 1500, 800, 1700, 2000, 2200, 900],
+              backgroundColor: "rgba(239, 68, 68, 0.7)",
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delivery Earnings - TasteCart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <!-- Navbar -->
+    <header
+      class="bg-white shadow p-4 flex justify-between items-center sticky top-0 z-50"
+    >
+      <h1 class="text-xl font-bold text-red-500">Earnings Overview</h1>
+      <button
+        onclick="alert('Redirecting to Edit Profile')"
+        class="bg-gray-200 text-gray-700 px-4 py-1 rounded-full hover:bg-gray-300 text-sm"
+      >
+        Edit Profile
+      </button>
+    </header>
+
+    <!-- Earnings Summary -->
+    <main class="max-w-4xl mx-auto p-6 space-y-8">
+      <!-- This Week -->
+      <section class="bg-white rounded-xl shadow p-6">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">💰 This Week</h2>
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-3xl font-bold text-green-600">৳3,800</p>
+            <p class="text-sm text-gray-500">Orders Completed: 27</p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm text-gray-400">July 21 - July 27</p>
+            <button class="text-red-500 text-sm hover:underline">
+              View Details
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Monthly Summary -->
+      <section class="bg-white rounded-xl shadow p-6">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">
+          📆 Monthly Summary
+        </h2>
+        <div class="grid grid-cols-2 gap-6">
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <p class="text-gray-600">Total Earnings</p>
+            <p class="text-2xl font-semibold text-green-600">৳15,400</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <p class="text-gray-600">Total Orders</p>
+            <p class="text-2xl font-semibold text-blue-600">112</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Withdrawal Button -->
+      <section class="text-center">
+        <button
+          class="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition"
+        >
+          Request Withdrawal
+        </button>
+      </section>
+    </main>
+  </body>
+</html>
