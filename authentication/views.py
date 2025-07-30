@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .models import User  # Assuming a custom User model with `user_type`
+from .models import Profile, User  # Assuming a custom User model with `user_type`
 from django.contrib import messages
 
 
@@ -55,7 +55,10 @@ def sign_in(request):
         if user is not None:
             login(request, user)
             messages.success(request, "Login successful.")
-            return redirect("index") if role == "user" else redirect("owner_dashboard")
+            if role == "user":
+                return redirect("index")
+            else:
+                return redirect("owner_dashboard", id=request.user.id)
         else:
             messages.error(request, "Invalid email or password or role")
             return render(request, "authentication/sign_in.html")
@@ -65,3 +68,28 @@ def sign_in(request):
 def sign_out(request):
     logout(request)
     return redirect("index")
+
+
+def view_profile(request, id):
+    user = User.objects.get(id=id)
+    profile, created = Profile.objects.get_or_create(user=user)
+
+    if request.method == "POST":
+        profile.address = request.POST.get("address")
+        profile.bio = request.POST.get("bio")
+        user.phone = request.POST.get("phone")
+        user.save()
+
+        if request.FILES.get("profile_image"):
+            profile.profile_image = request.FILES.get("profile_image")
+
+        profile.save()
+        messages.success(request, "Profile updated successfully.")
+        return redirect("view_profile", id=id)
+
+    context = {
+        "user": user,
+        "profile": profile,
+        # Add other context data like recent_orders if needed
+    }
+    return render(request, "authentication/profile.html", context)

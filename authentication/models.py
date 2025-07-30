@@ -1,3 +1,4 @@
+
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -59,3 +60,18 @@ class User(AbstractBaseUser):
         if self.user_type == "user":
             self.restaurant_name = None
         return super().save(*args, **kwargs)
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_image = models.ImageField(upload_to="profile_images/", blank=True, null=True)
+    address = models.CharField(max_length=255, blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.name}'s Profile"
+
+    def save(self, *args, **kwargs):
+        if self.user.user_type != "user":
+            raise ValueError("Profiles can only be created for users.")
+        super().save(*args, **kwargs)

@@ -1,192 +1,208 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TasteCart Profile</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-gray-50">
-    <!-- Navbar -->
-    <nav class="bg-white shadow sticky top-0 z-50">
-      <div
-        class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center"
-      >
-        <h1 class="text-xl font-bold text-red-600">TasteCart</h1>
-        <a href="#" class="text-sm font-medium text-gray-600 hover:text-red-600"
-          >Logout</a
-        >
-      </div>
-    </nav>
+{% extends "kits/base.html" %}
+{% load static %}
 
-    <!-- Profile Section -->
-    <section class="max-w-4xl mx-auto mt-8 p-6 bg-white rounded-xl shadow">
-      <div class="flex items-center space-x-6">
-        <img
-          id="profileImg"
-          src="https://via.placeholder.com/120"
-          alt="Profile"
-          class="w-28 h-28 rounded-full object-cover border"
-        />
-        <div>
-          <h2 class="text-2xl font-semibold text-gray-800" id="userName">
-            John Doe
-          </h2>
-          <p class="text-gray-500" id="userEmail">john@example.com</p>
-          <p class="text-gray-500" id="userMobile">+880123456789</p>
-        </div>
-      </div>
+{% block title %}Profile - TasteCart{% endblock title %}
 
-      <div class="mt-6">
-        <h3 class="text-xl font-semibold mb-3 text-gray-700">
-          Delivery Address
-        </h3>
-        <div class="flex items-center space-x-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 text-red-500"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5.05 4.05a7 7 0 119.9 9.9l-4.95 4.95-4.95-4.95a7 7 0 010-9.9zM10 9a1 1 0 100-2 1 1 0 000 2z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <span id="userAddress">123, Dhaka, Bangladesh</span>
-          <button
-            onclick="openEditModal()"
-            class="ml-auto text-sm text-red-500 hover:underline"
-          >
-            Edit Profile
-          </button>
-        </div>
-      </div>
-
-      <!-- Order History -->
-      <div class="mt-10">
-        <h3 class="text-xl font-semibold text-gray-700 mb-4">Order History</h3>
-        <ul class="space-y-4" id="orderHistory">
-          <li class="bg-gray-100 p-4 rounded shadow">
-            <div class="flex justify-between">
-              <div>
-                <p class="font-medium">Grilled Chicken Set</p>
-                <p class="text-sm text-gray-500">From: Dhaka Grill Corner</p>
-              </div>
-              <button
-                class="text-sm text-red-500 hover:underline"
-                onclick="reorderItem('Grilled Chicken Set')"
-              >
-                Reorder
-              </button>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Edit Modal -->
-    <div
-      id="editModal"
-      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden"
-    >
-      <div class="bg-white p-6 rounded-lg w-full max-w-md space-y-4">
-        <h3 class="text-xl font-semibold text-gray-800">Edit Profile</h3>
-        <input
-          type="text"
-          id="editName"
-          placeholder="Full Name"
-          class="w-full border px-3 py-2 rounded"
-        />
-        <input
-          type="email"
-          id="editEmail"
-          placeholder="Email"
-          class="w-full border px-3 py-2 rounded"
-        />
-        <input
-          type="text"
-          id="editMobile"
-          placeholder="Mobile Number"
-          class="w-full border px-3 py-2 rounded"
-        />
-        <input
-          type="text"
-          id="editAddress"
-          placeholder="Address"
-          class="w-full border px-3 py-2 rounded"
-        />
-        <input type="file" id="editImage" accept="image/*" class="w-full" />
-        <div class="text-right space-x-2">
-          <button
-            onclick="closeEditModal()"
-            class="px-4 py-2 bg-gray-300 rounded"
-          >
-            Cancel
-          </button>
-          <button
-            onclick="saveChanges()"
-            class="px-4 py-2 bg-red-500 text-white rounded"
-          >
-            Save
-          </button>
-        </div>
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+  <!-- Profile Section -->
+  <section class="max-w-4xl mx-auto pt-8 p-6 bg-white rounded-xl shadow mt-8">
+    <div class="flex items-center space-x-6">
+      <img
+        id="profileImg"
+        src="{% if user.profile.profile_image %}{{ user.profile.profile_image.url }}{% else %}https://via.placeholder.com/120{% endif %}"
+        alt="Profile"
+        class="w-28 h-28 rounded-full object-cover border"
+      />
+      <div>
+        <h2 class="text-2xl font-semibold text-gray-800" id="userName">
+          {{ user.name }}
+        </h2>
+        <p class="text-gray-500" id="userEmail">{{ user.email }}</p>
+        {% if user.phone %}
+          <p class="text-gray-500" id="userMobile">{{ user.phone }}</p>
+        {% endif %}
       </div>
     </div>
 
-    <script>
-      const profileImg = document.getElementById("profileImg");
+    <div class="mt-6">
+      <h3 class="text-xl font-semibold mb-3 text-gray-700">
+        Delivery Address
+      </h3>
+      <div class="flex items-center space-x-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-red-500"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M5.05 4.05a7 7 0 119.9 9.9l-4.95 4.95-4.95-4.95a7 7 0 010-9.9zM10 9a1 1 0 100-2 1 1 0 000 2z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <span id="userAddress">
+          {% if user.profile.address %}
+            {{ user.profile.address }}
+          {% else %}
+            No address added yet
+          {% endif %}
+        </span>
+        <button
+          onclick="openEditModal()"
+          class="ml-auto text-sm text-red-500 hover:underline"
+        >
+          Edit Profile
+        </button>
+      </div>
+    </div>
 
-      // Load saved image
-      const savedPic = localStorage.getItem("profilePic");
-      if (savedPic) {
-        profileImg.src = savedPic;
-      }
+    <!-- Bio Section -->
+    {% if user.profile.bio %}
+    <div class="mt-6">
+      <h3 class="text-xl font-semibold mb-3 text-gray-700">Bio</h3>
+      <p class="text-gray-600" id="userBio">{{ user.profile.bio }}</p>
+    </div>
+    {% endif %}
 
-      function openEditModal() {
-        document.getElementById("editModal").classList.remove("hidden");
-        document.getElementById("editName").value =
-          document.getElementById("userName").innerText;
-        document.getElementById("editEmail").value =
-          document.getElementById("userEmail").innerText;
-        document.getElementById("editMobile").value =
-          document.getElementById("userMobile").innerText;
-        document.getElementById("editAddress").value =
-          document.getElementById("userAddress").innerText;
-      }
+    <!-- Order History -->
+    <div class="mt-10">
+      <h3 class="text-xl font-semibold text-gray-700 mb-4">Recent Orders</h3>
+      {% if recent_orders %}
+        <ul class="space-y-4" id="orderHistory">
+          {% for order in recent_orders %}
+          <li class="bg-gray-100 p-4 rounded shadow">
+            <div class="flex justify-between">
+              <div>
+                <p class="font-medium">Order #{{ order.id }}</p>
+                <p class="text-sm text-gray-500">{{ order.restaurant.restaurant_name }}</p>
+                <p class="text-sm text-gray-500">{{ order.created_at|date:"M d, Y" }} - ৳{{ order.total_amount }}</p>
+              </div>
+              <div class="flex flex-col space-y-2">
+                <a href="{% url 'order_detail' order.id %}" class="text-sm text-blue-500 hover:underline">
+                  View Details
+                </a>
+                <button
+                  class="text-sm text-red-500 hover:underline"
+                  onclick="reorderItem('{{ order.id }}')"
+                >
+                  Reorder
+                </button>
+              </div>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="text-center py-8">
+          <p class="text-gray-500">No orders yet</p>
+          <a href="{% url 'restaurants_view' %}" class="mt-2 inline-block bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+            Start Ordering
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+</div>
 
-      function closeEditModal() {
-        document.getElementById("editModal").classList.add("hidden");
-      }
+<!-- Edit Modal -->
+<div
+  id="editModal"
+  class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden z-50"
+>
+  <div class="bg-white p-6 rounded-lg w-full max-w-md space-y-4 max-h-[90vh] overflow-y-auto">
+    <h3 class="text-xl font-semibold text-gray-800">Edit Profile</h3>
+    
+    <form action="{% url 'view_profile' user.id %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+          <input
+            type="email"
+            name="email"
+            value="{{ user.email }}"
+            required
+            class="w-full border px-3 py-2 rounded focus:ring-red-400 focus:ring-2 transition"
+          />
+        </div>
 
-      function saveChanges() {
-        document.getElementById("userName").innerText =
-          document.getElementById("editName").value;
-        document.getElementById("userEmail").innerText =
-          document.getElementById("editEmail").value;
-        document.getElementById("userMobile").innerText =
-          document.getElementById("editMobile").value;
-        document.getElementById("userAddress").innerText =
-          document.getElementById("editAddress").value;
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+          <input
+            type="text"
+            name="phone"
+            value="{{ user.phone|default:'' }}"
+            placeholder="Enter your phone number"
+            class="w-full border px-3 py-2 rounded focus:ring-red-400 focus:ring-2 transition"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
+          <input 
+            type="file" 
+            name="profile_image"
+            accept="image/*" 
+            class="w-full border px-3 py-2 rounded focus:ring-red-400 focus:ring-2 transition"
+          />
+          {% if user.profile.profile_image %}
+            <p class="text-xs text-gray-500 mt-1">Current: {{ user.profile.profile_image.name }}</p>
+          {% endif %}
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+          <textarea
+            name="address"
+            placeholder="Enter your delivery address"
+            rows="3"
+            class="w-full border px-3 py-2 rounded focus:ring-red-400 focus:ring-2 transition"
+          >{{ user.profile.address|default:'' }}</textarea>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+          <textarea
+            name="bio"
+            placeholder="Tell us about yourself"
+            rows="4"
+            class="w-full border px-3 py-2 rounded focus:ring-red-400 focus:ring-2 transition"
+          >{{ user.profile.bio|default:'' }}</textarea>
+        </div>
+      </div>
+      
+      <div class="flex space-x-2 pt-4">
+        <button
+          type="button"
+          onclick="closeEditModal()"
+          class="flex-1 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="flex-1 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+        >
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
 
-        const fileInput = document.getElementById("editImage");
-        if (fileInput.files[0]) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            profileImg.src = e.target.result;
-            localStorage.setItem("profilePic", e.target.result);
-          };
-          reader.readAsDataURL(fileInput.files[0]);
-        }
+<script>
+  function openEditModal() {
+    document.getElementById("editModal").classList.remove("hidden");
+  }
 
-        closeEditModal();
-      }
+  function closeEditModal() {
+    document.getElementById("editModal").classList.add("hidden");
+  }
 
-      function reorderItem(itemName) {
-        alert("Redirecting to reorder: " + itemName);
-        // Simulate redirection to the restaurant + item
-      }
-    </script>
-  </body>
-</html>
+  function reorderItem(orderId) {
+    window.location.href = `/reorder/${orderId}/`;
+  }
+</script>
+{% endblock content %}
