@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live Tracker - TasteCart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .map-placeholder {
+        background: repeating-linear-gradient(
+          45deg,
+          #f3f4f6,
+          #f3f4f6 10px,
+          #e5e7eb 10px,
+          #e5e7eb 20px
+        );
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <!-- Navbar -->
+    <header
+      class="bg-white shadow p-4 flex justify-between items-center sticky top-0 z-50"
+    >
+      <h1 class="text-xl font-bold text-red-500">Live Tracker</h1>
+      <button
+        onclick="alert('Redirecting to Edit Profile')"
+        class="bg-gray-200 text-gray-700 px-4 py-1 rounded-full hover:bg-gray-300 text-sm"
+      >
+        Edit Profile
+      </button>
+    </header>
+
+    <!-- Tracker Info -->
+    <main class="max-w-6xl mx-auto p-6 space-y-6">
+      <!-- Order Info -->
+      <section class="bg-white p-6 rounded-xl shadow space-y-4">
+        <h2 class="text-xl font-semibold text-gray-800">📦 Order #78910</h2>
+        <p class="text-gray-600">From: Pizza Hub</p>
+        <p class="text-gray-600">To: House 12, Road 8, Banani, Dhaka</p>
+        <p class="text-gray-600">
+          Estimated Delivery Time:
+          <span class="font-medium text-green-600">12 mins</span>
+        </p>
+      </section>
+
+      <!-- Live Map Placeholder -->
+      <section class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-lg font-semibold text-gray-700 mb-4">
+          🗺️ Live Route Map
+        </h2>
+        <div
+          class="map-placeholder h-96 w-full rounded-lg border border-gray-300 flex items-center justify-center text-gray-500 text-xl"
+        >
+          Map will appear here
+        </div>
+      </section>
+
+      <!-- Action Buttons -->
+      <section class="flex justify-end gap-4">
+        <button
+          class="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-full text-sm"
+        >
+          Mark as In Transit
+        </button>
+        <button
+          class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-full text-sm"
+        >
+          Mark as Delivered
+        </button>
+      </section>
+    </main>
+  </body>
+</html>
