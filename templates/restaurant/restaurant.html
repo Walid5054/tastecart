@@ -1,0 +1,181 @@
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurant Details - TasteCart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .menu-tab.active {
+        @apply bg-red-500 text-white;
+      }
+    </style>
+  </head>
+  <body class="bg-white text-gray-800">
+    <header class="bg-red-500 text-white py-6 shadow-lg relative">
+      <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+        <div>
+          <h1 class="text-4xl font-bold"><a href="{% url 'index' %}">TasteCart</a></h1>
+          <p class="text-lg mt-1">Discover a world of taste and flavor</p>
+        </div>
+        <!-- Cart Icon with Counter -->
+        <div>
+          <a href="cart.html" class="relative">
+            <img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="Cart" class="w-10 h-10" />
+            <span id="cart-count" class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-10">
+      <!-- Restaurant Info -->
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
+        <img src="{{ restaurant.restaurant_image.url }}" alt="Restaurant" class="rounded-2xl shadow-lg" />
+        <div>
+          <h2 class="text-3xl font-bold text-red-500 mb-4">{{ restaurant.restaurant_name }}</h2>
+          <p class="text-lg text-gray-600 mb-4">{{ restaurant.address }}</p>
+          <p class="text-lg text-gray-600 mb-4">{{ restaurant.description }}</p>
+        </div>
+      </section>
+
+      <!-- Menu Section -->
+      <section class="mb-16">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-6">Our Menu</h3>
+        <div class="flex space-x-4 mb-6">
+          <button class="menu-tab active px-4 py-2 rounded shadow bg-red-500 text-white" onclick="showMenu('all')">All</button>
+          <button class="menu-tab px-4 py-2 rounded shadow bg-red-500 text-white" onclick="showMenu('main_course')">Main Course</button>
+          <button class="menu-tab px-4 py-2 rounded shadow bg-gray-100" onclick="showMenu('appetizer')">Appetizer</button>
+          <button class="menu-tab px-4 py-2 rounded shadow bg-gray-100" onclick="showMenu('dessert')">Dessert</button>
+          <button class="menu-tab px-4 py-2 rounded shadow bg-gray-100" onclick="showMenu('beverage')">Beverage</button>
+        </div>
+
+        <div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            {% for item in menu_items %}
+              <div class="bg-white rounded-lg shadow hover:shadow-lg transition transform hover:-translate-y-1 duration-300 flex flex-col cursor-pointer item-card" data-item-id="{{ item.id }}" data-item-name="{{ item.item_name }}" data-item-price="{{ item.price }}" data-item-rating="{{ item.rating }}" data-item-restaurant="{{ item.restaurant.restaurant_name }}" data-item-image="{{ item.image.url }}" data-item-description="{{ item.description|default:'No description available' }}" data-item-discount="{{ item.discount|default:0 }}">
+                <img src="{{ item.image.url }}" alt="{{ item.item_name }}" class="rounded-t object-cover w-full h-48 aspect-square" style="object-fit: cover;" />
+                <div class="p-4 flex flex-col h-full">
+                  <h3 class="font-bold text-lg mb-1">{{ item.item_name }}</h3>
+                  <p class="text-gray-600 mb-1">
+                    <span class="font-medium">{{ item.category }}</span>
+                  </p>
+                  <p class="text-gray-600 mb-1">৳{{ item.price }}</p>
+                  <p class="text-yellow-500 mb-1">⭐️ {{ item.rating }}</p>
+                  {% if item.discount %}
+                    <span class="bg-red-100 text-red-500 px-2 py-1 rounded text-sm font-medium mb-2 inline-block">{{ item.discount|default:0|floatformat:0 }}% OFF</span>
+                  {% endif %}
+                  <button class="mt-auto bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition add-to-cart-btn" onclick="event.stopPropagation()">Add to Cart</button>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+      <div id="itemModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+          <!-- Modal Header -->
+          <div class="relative">
+            <button id="closeModal" class="absolute top-4 right-4 z-10 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 transition">
+              <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+            <img id="modalImage" src="" alt="" class="w-full h-64 md:h-80 object-cover rounded-t-xl" />
+            <div id="modalDiscount" class="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium hidden">0% OFF</div>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="p-6 space-y-4">
+            <div class="flex justify-between items-start">
+              <div class="flex-1">
+                <h2 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-2"></h2>
+                <p id="modalRestaurant" class="text-gray-600 mb-2"></p>
+                <div class="flex items-center space-x-4 mb-4">
+                  <span id="modalPrice" class="text-2xl font-bold text-red-500"></span>
+                  <div id="modalRating" class="flex items-center text-yellow-500">
+                    <span class="mr-1">⭐️</span>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="border-t pt-4">
+              <h3 class="font-semibold text-gray-800 mb-2">Description</h3>
+              <p id="modalDescription" class="text-gray-600 leading-relaxed"></p>
+            </div>
+
+            <!-- Quantity Selector -->
+            <div class="border-t pt-4">
+              <h3 class="font-semibold text-gray-800 mb-3">Quantity</h3>
+              <div class="flex items-center space-x-4">
+                <button id="decreaseQty" class="bg-gray-200 hover:bg-gray-300 text-gray-800 w-10 h-10 rounded-full flex items-center justify-center transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                  </svg>
+                </button>
+                <span id="quantity" class="text-xl font-semibold min-w-[2rem] text-center">1</span>
+                <button id="increaseQty" class="bg-gray-200 hover:bg-gray-300 text-gray-800 w-10 h-10 rounded-full flex items-center justify-center transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Total Price -->
+            <div class="border-t pt-4">
+              <div class="flex justify-between items-center mb-4">
+                <span class="text-lg font-semibold text-gray-800">Total:</span>
+                <span id="totalPrice" class="text-2xl font-bold text-red-500"></span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex space-x-3">
+              <button id="modalAddToCart" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 px-6 rounded-lg font-semibold transition transform hover:scale-105">Add to Cart</button>
+              <button id="buyNow" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white py-3 px-6 rounded-lg font-semibold transition transform hover:scale-105">Buy Now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kitchen Gallery -->
+      <section class="mb-16">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-4">Kitchen Gallery</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <img src="{{ restaurant.inside_image1.url }}" class="rounded-xl shadow" />
+          <img src="{{ restaurant.inside_image2.url }}" class="rounded-xl shadow" />
+          <img src="{{ restaurant.inside_image3.url }}" class="rounded-xl shadow" />
+        </div>
+      </section>
+
+      <!-- Chef Section -->
+      <section class="mb-16">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-4">Meet Our Chef</h3>
+        <div class="flex flex-col md:flex-row items-center gap-8">
+          <img src="{{ restaurant.chef_image.url }}" alt="Chef" class="rounded-full shadow w-40 h-40 object-cover" />
+          <div>
+            <h4 class="text-xl font-bold text-red-500">{{ restaurant.chef_name }}</h4>
+            <p class="text-gray-700">25+ years of culinary experience, expert in grilling, known for fusion Bangla-Western dishes.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Live Kitchen -->
+      <section class="mb-16">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-4">Live Kitchen Experience</h3>
+        <p class="text-gray-700 text-lg">Experience your meal being prepared in front of you with our open kitchen setup. Feel the aroma, heat, and love go into every dish.</p>
+      </section>
+
+      <!-- Restaurant Description -->
+      <section class="mb-16">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-4">Why Choose Dhaka Grill Corner?</h3>
+        <p class="text-gray-700 text-lg">{{ restaurant.about }}</p>
+      </section>
+    </main>
+  </body>
+  <script src="{% static 'js/item-modal.js' %}"></script>
+  <script src="{% static 'js/restaurantFilter.js' %}"></script>
+</html>

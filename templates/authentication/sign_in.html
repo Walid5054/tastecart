@@ -29,12 +29,12 @@
           <label class="flex items-center text-sm text-gray-600"><input type="checkbox" class="mr-2" />Remember Me</label>
           <a href="#" class="text-sm text-red-500 hover:underline">Forgot Password?</a>
         </div>
-        {% if message %}
-        {% for message in messages %}
-        <div class="mb-4">
-          <p class="text-red-500">{{ message }}</p>
-        </div>
-        {% endfor %}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="mb-4" id="message-container">
+              <p class="text-red-500">{{ message }}</p>
+            </div>
+          {% endfor %}
         {% endif %}
         <button type="submit" class="w-full bg-red-500 text-white py-2 rounded-full hover:bg-red-600 transition">Login</button>
       </form>
@@ -59,6 +59,10 @@
         document.getElementById('userBtn').classList.toggle('text-red-500', role !== 'user')
         document.getElementById('ownerBtn').classList.toggle('text-gray-600', role !== 'owner')
       }
+      setTimeout(() => {
+        const msg = document.getElementById('message-container')
+        if (msg) msg.style.display = 'none'
+      }, 3000)
     </script>
   </body>
 </html>

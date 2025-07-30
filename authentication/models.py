@@ -25,8 +25,8 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser):
     USER_TYPE_CHOICES = (
-        ("User", "User"),
-        ("Owner", "Owner"),
+        ("user", "user"),
+        ("owner", "owner"),
     )
     name = models.CharField(max_length=255)
     email = models.CharField(max_length=50, unique=True)
@@ -54,3 +54,8 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+
+    def save(self, *args, **kwargs):
+        if self.user_type == "user":
+            self.restaurant_name = None
+        return super().save(*args, **kwargs)

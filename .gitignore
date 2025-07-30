@@ -1,1 +1,7 @@
 myenv
+__pycache__/
+media/
+script.py
+resaturants.csv
+menu.csv
+owners.csv

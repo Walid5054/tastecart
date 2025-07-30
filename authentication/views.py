@@ -36,7 +36,6 @@ def registration(request):
 
         # Authenticate and login
         authenticated_user = authenticate(email=email, password=password)
-        print(f"Authenticated User: {authenticated_user}")  # Debugging line
         if authenticated_user is not None:
             login(request, authenticated_user)
             return redirect("index")
@@ -49,12 +48,10 @@ def sign_in(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
         role = request.POST.get("role")
-        print(f"Role: {role}, Email: {email}, Password: {password}")  # Debugging line
         if User.objects.filter(email=email, user_type=role).exists() is False:
             messages.error(request, "User does not exist or role mismatch.")
             return render(request, "authentication/sign_in.html")
-        user = authenticate(email=email, password=password, user_type=role)
-        print(f"User: {user}")
+        user = authenticate(email=email, password=password)
         if user is not None:
             login(request, user)
             messages.success(request, "Login successful.")

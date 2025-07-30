@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TasteCart - Best Food Delivery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      .dropdown-menu {
+        transition: all 0.2s ease;
+        transform-origin: top right;
+        opacity: 0;
+        transform: scale(0.95);
+        pointer-events: none;
+      }
+      .dropdown-menu.visible {
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 text-gray-800 font-sans antialiased">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Header -->
+      <header class="bg-white border-b border-gray-200 py-4 shadow-sm top-0 z-50">
+        <div class="flex items-center justify-between h-16">
+          <!-- Logo -->
+          <div class="text-3xl font-extrabold text-red-600 tracking-tight"><a href="{% url 'index' %}">TasteCart</a></div>
+
+          <!-- Desktop Nav -->
+          <nav class="hidden md:flex items-center space-x-7 font-medium text-gray-700">
+            <a href="{% url 'index' %}" class="hover:text-red-600 transition duration-300 {% if request.resolver_match.url_name == 'index' %}text-red-600 font-semibold{% endif %}">Home</a>
+            <a href="{% url 'restaurants_view' %}" class="hover:text-red-600 transition duration-300 {% if request.resolver_match.url_name == 'restaurants_view' %}text-red-600 font-semibold{% endif %}">Restaurants</a>
+            <a href="{% url 'menu' %}" class="hover:text-red-600 transition duration-300 {% if request.resolver_match.url_name == 'menu' %}text-red-600 font-semibold{% endif %}">Menu</a>
+            <a href="blog.html" class="hover:text-red-600 transition duration-300">Blog</a>
+            <a href="aboutUs.html" class="hover:text-red-600 transition duration-300">About Us</a>
+          </nav>
+
+          <!-- Desktop Tools -->
+          <div class="hidden md:flex items-center space-x-5">
+            <!-- Search -->
+            <div class="relative w-72 max-w-sm">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-red-400">
+                <i class="fas fa-map-marker-alt"></i>
+              </span>
+              <input type="text"
+                placeholder="Search by restaurant, location..."
+                class="border border-gray-300 w-full bg-white/80 backdrop-blur-md placeholder-gray-500 text-sm rounded-full pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-300 shadow-sm" />
+            </div>
+
+            {% if user.is_authenticated %}
+            <!-- Cart and Profile -->
+            <div class="flex items-center space-x-4">
+              <a href="cart.html" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300 flex items-center space-x-2 shadow-md">
+                <i class="fas fa-shopping-cart text-lg"></i>
+                <span id="cartCount" class="font-semibold">0</span>
+              </a>
+
+              <!-- Profile Dropdown -->
+              <div class="relative">
+                <button id="profileDropdownToggle" aria-label="Toggle profile dropdown" class="focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded-full">
+                  <img src="https://i.pravatar.cc/40?img=5" alt="Profile" class="w-10 h-10 rounded-full border border-gray-300 hover:scale-105 transition-transform duration-300" />
+                </button>
+                <div id="profileDropdownMenu"
+                  class="dropdown-menu absolute right-0 mt-2 w-48 bg-white/90 backdrop-blur-md border border-gray-200 rounded-lg shadow-2xl py-1 z-20 hidden">
+                  <a href="profile.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-red-600 transition duration-200">Profile</a>
+                  <a href="status.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-red-600 transition duration-200">Status</a>
+                  <div class="border-t border-gray-100 my-1"></div>
+                  <a href="{% url 'logout' %}" class="block px-4 py-2 text-red-600 hover:bg-red-50 hover:text-red-700 transition duration-200">Logout</a>
+                </div>
+              </div>
+            </div>
+            {% else %}
+              <a href="{% url 'login' %}" class="text-red-600 hover:text-red-700 font-medium transition duration-300">Login</a>
+            {% endif %}
+          </div>
+
+          <!-- Mobile Menu Toggle -->
+          <button aria-label="Toggle mobile menu" class="md:hidden text-2xl text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded-md" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden mt-3 space-y-3 bg-white border-t border-gray-200 py-4 px-4 hidden shadow-inner rounded-b-lg transition-all duration-300">
+          <nav class="flex flex-col space-y-2 text-[15px] font-medium text-gray-700">
+            <a href="{% url 'index' %}" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition {% if request.resolver_match.url_name == 'index' %}text-red-600 font-semibold bg-red-50{% endif %}">Home</a>
+            <a href="{% url 'restaurants_view' %}" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition {% if request.resolver_match.url_name == 'restaurants_view' %}text-red-600 font-semibold bg-red-50{% endif %}">Restaurants</a>
+            <a href="{% url 'menu' %}" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition">Menu</a>
+            <a href="blog.html" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition">Blog</a>
+            {% if user.is_authenticated %}
+              <a href="profile.html" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition">Profile</a>
+              <a href="status.html" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition">Status</a>
+              <a href="cart.html" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition flex items-center space-x-2">
+                <i class="fas fa-shopping-cart"></i> <span>Cart (<span id="cartCountMobile">0</span>)</span>
+              </a>
+              <a href="{% url 'logout' %}" class="py-2 px-3 text-red-600 hover:bg-red-50 hover:text-red-700 transition rounded-md">Logout</a>
+            {% else %}
+              <a href="{% url 'login' %}" class="py-2 px-3 text-red-600 hover:bg-red-50 hover:text-red-700 transition rounded-md">Login</a>
+            {% endif %}
+            <a href="aboutUs.html" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition">About Us</a>
+          </nav>
+
+          <!-- Mobile Search -->
+          <div class="mt-4">
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-red-400">
+                <i class="fas fa-map-marker-alt"></i>
+              </span>
+              <input type="text" placeholder="Search by restaurant, location..." class="border border-gray-300 w-full bg-white/80 backdrop-blur-md rounded-full pl-10 pr-4 py-2 text-sm placeholder-gray-500 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-300" />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Messages and Content -->
+      {% include 'kits/message.html' %}
+      {% block content %}{% endblock %}
+    </div>
+    
+    <!-- Dropdown Script -->
+    <script>
+      const profileDropdownToggle = document.getElementById('profileDropdownToggle');
+      const profileDropdownMenu = document.getElementById('profileDropdownMenu');
+
+      function toggleDropdown() {
+        profileDropdownMenu.classList.toggle('hidden');
+        profileDropdownMenu.classList.toggle('visible');
+      }
+
+      profileDropdownToggle?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleDropdown();
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!profileDropdownToggle.contains(e.target) && !profileDropdownMenu.contains(e.target)) {
+          if (profileDropdownMenu.classList.contains('visible')) {
+            toggleDropdown();
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
