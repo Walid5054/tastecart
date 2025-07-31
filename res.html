@@ -69,7 +69,7 @@
         <h3 class="text-2xl font-semibold text-gray-800 mb-6">Our Menu</h3>
         <div class="flex space-x-4 mb-6">
           <button
-            class="menu-tab active px-4 py-2 rounded shadow bg-red-500 text-white"
+            class="menu-tab active px-4 py-2 rounded shadow bg-red-500 text-white bg-gray-100"
             onclick="showMenu('breakfast')"
           >
             Breakfast
@@ -86,6 +86,26 @@
           >
             Dinner
           </button>
+                    <button
+            class="menu-tab px-4 py-2 rounded shadow bg-gray-100"
+            onclick="showMenu('combo')"
+          >
+            Combo Meals
+          </button>
+                              <button
+            class="menu-tab px-4 py-2 rounded shadow bg-gray-100"
+            onclick="showMenu('snacks')"
+          >
+            Snacks & Light Bites
+          </button>
+                                        <button
+            class="menu-tab px-4 py-2 rounded shadow bg-gray-100"
+            onclick="showMenu('drinks')"
+          >
+            Drinks & Beverages
+          </button>
+ 
+          
         </div>
         <div id="menuItems" class="grid md:grid-cols-3 gap-6"></div>
       </section>
@@ -236,6 +256,42 @@
             name: "Chicken Kabab",
             price: 300,
             image: "https://source.unsplash.com/200x150/?kabab",
+          },
+        ],
+        combo: [
+          {
+            name: "Grill Combo Platter",
+            price: 520,
+            image: "https://source.unsplash.com/200x150/?grill-combo",
+          },
+          {
+            name: "Family Feast",
+            price: 950,
+            image: "https://source.unsplash.com/200x150/?feast",
+          },
+        ],
+                snacks: [
+          {
+            name: "French Fries",
+            price: 100,
+            image: "https://source.unsplash.com/200x150/?fries",
+          },
+          {
+            name: "Chicken Nuggets",
+            price: 150,
+            image: "https://source.unsplash.com/200x150/?nuggets",
+          },
+        ],
+                drinks: [
+          {
+            name: "Iced Lemon Tea",
+            price: 60,
+            image: "https://source.unsplash.com/200x150/?lemon-tea",
+          },
+          {
+            name: "Cold Coffee",
+            price: 80,
+            image: "https://source.unsplash.com/200x150/?cold-coffee",
           },
         ],
       };
