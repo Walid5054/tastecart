@@ -48,14 +48,48 @@
           <!-- Desktop Tools -->
           <div class="hidden md:flex items-center space-x-5">
             <!-- Search -->
+             <form action="{% url "restaurants_view" %}" method="POST">
+              {% csrf_token %}
             <div class="relative w-72 max-w-sm">
               <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-red-400"><i class="fas fa-map-marker-alt"></i></span>
-              <input type="text" placeholder="Search by restaurant, location..." class="border border-gray-300 w-full bg-white/80 backdrop-blur-md placeholder-gray-500 text-sm rounded-full pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-300 shadow-sm" />
+              <input type="text" name="place" placeholder="Search by restaurant, location..." class="border border-gray-300 w-full bg-white/80 backdrop-blur-md placeholder-gray-500 text-sm rounded-full pl-10 pr-12 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-300 shadow-sm" />
+              <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-700 focus:outline-none">
+                <i class="fas fa-search"></i>
+              </button>
             </div>
+            </form>
 
             {% if user.is_authenticated %}
-              <!-- Cart and Profile -->
+              <!-- Cart, Notifications and Profile -->
               <div class="flex items-center space-x-4">
+                <!-- Notification Bell -->
+                <div class="relative">
+                  <button id="notificationBell" aria-label="View notifications" class="text-gray-600 hover:text-red-600 transition duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded-full">
+                    <i class="fas fa-bell text-xl"></i>
+                    {% if notification_count > 0 %}
+                      <span id="notificationCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">{{ notification_count }}</span>
+                    {% endif %}
+                  </button>
+
+                  <!-- Notification Dropdown -->
+                  <div id="notificationDropdown" class="dropdown-menu absolute right-0 mt-2 w-80 bg-white/95 backdrop-blur-md border border-gray-200 rounded-lg shadow-2xl py-2 z-20 hidden max-h-96 overflow-y-auto">
+                    <div class="px-4 py-2 border-b border-gray-100">
+                      <h3 class="font-semibold text-gray-800">Notifications</h3>
+                    </div>
+                    <div id="notificationList" class="max-h-64 overflow-y-auto">
+                      {% for notif in all_notifications %}
+                        <div class="px-4 py-3 hover:bg-gray-50 transition duration-200 {% if not notif.is_read %}bg-red-50{% endif %}">
+                          <p class="text-sm text-gray-700">{{ notif.message }}</p>
+                          <p class="text-xs text-gray-500 mt-1">{{ notif.created_at|timesince }} ago</p>
+                        </div>
+                      {% empty %}
+                        <div class="px-4 py-3 text-center text-gray-500 text-sm">No New notifications</div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Cart -->
                 <a href="{% url 'cart' %}" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300 flex items-center space-x-2 shadow-md">
                   <i class="fas fa-shopping-cart text-lg"></i>
                   <span id="cartCount" class="font-semibold">{{ cart_count }}</span>
@@ -109,6 +143,13 @@
                 <a href="{% url 'dashboard' %}" class="py-2 px-3 rounded-md hover:bg-gray-100 hover:text-red-600 transition">Dashboard</a>
               {% endif %}
               <a href="status.html" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition">Status</a>
+              <a href="#" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition flex items-center space-x-2">
+                <i class="fas fa-bell"></i>
+                <span>Notifications</span>
+                {% if notification_count > 0 %}
+                  <span class="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">{{ notification_count }}</span>
+                {% endif %}
+              </a>
               <a href="{% url 'cart' %}" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition flex items-center space-x-2"><i class="fas fa-shopping-cart"></i> <span>Cart (<span id="cartCountMobile">{{ cart_count }}</span>)</span></a>
               <a href="{% url 'logout' %}" class="py-2 px-3 text-red-600 hover:bg-red-50 hover:text-red-700 transition rounded-md">Logout</a>
             {% else %}
@@ -144,14 +185,29 @@
         profileDropdownMenu.classList.toggle('visible')
       }
       
+      function getCookie(name) {
+        let cookieValue = null
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';')
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim()
+            if (cookie.substring(0, name.length + 1) === name + '=') {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
+              break
+            }
+          }
+        }
+        return cookieValue
+      }
+      
       profileDropdownToggle?.addEventListener('click', (e) => {
         e.stopPropagation()
         toggleDropdown()
       })
       
       document.addEventListener('click', (e) => {
-        if (!profileDropdownToggle.contains(e.target) && !profileDropdownMenu.contains(e.target)) {
-          if (profileDropdownMenu.classList.contains('visible')) {
+        if (!profileDropdownToggle?.contains(e.target) && !profileDropdownMenu?.contains(e.target)) {
+          if (profileDropdownMenu?.classList.contains('visible')) {
             toggleDropdown()
           }
         }
@@ -159,6 +215,9 @@
     </script>
 
     <!-- Global Cart AJAX Script -->
-    <script src="{% static 'js/cart-complete.js' %}"></script>
+    <script src="{% static 'js/cart.js' %}"></script>
+
+    <!-- Notification System Script -->
+    <script src="{% static 'js/notifications.js' %}"></script>
   </body>
 </html>

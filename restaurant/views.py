@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
-from order.models import Cart
+from order.models import Cart, Order
 from restaurant.forms import MenuForm, RestaurantForm
 from restaurant.models import Menu, Restaurant
 from restaurant.decorators import owner_required
@@ -20,6 +20,11 @@ def restaurant_view(request, slug):
 
 
 def restaurants_view(request):
+    if request.method == "POST":
+        place = request.POST.get("place")
+        if place:
+            restaurants = Restaurant.objects.filter(location__icontains=place)
+            return render(request, "restaurant/restaurants.html", {"restaurants": restaurants})
     restaurants = Restaurant.objects.all()
     return render(request, "restaurant/restaurants.html", {"restaurants": restaurants})
 
@@ -27,6 +32,7 @@ def restaurants_view(request):
 def menu(request):
     menu_items = Menu.objects.all()
     return render(request, "restaurant/menu.html", {"menu_items": menu_items})
+
 
 
 @owner_required
@@ -50,10 +56,13 @@ def restaurant_settings(request):
             messages.error(request, "Please correct the errors below.")
     else:
         form = RestaurantForm(instance=restaurant)
-
+    orders = Order.objects.filter(
+        cart__item__restaurant__owner=user, status="Preparing"
+    ).order_by("-created_at")
     context = {
         "restaurant": restaurant,
         "form": form,
+        "orders": orders,
     }
 
     return render(request, "restaurant/restaurant_settings.html", context)
@@ -108,11 +117,15 @@ def owner_dashboard(request):
                 messages.success(request, "Menu item added successfully!")
                 return redirect("owner_dashboard")
 
+    orders = Order.objects.filter(
+        cart__item__restaurant__owner=user, status="Preparing"
+    ).order_by("-created_at")
     context = {
         "menu_items": menu_items,
         "form": form,
         "edit_form": edit_form,
         "edit_item": edit_item,
+        "orders": orders,
     }
 
     return render(request, "restaurant/dashboard.html", context)

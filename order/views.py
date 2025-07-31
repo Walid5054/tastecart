@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 import json
 
 from authentication.models import User
+from home.models import notification
 from order.models import Cart, Order
 from restaurant.models import Menu
 
@@ -183,5 +184,81 @@ def checkout(request, user):
                 user=user, cart=cart_item, payment_method=payment_method
             )
         Cart.objects.filter(user=user, ordered=False).update(ordered=True)
-        messages.success(request, "Order placed successfully.")
+
+        # Create notification for order confirmation
+        notification.objects.create(
+            user=user,
+            message=f"Your order has been placed! Payment method: {payment_method}. Please wait for the confirmation. Thank you for choosing TasteCart.",
+        )
+
         return redirect("index")
+
+
+
+@login_required
+def orders(request):
+    user = request.user
+    orders = Order.objects.filter(cart__item__restaurant__owner=user).order_by(
+        "-created_at"
+    )
+    return render(request, "order/orders.html", {"orders": orders})
+
+
+@login_required
+@csrf_exempt
+def update_order_status(request):
+    if request.method == "POST":
+        try:
+            order_id = request.POST.get("order_id")
+            action = request.POST.get("action")
+
+            order = get_object_or_404(Order, id=order_id)
+
+            # Check if the user owns the restaurant for this order
+            if order.cart.item.restaurant.owner != request.user:
+                return JsonResponse(
+                    {"success": False, "message": "Unauthorized access"}
+                )
+
+            if action == "accept":
+                order.is_accepted = True
+                order.save()
+                notification.objects.create(
+                    user=order.user,
+                    message="Your order has been accepted and is being prepared.",
+                )
+                message = "Order accepted successfully"
+            elif action == "reject":
+                order.status = "Cancelled"
+                order.save()
+                notification.objects.create(
+                    user=order.user,
+                    message="Your order has been rejected. Please contact us for more details.",
+                )
+                message = "Order rejected"
+            elif action == "complete":
+                order.status = "Completed"
+                order.save()
+                notification.objects.create(
+                    user=order.user, message="Your order is ready for pickup/delivery!"
+                )
+                message = "Order marked as ready"
+            elif action == "deliver":
+                order.is_delivered = True
+                order.save()
+                notification.objects.create(
+                    user=order.user,
+                    message="Your order has been delivered. Thank you for choosing TasteCart!",
+                )
+                message = "Order marked as delivered"
+            else:
+                return JsonResponse({"success": False, "message": "Invalid action"})
+
+            return JsonResponse({"success": True, "message": message})
+
+        except Order.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Order not found"})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+
+    return JsonResponse({"success": False, "message": "Invalid request method"})

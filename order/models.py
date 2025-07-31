@@ -49,7 +49,7 @@ class Order(models.Model):
         blank=True,
         null=True,
     )
-    status = models.CharField(max_length=20, choices=choices, default="Preparing")
+    status = models.CharField(max_length=20, choices=choices,blank=True, null=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     is_accepted = models.BooleanField(default=False)
     is_delivered = models.BooleanField(default=False)
@@ -65,4 +65,6 @@ class Order(models.Model):
         if not self.restaurant:
             self.restaurant = self.cart.item.restaurant
         self.total_price = self.cart.total_price
+        if self.is_accepted:
+            self.status = "Preparing"
         super().save(*args, **kwargs)
