@@ -58,7 +58,7 @@ def sign_in(request):
             if role == "user":
                 return redirect("index")
             else:
-                return redirect("owner_dashboard", id=request.user.id)
+                return redirect("dashboard")
         else:
             messages.error(request, "Invalid email or password or role")
             return render(request, "authentication/sign_in.html")

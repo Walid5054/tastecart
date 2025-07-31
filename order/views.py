@@ -5,8 +5,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 import json
 
-from order.models import Cart
-import restaurant
+from authentication.models import User
+from order.models import Cart, Order
 from restaurant.models import Menu
 
 # Create your views here.
@@ -14,7 +14,7 @@ from restaurant.models import Menu
 
 def cart(request):
     user = request.user
-    cart_items = Cart.objects.filter(user=user)
+    cart_items = Cart.objects.filter(user=user, ordered=False)
     cart_total = sum(item.total_price for item in cart_items)
     return render(
         request, "order/cart.html", {"cart_items": cart_items, "cart_total": cart_total}
@@ -35,7 +35,9 @@ def add_to_cart(request, res_slug, item_id, quantity=1):
     item = get_object_or_404(Menu, id=item_id)
 
     # Check if the item is already in the cart
-    cart_item, created = Cart.objects.get_or_create(user=user, item=item)
+    cart_item, created = Cart.objects.get_or_create(
+        user=user, item=item, ordered=False, defaults={"quantity": 0}
+    )
 
     if not created:
         cart_item.quantity += quantity
@@ -46,7 +48,9 @@ def add_to_cart(request, res_slug, item_id, quantity=1):
 
     # Handle AJAX requests
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-        cart_count = Cart.objects.filter(user=user).count()
+        cart_count = Cart.objects.filter(
+            user=user, ordered=False, quantity__gt=0
+        ).count()
         return JsonResponse(
             {
                 "success": True,
@@ -62,9 +66,10 @@ def add_to_cart(request, res_slug, item_id, quantity=1):
 
 @login_required
 def cart_count_view(request):
-    """API endpoint to get current cart count"""
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-        cart_count = Cart.objects.filter(user=request.user).count()
+        cart_count = Cart.objects.filter(
+            user=request.user, ordered=False, quantity__gt=0
+        ).count()
         return JsonResponse({"success": True, "cart_count": cart_count})
 
     return JsonResponse({"success": False, "message": "Invalid request"})
@@ -78,33 +83,34 @@ def update_cart_quantity(request):
             data = json.loads(request.body)
             item_id = data.get("item_id")
             change = data.get("change")
+            cart_item = get_object_or_404(
+                Cart, id=item_id, user=request.user, ordered=False
+            )
 
-            cart_item = get_object_or_404(Cart, id=item_id, user=request.user)
             cart_item.quantity += change
 
-            # If quantity becomes 0 or negative, remove the item
             if cart_item.quantity <= 0:
                 cart_item.delete()
-
-                # Calculate cart total
                 cart_total = sum(
-                    item.total_price for item in Cart.objects.filter(user=request.user)
+                    item.total_price
+                    for item in Cart.objects.filter(user=request.user, ordered=False)
                 )
-
                 return JsonResponse(
                     {
                         "success": True,
                         "new_quantity": 0,
                         "cart_total": f"{cart_total:.2f}",
-                        "cart_items": Cart.objects.filter(user=request.user).count(),
+                        "cart_items": Cart.objects.filter(
+                            user=request.user, ordered=False, quantity__gt=0
+                        ).count(),
                     }
                 )
             else:
                 cart_item.save()
 
-                # Calculate cart total
                 cart_total = sum(
-                    item.total_price for item in Cart.objects.filter(user=request.user)
+                    item.total_price
+                    for item in Cart.objects.filter(user=request.user, ordered=False)
                 )
 
                 return JsonResponse(
@@ -114,7 +120,9 @@ def update_cart_quantity(request):
                         "item_price": f"{cart_item.item.price:.2f}",
                         "item_total": f"{cart_item.total_price:.2f}",
                         "cart_total": f"{cart_total:.2f}",
-                        "cart_items": Cart.objects.filter(user=request.user).count(),
+                        "cart_items": Cart.objects.filter(
+                            user=request.user, ordered=False, quantity__gt=0
+                        ).count(),
                     }
                 )
 
@@ -134,19 +142,22 @@ def remove_from_cart(request):
             data = json.loads(request.body)
             item_id = data.get("item_id")
 
-            cart_item = get_object_or_404(Cart, id=item_id, user=request.user)
+            cart_item = get_object_or_404(
+                Cart, id=item_id, user=request.user, ordered=False
+            )
             cart_item.delete()
-
-            # Calculate cart total after removal
             cart_total = sum(
-                item.total_price for item in Cart.objects.filter(user=request.user)
+                item.total_price
+                for item in Cart.objects.filter(user=request.user, ordered=False)
             )
 
             return JsonResponse(
                 {
                     "success": True,
                     "cart_total": f"{cart_total:.2f}",
-                    "cart_items": Cart.objects.filter(user=request.user).count(),
+                    "cart_items": Cart.objects.filter(
+                        user=request.user, ordered=False, quantity__gt=0
+                    ).count(),
                 }
             )
 
@@ -156,3 +167,21 @@ def remove_from_cart(request):
             return JsonResponse({"success": False, "message": str(e)})
 
     return JsonResponse({"success": False, "message": "Invalid request method"})
+
+
+def checkout(request, user):
+    user = get_object_or_404(User, id=user)
+    if request.method == "POST":
+        payment_method = request.POST.get("payment_method")
+        if payment_method == "cod":
+            payment_method = "Cash on Delivery"
+        else:
+            payment_method = "Online Payment"
+        cart_items = Cart.objects.filter(user=user, ordered=False)
+        for cart_item in cart_items:
+            Order.objects.create(
+                user=user, cart=cart_item, payment_method=payment_method
+            )
+        Cart.objects.filter(user=user, ordered=False).update(ordered=True)
+        messages.success(request, "Order placed successfully.")
+        return redirect("index")

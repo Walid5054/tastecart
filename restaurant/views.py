@@ -8,11 +8,16 @@ from restaurant.decorators import owner_required
 # Create your views here.
 
 
-def restaurant_view(request,slug):
-    restaurant= Restaurant.objects.get(slug=slug)
-    cart_count=Cart.objects.filter(user=request.user).count() if request.user.is_authenticated else 0
+def restaurant_view(request, slug):
+    restaurant = Restaurant.objects.get(slug=slug)
+
     menu_items = Menu.objects.filter(restaurant=restaurant)
-    return render(request, "restaurant/restaurant.html", {"restaurant": restaurant, "menu_items": menu_items, "cart_count": cart_count})
+    return render(
+        request,
+        "restaurant/restaurant.html",
+        {"restaurant": restaurant, "menu_items": menu_items},
+    )
+
 
 def restaurants_view(request):
     restaurants = Restaurant.objects.all()
@@ -20,13 +25,12 @@ def restaurants_view(request):
 
 
 def menu(request):
-    menu_items=Menu.objects.all()
+    menu_items = Menu.objects.all()
     return render(request, "restaurant/menu.html", {"menu_items": menu_items})
 
 
 @owner_required
 def restaurant_settings(request):
-    """Handle restaurant details and settings update"""
     user = request.user
 
     try:
