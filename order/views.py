@@ -22,6 +22,15 @@ def cart(request):
 
 
 def add_to_cart(request, res_slug, item_id, quantity=1):
+    if not request.user.is_authenticated:
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return JsonResponse(
+                {"success": False, "message": "Please login to add items to cart"}
+            )
+        else:
+            messages.error(request, "Please login to add items to cart")
+            return redirect("login")
+
     user = request.user
     item = get_object_or_404(Menu, id=item_id)
 
@@ -35,8 +44,30 @@ def add_to_cart(request, res_slug, item_id, quantity=1):
 
     cart_item.save()
 
+    # Handle AJAX requests
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        cart_count = Cart.objects.filter(user=user).count()
+        return JsonResponse(
+            {
+                "success": True,
+                "message": f"{item.item_name} has been added to your cart.",
+                "cart_count": cart_count,
+            }
+        )
+
+    # Handle regular requests
     messages.success(request, f"{item.item_name} has been added to your cart.")
     return redirect(request.META.get("HTTP_REFERER", request.path))
+
+
+@login_required
+def cart_count_view(request):
+    """API endpoint to get current cart count"""
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        cart_count = Cart.objects.filter(user=request.user).count()
+        return JsonResponse({"success": True, "cart_count": cart_count})
+
+    return JsonResponse({"success": False, "message": "Invalid request"})
 
 
 @login_required
@@ -65,6 +96,7 @@ def update_cart_quantity(request):
                         "success": True,
                         "new_quantity": 0,
                         "cart_total": f"{cart_total:.2f}",
+                        "cart_items": Cart.objects.filter(user=request.user).count(),
                     }
                 )
             else:
@@ -82,6 +114,7 @@ def update_cart_quantity(request):
                         "item_price": f"{cart_item.item.price:.2f}",
                         "item_total": f"{cart_item.total_price:.2f}",
                         "cart_total": f"{cart_total:.2f}",
+                        "cart_items": Cart.objects.filter(user=request.user).count(),
                     }
                 )
 

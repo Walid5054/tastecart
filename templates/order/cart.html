@@ -1,5 +1,5 @@
 {% load static %}
-<html lang="en">
+<html lang="en">    
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -38,7 +38,7 @@
           
           <div class="divide-y">
             {% for item in cart_items %}
-            <div class="p-6 hover:bg-gray-50 transition-colors">
+            <div class="p-6 hover:bg-gray-50 transition-colors" data-cart-item-id="{{item.id}}">
               <div class="flex flex-col md:flex-row items-center justify-between gap-6">
                 <!-- Item Image -->
                 <div class="flex-shrink-0">
@@ -60,9 +60,9 @@
                   <div class="mt-2 flex items-center justify-center md:justify-start gap-2">
                     <span class="text-red-600 font-semibold">৳{{item.item.price}}</span>
                     <span class="text-gray-400">×</span>
-                    <span class="text-gray-700">{{item.quantity}}</span>
+                    <span class="text-gray-700 quantity">{{item.quantity}}</span>
                     <span class="text-gray-400">=</span>
-                    <span class="text-green-600 font-bold">৳{{item.total_price}}</span>
+                    <span class="text-green-600 font-bold item-total">৳{{item.total_price}}</span>
                   </div>
                 </div>
                 
@@ -70,15 +70,15 @@
                 <div class="flex items-center gap-3 bg-gray-100 rounded-lg p-2">
                   <button class="bg-white border border-gray-300 hover:border-red-500 hover:bg-red-50 text-gray-700 hover:text-red-600 w-8 h-8 rounded-full flex items-center justify-center transition-all decrease-btn" 
                           data-item-id="{{item.id}}" 
-                          onclick="updateQuantity({{item.id}}, -1)">
+                          onclick="updateCartQuantityAjax({{item.id}}, -1)">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
                     </svg>
                   </button>
-                  <span class="min-w-[32px] text-center font-semibold text-gray-800 quantity-display" id="quantity-{{item.id}}">{{item.quantity}}</span>
+                  <span class="min-w-[32px] text-center font-semibold text-gray-800 quantity-display quantity" id="quantity-{{item.id}}">{{item.quantity}}</span>
                   <button class="bg-white border border-gray-300 hover:border-green-500 hover:bg-green-50 text-gray-700 hover:text-green-600 w-8 h-8 rounded-full flex items-center justify-center transition-all increase-btn" 
                           data-item-id="{{item.id}}" 
-                          onclick="updateQuantity({{item.id}}, 1)">
+                          onclick="updateCartQuantityAjax({{item.id}}, 1)">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
@@ -89,7 +89,7 @@
                 <div class="flex-shrink-0">
                   <button class="text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-lg transition-all remove-btn flex items-center gap-1" 
                           data-item-id="{{item.id}}" 
-                          onclick="removeItem({{item.id}})">
+                          onclick="removeFromCartAjax({{item.id}})">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                     </svg>
@@ -130,7 +130,7 @@
         <div class="p-6 border-b bg-gray-50">
           <div class="flex justify-between items-center">
             <span class="text-lg font-semibold text-gray-700">Total Amount:</span>
-            <span id="total" class="text-2xl font-bold text-green-600">৳{{cart_total|floatformat:2}}</span>
+            <span id="total" class="text-2xl font-bold text-green-600 cart-total">৳{{cart_total|floatformat:2}}</span>
           </div>
         </div>
 

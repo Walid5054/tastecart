@@ -56,9 +56,9 @@
             {% if user.is_authenticated %}
               <!-- Cart and Profile -->
               <div class="flex items-center space-x-4">
-                <a href="{% url "cart" %}" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300 flex items-center space-x-2 shadow-md">
+                <a href="{% url 'cart' %}" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300 flex items-center space-x-2 shadow-md">
                   <i class="fas fa-shopping-cart text-lg"></i>
-                  <span id="cartCount" class="font-semibold">0</span>
+                  <span id="cartCount" class="font-semibold">{{ cart_count }}</span>
                 </a>
 
                 <!-- Profile Dropdown -->
@@ -95,7 +95,7 @@
 
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="md:hidden mt-3 space-y-3 bg-white border-t border-gray-200 py-4 px-4 hidden shadow-inner rounded-b-lg transition-all duration-300">
-            <nav class="flex flex-col space-y-2 text-[15px] font-medium text-gray-700">
+          <nav class="flex flex-col space-y-2 text-[15px] font-medium text-gray-700">
             <a href="{% url 'index' %}" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition {% if request.resolver_match.url_name == 'index' %}text-red-600 font-semibold bg-red-50{% endif %}">Home</a>
             <a href="{% url 'restaurants_view' %}" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition {% if request.resolver_match.url_name == 'restaurants_view' %}text-red-600 font-semibold bg-red-50{% endif %}">Restaurants</a>
             <a href="{% url 'menu' %}" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition {% if request.resolver_match.url_name == 'menu' %}text-red-600 font-semibold bg-red-50{% endif %}">Menu</a>
@@ -104,18 +104,18 @@
             {% if user.is_authenticated %}
               <div class="border-t border-gray-200 my-2"></div>
               {% if request.user.user_type == 'user' %}
-              <a href="{% url 'view_profile' %}" class="py-2 px-3 rounded-md hover:bg-gray-100 hover:text-red-600 transition">Profile</a>
+                <a href="{% url 'view_profile' %}" class="py-2 px-3 rounded-md hover:bg-gray-100 hover:text-red-600 transition">Profile</a>
               {% else %}
-              <a href="{% url 'dashboard' %}" class="py-2 px-3 rounded-md hover:bg-gray-100 hover:text-red-600 transition">Dashboard</a>
+                <a href="{% url 'dashboard' %}" class="py-2 px-3 rounded-md hover:bg-gray-100 hover:text-red-600 transition">Dashboard</a>
               {% endif %}
               <a href="status.html" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition">Status</a>
-              <a href="{% url "cart" %}" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition flex items-center space-x-2"><i class="fas fa-shopping-cart"></i> <span>Cart (<span id="cartCountMobile">0</span>)</span></a>
+              <a href="{% url 'cart' %}" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition flex items-center space-x-2"><i class="fas fa-shopping-cart"></i> <span>Cart (<span id="cartCountMobile">{{ cart_count }}</span>)</span></a>
               <a href="{% url 'logout' %}" class="py-2 px-3 text-red-600 hover:bg-red-50 hover:text-red-700 transition rounded-md">Logout</a>
             {% else %}
               <div class="border-t border-gray-200 my-2"></div>
               <a href="{% url 'login' %}" class="py-2 px-3 text-red-600 hover:bg-red-50 hover:text-red-700 transition rounded-md">Login</a>
             {% endif %}
-            </nav>
+          </nav>
 
           <!-- Mobile Search -->
           <div class="mt-4">
@@ -130,6 +130,7 @@
       <!-- Messages and Content -->
       {% include 'kits/message.html' %}
       {% block content %}
+
       {% endblock %}
     </div>
 
@@ -156,5 +157,8 @@
         }
       })
     </script>
+
+    <!-- Global Cart AJAX Script -->
+    <script src="{% static 'js/cart-complete.js' %}"></script>
   </body>
 </html>

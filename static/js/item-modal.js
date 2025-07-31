@@ -1,4 +1,20 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // CSRF Token helper function
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
   const modal = document.getElementById("itemModal");
   const modalContent = document.getElementById("modalContent");
   const closeModal = document.getElementById("closeModal");
@@ -101,7 +117,10 @@ document.addEventListener("DOMContentLoaded", function () {
   itemCards.forEach((card) => {
     card.addEventListener("click", function (e) {
       // Don't open modal if clicking on Add to Cart button
-      if (e.target.classList.contains("add-to-cart-btn")) {
+      if (
+        e.target.classList.contains("add-to-cart-btn") ||
+        e.target.closest(".add-to-cart-btn")
+      ) {
         return;
       }
 
@@ -155,66 +174,63 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Add to cart from modal
   modalAddToCartBtn.addEventListener("click", function (e) {
+    e.preventDefault(); // Prevent default link behavior
+
     if (!currentItem) {
-      e.preventDefault();
       return;
     }
 
-    // Don't prevent default - let the href handle the Django request
-    // But still update localStorage for immediate feedback
-    const basePrice = parseFloat(currentItem.price);
-    const discount = currentItem.discount || 0;
-    const discountedPrice = basePrice * (1 - discount / 100);
+    // Use AJAX function from cart-ajax.js
+    if (typeof addToCartAjax === "function") {
+      addToCartAjax(currentItem.restaurantSlug, currentItem.id, quantity);
 
-    const cartItem = {
-      id: currentItem.id,
-      name: currentItem.name,
-      price: discountedPrice.toFixed(2),
-      originalPrice: basePrice,
-      discount: discount,
-      image: currentItem.image,
-      restaurant: currentItem.restaurant,
-      quantity: quantity,
-      timestamp: Date.now(),
-    };
-
-    // Add to cart in localStorage for immediate feedback
-    let cart = JSON.parse(localStorage.getItem("tasteCartCart")) || [];
-
-    // Check if item already exists
-    const existingItemIndex = cart.findIndex((item) => item.id === cartItem.id);
-
-    if (existingItemIndex !== -1) {
-      cart[existingItemIndex].quantity += quantity;
-      showToast(`Updated ${cartItem.name} quantity in cart!`, "success");
+      // Close modal after adding to cart
+      setTimeout(() => {
+        closeModalFunc();
+      }, 1000);
     } else {
-      cart.push(cartItem);
-      showToast(`${cartItem.name} added to cart!`, "success");
+      // Fallback to regular form submission
+      const addToCartUrl = `${location.origin}/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`;
+      window.location.href = addToCartUrl;
     }
-
-    localStorage.setItem("tasteCartCart", JSON.stringify(cart));
-
-    // Update cart count
-    const cartCount = document.getElementById("cartCount");
-    if (cartCount) {
-      cartCount.textContent = cart.length;
-    }
-
-    // The link will now navigate to the Django URL automatically
-    // No need to prevent default or close modal manually
   });
 
   // Buy now functionality
   buyNowBtn.addEventListener("click", function () {
     if (!currentItem) return;
 
-    // Navigate directly to add to cart URL which will add the item and redirect to cart
-    const addToCartUrl = `/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`;
-    window.location.href = addToCartUrl;
-
-    // Note: The Django view will redirect to cart page after adding the item
-    // If you want to redirect to checkout instead, modify the Django view
-    // or add checkout logic to the cart page
+    // Use AJAX to add to cart then redirect
+    if (typeof addToCartAjax === "function") {
+      // First add to cart via AJAX
+      fetch(
+        `/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken":
+              document.querySelector("[name=csrfmiddlewaretoken]")?.value ||
+              getCookie("csrftoken"),
+            "X-Requested-With": "XMLHttpRequest",
+          },
+          body: JSON.stringify({ ajax: true }),
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            // Redirect to cart after successful addition
+            window.location.href = "/cart";
+          }
+        })
+        .catch(() => {
+          // Fallback to regular URL navigation
+          window.location.href = `/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`;
+        });
+    } else {
+      // Fallback to regular navigation
+      window.location.href = `/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`;
+    }
   });
 
   // Toast notification function (reuse from menu-filter.js or define here)

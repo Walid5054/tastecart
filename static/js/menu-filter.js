@@ -261,12 +261,5 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initialize
   filterMenuItems();
 
-  // Debug log to see extracted categories
-  console.log(
-    "Menu items with categories:",
-    menuData.map((item) => ({
-      name: item.name,
-      category: item.category,
-    }))
-  );
+
 });

@@ -87,7 +87,7 @@
                     {{ item.discount|default:0|floatformat:0 }}% OFF
                   </span>
                 {% endif %}
-                <a href="{% url "add_to_cart" item.restaurant.slug item.id 1 %}" class="mt-auto bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition add-to-cart-btn inline-block text-center">Add to Cart</a>
+                <button onclick="event.stopPropagation(); addToCartAjax('{{ item.restaurant.slug }}', '{{ item.id }}', 1)" class="mt-auto bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition add-to-cart-btn inline-block text-center w-full">Add to Cart</button>
               </div>
             </div>
             {% endfor %}
@@ -176,17 +176,7 @@
     </div>
 
     <!-- JavaScript -->
+    <script src="{% static 'js/cart.js' %}"></script>
     <script src="{% static 'js/menu-filter.js' %}"></script>
     <script src="{% static 'js/item-modal.js' %}"></script>
-    <script>
-      function addToCart(item) {
-        let cart = JSON.parse(localStorage.getItem("tasteCartCart")) || [];
-        cart.push(item);
-        localStorage.setItem("tasteCartCart", JSON.stringify(cart));
-        const cartCount = document.getElementById('cartCount');
-        if (cartCount) {
-          cartCount.textContent = cart.length;
-        }
-      }
-    </script>
 {% endblock content %}
