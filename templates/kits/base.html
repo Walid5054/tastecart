@@ -48,15 +48,13 @@
           <!-- Desktop Tools -->
           <div class="hidden md:flex items-center space-x-5">
             <!-- Search -->
-             <form action="{% url "restaurants_view" %}" method="POST">
+            <form action="{% url 'restaurants_view' %}" method="POST">
               {% csrf_token %}
-            <div class="relative w-72 max-w-sm">
-              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-red-400"><i class="fas fa-map-marker-alt"></i></span>
-              <input type="text" name="place" placeholder="Search by restaurant, location..." class="border border-gray-300 w-full bg-white/80 backdrop-blur-md placeholder-gray-500 text-sm rounded-full pl-10 pr-12 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-300 shadow-sm" />
-              <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-700 focus:outline-none">
-                <i class="fas fa-search"></i>
-              </button>
-            </div>
+              <div class="relative w-72 max-w-sm">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-red-400"><i class="fas fa-map-marker-alt"></i></span>
+                <input type="text" name="place" placeholder="Search by restaurant, location..." class="border border-gray-300 w-full bg-white/80 backdrop-blur-md placeholder-gray-500 text-sm rounded-full pl-10 pr-12 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-300 shadow-sm" />
+                <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-700 focus:outline-none"><i class="fas fa-search"></i></button>
+              </div>
             </form>
 
             {% if user.is_authenticated %}
@@ -112,7 +110,7 @@
                     {% else %}
                       <a href="{% url 'dashboard' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-red-600 transition duration-200">Dashboard</a>
                     {% endif %}
-                    <a href="status.html" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-red-600 transition duration-200">Status</a>
+                    <a href="{% url 'order_status' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-red-600 transition duration-200">My Orders</a>
                     <div class="border-t border-gray-100 my-1"></div>
                     <a href="{% url 'logout' %}" class="block px-4 py-2 text-red-600 hover:bg-red-50 hover:text-red-700 transition duration-200">Logout</a>
                   </div>
@@ -142,7 +140,7 @@
               {% else %}
                 <a href="{% url 'dashboard' %}" class="py-2 px-3 rounded-md hover:bg-gray-100 hover:text-red-600 transition">Dashboard</a>
               {% endif %}
-              <a href="status.html" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition">Status</a>
+              <a href="{% url 'order_status' %}" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition">My Orders</a>
               <a href="#" class="py-2 px-3 rounded-md hover:bg-red-50 hover:text-red-600 transition flex items-center space-x-2">
                 <i class="fas fa-bell"></i>
                 <span>Notifications</span>

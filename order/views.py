@@ -194,7 +194,6 @@ def checkout(request, user):
         return redirect("index")
 
 
-
 @login_required
 def orders(request):
     user = request.user
@@ -258,6 +257,183 @@ def update_order_status(request):
 
         except Order.DoesNotExist:
             return JsonResponse({"success": False, "message": "Order not found"})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+
+    return JsonResponse({"success": False, "message": "Invalid request method"})
+
+
+@login_required
+def order_status(request):
+    """Display order status for the logged-in user"""
+    user = request.user
+    orders = Order.objects.filter(user=user).order_by("-created_at")
+    return render(request, "order/status.html", {"orders": orders})
+
+
+@login_required
+@csrf_exempt
+def modify_order(request):
+    """Handle order modification (quantity change)"""
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            order_id = data.get("order_id")
+            new_quantity = data.get("new_quantity")
+
+            order = get_object_or_404(Order, id=order_id, user=request.user)
+
+            # Check if order can be modified
+            if order.status == "Cancelled":
+                return JsonResponse(
+                    {"success": False, "message": "Cannot modify a cancelled order"}
+                )
+
+            if order.is_delivered:
+                return JsonResponse(
+                    {"success": False, "message": "Cannot modify a delivered order"}
+                )
+
+            if not order.is_accepted:
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "message": "Cannot modify order before restaurant acceptance",
+                    }
+                )
+
+            if order.status != "Preparing":
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "message": "Order can only be modified while being prepared",
+                    }
+                )
+
+            # Validate new quantity
+            if new_quantity < 1:
+                return JsonResponse(
+                    {"success": False, "message": "Quantity must be at least 1"}
+                )
+
+            old_quantity = order.cart.quantity
+            old_total = order.total_price
+
+            # Calculate new total
+            base_price = order.cart.item.price
+            new_base_total = base_price * new_quantity
+
+            # Add processing fee if quantity is increased
+            processing_fee = 5 if new_quantity > old_quantity else 0
+            new_total = new_base_total + processing_fee
+
+            # Update cart and order
+            order.cart.quantity = new_quantity
+            order.cart.save()  # This will automatically update total_price in cart
+
+            order.total_price = new_total
+            order.save()
+
+            # Create notification for the user
+            if new_quantity > old_quantity:
+                message_text = f"Your order quantity has been increased from {old_quantity} to {new_quantity}. Additional charge: ৳{processing_fee + (new_quantity - old_quantity) * base_price}"
+            else:
+                refund_amount = (old_quantity - new_quantity) * base_price
+                message_text = f"Your order quantity has been reduced from {old_quantity} to {new_quantity}. Refund: ৳{refund_amount}"
+
+            notification.objects.create(user=request.user, message=message_text)
+
+            return JsonResponse(
+                {
+                    "success": True,
+                    "message": "Order modified successfully",
+                    "new_total": float(new_total),
+                    "old_total": float(old_total),
+                }
+            )
+
+        except Order.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Order not found"})
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "message": "Invalid JSON data"})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+
+    return JsonResponse({"success": False, "message": "Invalid request method"})
+
+
+@login_required
+@csrf_exempt
+def cancel_order(request):
+    """Handle order cancellation"""
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            order_id = data.get("order_id")
+
+            order = get_object_or_404(Order, id=order_id, user=request.user)
+
+            # Check if order can be cancelled
+            if order.status == "Cancelled":
+                return JsonResponse(
+                    {"success": False, "message": "Order is already cancelled"}
+                )
+
+            if order.is_delivered:
+                return JsonResponse(
+                    {"success": False, "message": "Cannot cancel a delivered order"}
+                )
+
+            if order.status == "Completed":
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "message": "Cannot cancel an order that is ready for delivery",
+                    }
+                )
+
+            # Allow cancellation only if not accepted or just accepted but still preparing
+            if order.is_accepted and order.status == "Preparing":
+                # Check if it's been too long since acceptance (e.g., 10 minutes)
+                from django.utils import timezone
+                import datetime
+
+                time_since_creation = timezone.now() - order.created_at
+                if time_since_creation > datetime.timedelta(minutes=10):
+                    return JsonResponse(
+                        {
+                            "success": False,
+                            "message": "Cannot cancel order after 10 minutes of preparation",
+                        }
+                    )
+
+            # Cancel the order
+            order.status = "Cancelled"
+            order.save()
+
+            # Mark cart as not ordered so items go back to cart if needed
+            # (Optional: you might want to keep it ordered for record keeping)
+
+            # Create notification for the user
+            notification.objects.create(
+                user=request.user,
+                message=f"Your order #{order.id} has been cancelled successfully. If payment was made, refund will be processed within 3-5 business days.",
+            )
+
+            # Create notification for restaurant owner
+            notification.objects.create(
+                user=order.cart.item.restaurant.owner,
+                message=f"Order #{order.id} has been cancelled by the customer.",
+            )
+
+            return JsonResponse(
+                {"success": True, "message": "Order cancelled successfully"}
+            )
+
+        except Order.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Order not found"})
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "message": "Invalid JSON data"})
         except Exception as e:
             return JsonResponse({"success": False, "message": str(e)})
 
