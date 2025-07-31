@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+{% extends "kits/base.html" %}
+{% load static %}
+{% block content %}
+
+      
+
+      <!-- Hero -->
+      <section
+        class="bg-red-50 mt-8 rounded-lg p-8 md:p-16 text-center space-y-6"
+      >
+        <h1 class="text-4xl sm:text-5xl font-bold leading-tight">
+          Explore Our Delicious <span class="text-red-500">Menu</span>
+        </h1>
+        <p class="text-gray-600 max-w-2xl mx-auto">
+          Handpicked dishes from top Bangladeshi restaurants. Choose your meal
+          for Breakfast, Lunch, Dinner, and more!
+        </p>
+      </section>
+
+      <!-- Filter Bar -->
+      <section
+        class="mt-10 bg-white border rounded-lg p-4 flex flex-wrap items-center gap-4 justify-between"
+      >
+        <div class="flex flex-wrap gap-4">
+          <select
+            id="filterCategory"
+            class="border rounded px-3 py-2 focus:ring-red-400 focus:ring-2 transition"
+          >
+            <option value="">All Categories</option>
+            <option value="Main Course">Main Course</option>
+            <option value="Appetizer">Appetizer</option>
+            <option value="Dessert">Dessert</option>
+            <option value="Beverage">Beverage</option>
+          </select>
+          <select
+            id="filterPrice"
+            class="border rounded px-3 py-2 focus:ring-red-400 focus:ring-2 transition"
+          >
+            <option value="">Any Price</option>
+            <option value="200">Under 200৳</option>
+            <option value="300">Under 300৳</option>
+            <option value="400">Under 400৳</option>
+          </select>
+          <select
+            id="filterRating"
+            class="border rounded px-3 py-2 focus:ring-red-400 focus:ring-2 transition"
+          >
+            <option value="">All Ratings</option>
+            <option value="4">4★ & up</option>
+            <option value="4.5">4.5★ & up</option>
+            <option value="5">5★ only</option>
+          </select>
+        </div>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search dishes..."
+          class="border rounded px-3 py-2 w-full sm:w-auto focus:ring-red-400 focus:ring-2 transition"
+        />
+      </section>
+
+      <!-- Menu Sections -->
+      <section class="py-12 space-y-16">
+        <div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            {% for item in menu_items %}
+            <div class="bg-white rounded-lg shadow hover:shadow-lg transition transform hover:-translate-y-1 duration-300 flex flex-col cursor-pointer item-card" 
+                 data-item-id="{{ item.id }}"
+                 data-item-name="{{ item.item_name }}"
+                 data-item-price="{{ item.price }}"
+                 data-item-rating="{{ item.rating }}"
+                 data-item-restaurant="{{ item.restaurant.restaurant_name }}"
+                 data-item-restaurant-slug="{{ item.restaurant.slug }}"
+                 data-item-image="{{ item.image.url }}"
+                 data-item-description="{{ item.description|default:'No description available' }}"
+                 data-item-discount="{{ item.discount|default:0 }}"
+                 data-item-category="{{ item.category }}">
+              <img src="{{ item.image.url }}" alt="{{ item.item_name }}" class="rounded-t object-cover w-full h-48 aspect-square" style="object-fit: cover;" />
+              <div class="p-4 flex flex-col h-full">
+                <h3 class="font-bold text-lg mb-1">{{ item.item_name }}</h3>
+                <p class="text-gray-600 mb-1">From: <span class="font-medium">{{ item.restaurant.restaurant_name }}</span></p>
+                <p class="text-gray-600 mb-1">৳{{ item.price }}</p>
+                <p class="text-yellow-500 mb-1">⭐️ {{ item.rating }}</p>
+                {% if item.discount %}
+                  <span class="bg-red-100 text-red-500 px-2 py-1 rounded text-sm font-medium mb-2 inline-block">
+                    {{ item.discount|default:0|floatformat:0 }}% OFF
+                  </span>
+                {% endif %}
+                <button onclick="event.stopPropagation(); addToCartAjax('{{ item.restaurant.slug }}', '{{ item.id }}', 1)" class="mt-auto bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition add-to-cart-btn inline-block text-center w-full">Add to Cart</button>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+
+      <!-- Item Details Modal -->
+      <div id="itemModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+          <!-- Modal Header -->
+          <div class="relative">
+            <button id="closeModal" class="absolute top-4 right-4 z-10 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 transition">
+              <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+            <img id="modalImage" src="" alt="" class="w-full h-64 md:h-80 object-cover rounded-t-xl">
+            <div id="modalDiscount" class="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium hidden">
+              0% OFF
+            </div>
+          </div>
+          
+          <!-- Modal Body -->
+          <div class="p-6 space-y-4">
+            <div class="flex justify-between items-start">
+              <div class="flex-1">
+                <h2 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-2"></h2>
+                <p id="modalRestaurant" class="text-gray-600 mb-2"></p>
+                <div class="flex items-center space-x-4 mb-4">
+                  <span id="modalPrice" class="text-2xl font-bold text-red-500"></span>
+                  <div id="modalRating" class="flex items-center text-yellow-500">
+                    <span class="mr-1">⭐️</span>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="border-t pt-4">
+              <h3 class="font-semibold text-gray-800 mb-2">Description</h3>
+              <p id="modalDescription" class="text-gray-600 leading-relaxed"></p>
+            </div>
+            
+            <!-- Quantity Selector -->
+            <div class="border-t pt-4">
+              <h3 class="font-semibold text-gray-800 mb-3">Quantity</h3>
+              <div class="flex items-center space-x-4">
+                <button id="decreaseQty" class="bg-gray-200 hover:bg-gray-300 text-gray-800 w-10 h-10 rounded-full flex items-center justify-center transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                  </svg>
+                </button>
+                <span id="quantity" class="text-xl font-semibold min-w-[2rem] text-center">1</span>
+                <button id="increaseQty" class="bg-gray-200 hover:bg-gray-300 text-gray-800 w-10 h-10 rounded-full flex items-center justify-center transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Total Price -->
+            <div class="border-t pt-4">
+              <div class="flex justify-between items-center mb-4">
+                <span class="text-lg font-semibold text-gray-800">Total:</span>
+                <span id="totalPrice" class="text-2xl font-bold text-red-500"></span>
+              </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex space-x-3">
+                <a href="#" id="modalAddToCart" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 px-6 rounded-lg font-semibold transition transform hover:scale-105 text-center block">
+                Add to Cart
+                </a>
+              <button id="buyNow" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white py-3 px-6 rounded-lg font-semibold transition transform hover:scale-105">
+                Buy Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      
+    </div>
+
+    <!-- JavaScript -->
+    <script src="{% static 'js/cart.js' %}"></script>
+    <script src="{% static 'js/menu-filter.js' %}"></script>
+    <script src="{% static 'js/item-modal.js' %}"></script>
+{% endblock content %}

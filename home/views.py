@@ -1,10 +1,24 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib import messages
+from authentication.models import User
 
-# Create your views here.
+from restaurant.models import Menu, Restaurant
+
+
 
 def index(request):
-    return render(request, 'home/home.html')
+    menu_items = Menu.objects.filter(rating__gte=4).order_by("-rating")[:5]
+    return render(request, "home/home.html", {"menu_items": menu_items})
 
-def owner_dashboard(request):
-    # Logic for owner dashboard can be added here
-    return render(request, 'home/owner_dashboard.html')
+
+
+
+
+def blog(request):
+    return render(request, "home/blog.html")
+
+
+def about(request):
+    return render(request, "home/about_us.html")
+
+

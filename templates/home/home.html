@@ -1,115 +1,25 @@
+{% extends 'kits/base.html' %}
 {% load static %}
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TasteCart - Best Food Delivery</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      html {
-        scroll-behavior: smooth;
-      }
-    </style>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-  </head>
-  <body class="bg-white text-gray-800 font-sans">
-    <!-- Container -->
-    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Header -->
-      <header class="flex items-center justify-between py-5 border-b">
-        <div class="text-3xl font-bold text-red-500">TasteCart</div>
-        <nav class="hidden md:flex space-x-6 text-gray-700 font-medium">
-          <a id="nav-home" href="#" class="hover:text-red-500 transition"
-            >Home</a
-          >
-          <a href="restaurant.html" class="hover:text-red-500 transition"
-            >Restaurants</a
-          >
-          <a href="menu.html" class="hover:text-red-500 transition">Menu</a>
-          <a href="blog.html" class="hover:text-red-500 transition">Blog</a>
-          {% if user.is_authenticated %}
-          <a href="profile.html" class="hover:text-red-500 transition">Profile</a>
-          <a href="status.html" class="hover:text-red-500 transition">Status</a>
-          {% endif %}
-          <a href="aboutUs.html" class="hover:text-red-500 transition"
-            >About us</a
-          >
-        </nav>
-        <div class="flex items-center space-x-4">
-          {% if user.is_authenticated %}
-          <a href="{% url "logout" %}" class="text-red-500 hover:underline"
-            >Logout</a
-          >
-          {% else %}
-          <a href="{% url "login" %}" class="text-red-500 hover:underline"
-            >Login</a
-          >
-          {% endif %}
-        <div class="flex items-center space-x-2">
-          <div class="relative w-96">
-            <span
-              class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"
-            >
-              <i class="fas fa-map-marker-alt"></i>
-            </span>
-            <input
-              type="text"
-              placeholder="Search Food by restaurant, location..."
-              class="border w-full rounded pl-10 pr-3 py-1 focus:ring-red-400 focus:ring-2 transition"
-            />
-          </div>
 
-          <button class="md:hidden text-2xl">&#9776;</button>
-        </div>
-      </header>
-      {% include "kits/message.html" %}
-
-      <!-- Hero -->
-      <section
-        class="bg-red-50 mt-8 rounded-lg flex flex-col md:flex-row items-center justify-between p-8 md:p-16"
-      >
+{% block content %}
+  <div class="min-h-screen flex flex-col">
+    <div class="flex-grow max-w-7xl mx-auto px-4 py-10 w-full">
+      <!-- Hero Section -->
+      <section class="bg-red-50 mt-8 rounded-lg flex flex-col md:flex-row items-center justify-between p-8 md:p-16">
         <div class="md:w-1/2 space-y-6 text-center md:text-left">
           <p class="text-red-500 font-semibold text-lg">Good Food Good Mood</p>
-          <h1 class="text-4xl sm:text-5xl font-bold leading-tight">
-            We Are Best In <span class="text-red-500">FOOD</span> Delivery
-          </h1>
-          <p class="text-gray-600 max-w-lg mx-auto md:mx-0">
-            Delivered on time with the largest network of active food delivery
-            riders. TasteCart is the best, always on time.
-          </p>
-          <div
-            class="flex flex-col sm:flex-row justify-center md:justify-start space-y-3 sm:space-y-0 sm:space-x-4"
-          >
-            <button
-              class="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 transition"
-            >
-              Order Now
-            </button>
-            <button
-              class="flex items-center text-red-500 hover:underline transition"
-            >
+          <h1 class="text-4xl sm:text-5xl font-bold leading-tight">We Are Best In <span class="text-red-500">FOOD</span> Delivery</h1>
+          <p class="text-gray-600 max-w-lg mx-auto md:mx-0">Delivered on time with the largest network of active food delivery riders. TasteCart is the best, always on time.</p>
+          <div class="flex flex-col sm:flex-row justify-center md:justify-start space-y-3 sm:space-y-0 sm:space-x-4">
+            <a href="{% url 'restaurants_view' %}"><button class="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 transition">Order Now</button></a>
+            <button class="flex items-center text-red-500 hover:underline transition">
               <span>How it works</span>
-              <svg
-                class="ml-2 w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M9 5l7 7-7 7"
-                />
+              <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             </button>
           </div>
-          <div
-            class="flex justify-center md:justify-start space-x-8 mt-6 text-gray-700"
-          >
+          <div class="flex justify-center md:justify-start space-x-8 mt-6 text-gray-700">
             <div>
               <p class="text-xl font-bold">4000+</p>
               <p class="text-sm">Customers</p>
@@ -125,22 +35,14 @@
           </div>
         </div>
         <div class="md:w-1/2 mt-8 md:mt-0 flex justify-center">
-          <img
-            src="https://via.placeholder.com/450x450?text=Delivery+Person"
-            alt="Delivery Person"
-            class="rounded-lg shadow-lg"
-          />
+          <img src="https://via.placeholder.com/450x450?text=Delivery+Person" alt="Delivery Person" class="rounded-lg shadow-lg" />
         </div>
       </section>
 
       <!-- Features -->
       <section class="py-16">
-        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">
-          Chill At Home, <span class="text-red-500">We Will Take Care</span>
-        </h2>
-        <div
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center"
-        >
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Chill At Home, <span class="text-red-500">We Will Take Care</span></h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div class="p-6 rounded-lg hover:shadow-lg transition">
             <div class="text-red-500 text-5xl mb-4">🚀</div>
             <h3 class="font-semibold mb-2">Fastest Delivery</h3>
@@ -164,170 +66,60 @@
         </div>
       </section>
 
-      <!-- Category Tabs
-      <section class="py-8">
-        <div class="text-center">
-          <div
-            id="categoryTabs"
-            class="inline-flex flex-wrap justify-center gap-3 mb-4"
-          >
-            <button
-              class="category-btn px-4 py-2 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition active"
-            >
-              Breakfast
-            </button>
-            <button
-              class="category-btn px-4 py-2 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition"
-            >
-              Lunch
-            </button>
-            <button
-              class="category-btn px-4 py-2 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition"
-            >
-              Dinner
-            </button>
-            <button
-              class="category-btn px-4 py-2 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition"
-            >
-              Drinks
-            </button>
-            <button
-              class="category-btn px-4 py-2 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition"
-            >
-              Snacks
-            </button>
-          </div>
-          <p class="text-gray-600">
-            Choose your favourite category to explore delicious dishes.
-          </p>
-        </div>
-      </section> -->
-
-      <!-- Menu Grid -->
-      <section
-        class="bg-gradient-to-r from-white to-gray-100 min-h-screen px-6 py-10 font-sans"
-      >
+      <!-- Top Rated Menu Items -->
+      <section class="bg-gradient-to-r from-white to-gray-100 px-6 py-10 font-sans">
         <!-- Header -->
         <div class="text-center mb-10">
           <h1 class="text-3xl font-semibold">
-            Enjoy The Best <span class="text-red-500 font-bold">Menu</span> And
-            Get <br />
+            Enjoy The Best <span class="text-red-500 font-bold">Menu</span> And Get <br />
             Your Favourite <span class="text-pink-600 font-bold">Food</span>
           </h1>
+          <p class="text-gray-600 mt-4">Top rated dishes from our restaurants</p>
         </div>
 
-        <!-- Category Tabs -->
-        <div class="text-center">
-          <div
-            id="categoryTabs"
-            class="inline-flex flex-wrap justify-center gap-3 mb-4"
-          >
-            <button
-              class="category-btn px-4 py-2 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition active"
-            >
-              Breakfast
-            </button>
-            <button
-              class="category-btn px-4 py-2 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition"
-            >
-              Lunch
-            </button>
-            <button
-              class="category-btn px-4 py-2 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition"
-            >
-              Dinner
-            </button>
-            <button
-              class="category-btn px-4 py-2 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition"
-            >
-              Drinks
-            </button>
-            <button
-              class="category-btn px-4 py-2 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition"
-            >
-              Snacks
-            </button>
+        <!-- Menu Items Grid -->
+        {% if menu_items %}
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
+            {% for item in menu_items %}
+              <div class="bg-white rounded-xl shadow p-4 hover:shadow-lg transition">
+                <img src="{% if item.image %}
+                    {{ item.image.url }}
+                  {% else %}
+                    
+                  https://via.placeholder.com/300x200?text={{ item.item_name }}
+                  {% endif %}"
+                  alt="{{ item.item_name }}"
+                  class="rounded-xl mb-4 w-full h-48 object-cover" />
+                <h2 class="text-lg font-semibold">{{ item.item_name }}</h2>
+                <p class="text-sm text-gray-500 mb-2">{{ item.restaurant.restaurant_name }}</p>
+                <div class="flex items-center mb-2">
+                  <span class="text-yellow-500">⭐️</span>
+                  <span class="text-sm text-gray-600 ml-1">{{ item.rating }}</span>
+                </div>
+                <div class="text-xl font-bold mb-2">৳{{ item.price }}</div>
+                <a href="{% url 'restaurant_view' item.restaurant.slug %}" class="block"><button class="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">View Restaurant</button></a>
+              </div>
+            {% endfor %}
           </div>
-          <p class="text-gray-600 mb-10">
-            Choose your favourite category to explore delicious dishes.
-          </p>
-        </div>
-
-        <!-- Cards Grid -->
-        <div
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-7xl mx-auto"
-        >
-          <!-- Card 1 -->
-          <div class="bg-white rounded-xl shadow p-4">
-            <img
-              src="https://via.placeholder.com/300x200?text=Japanese+Onigiri"
-              alt="Japanese Onigiri"
-              class="rounded-xl mb-4 w-full h-48 object-cover"
-            />
-            <h2 class="text-lg font-semibold">Japanese Onigiri</h2>
-            <div class="text-sm text-gray-500 mb-2">
-              365 Cal | F:17 C:30 P:13
-            </div>
-            <div class="text-xl font-bold mb-2">$45.56</div>
-            <button class="px-4 py-2 bg-red-500 text-white rounded-lg">
-              Add to Bag
-            </button>
+        {% else %}
+          <div class="text-center py-16">
+            <p class="text-gray-500 text-lg">No top-rated menu items available at the moment.</p>
+            <a href="{% url 'restaurants_view' %}" class="mt-4 inline-block bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition">Browse Restaurants</a>
           </div>
+        {% endif %}
 
-          <!-- Card 2 -->
-          <div class="bg-white rounded-xl shadow p-4 border-2 border-red-400">
-            <img
-              src="https://via.placeholder.com/300x200?text=Noodles+Kubideh"
-              alt="Noodles Kubideh"
-              class="rounded-xl mb-4 w-full h-48 object-cover"
-            />
-            <h2 class="text-lg font-semibold">Noodles Kubideh</h2>
-            <div class="text-sm text-gray-500 mb-2">
-              265 Cal | F:11 C:27 P:31
-            </div>
-            <div class="text-xl font-bold mb-2">$65.23</div>
-            <button class="px-4 py-2 bg-red-500 text-white rounded-lg">
-              Add to Bag
-            </button>
+        <!-- View All Button -->
+        {% if menu_items %}
+          <div class="flex justify-center mt-10">
+            <a href="{% url 'menu' %}" class="bg-red-500 text-white px-8 py-3 rounded-lg hover:bg-red-600 transition font-semibold">View All Menu Items</a>
           </div>
-
-          <!-- Card 3 -->
-          <div class="bg-white rounded-xl shadow p-4">
-            <img
-              src="https://via.placeholder.com/300x200?text=Fudgy+Chewy+Pie"
-              alt="Fudgy Chewy Pie"
-              class="rounded-xl mb-4 w-full h-48 object-cover"
-            />
-            <h2 class="text-lg font-semibold">Fudgy Chewy pie</h2>
-            <div class="text-sm text-gray-500 mb-2">
-              386 Cal | F:14 C:42 P:12
-            </div>
-            <div class="text-xl font-bold mb-2">$25.56</div>
-            <button class="px-4 py-2 bg-red-500 text-white rounded-lg">
-              Add to Bag
-            </button>
-          </div>
-        </div>
-
-        <!-- Arrows -->
-        <div class="flex justify-center mt-10 gap-6">
-          <button
-            class="w-10 h-10 bg-white border rounded-full flex items-center justify-center text-red-500 shadow hover:bg-red-50"
-          >
-            &larr;
-          </button>
-          <button
-            class="w-10 h-10 bg-red-500 text-white rounded-full flex items-center justify-center shadow"
-          >
-            &rarr;
-          </button>
-        </div>
+        {% endif %}
       </section>
+
+      <!-- Testimonials -->
       <section class="bg-gradient-to-r from-white to-gray-100 py-16 px-6">
-        <div
-          class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 items-start"
-        >
-          <!-- Left Section (Heading + Avatars) -->
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 items-start">
+          <!-- Left Section -->
           <div>
             <h2 class="text-3xl font-bold leading-snug mb-6">
               What Are The<br />
@@ -335,129 +127,65 @@
               About Us
             </h2>
             <div class="flex items-center space-x-2">
-              <!-- Profile Avatars -->
               <div class="flex -space-x-2">
-                <img
-                  src="https://i.pravatar.cc/40?img=1"
-                  class="w-10 h-10 rounded-full border-2 border-white"
-                />
-                <img
-                  src="https://i.pravatar.cc/40?img=2"
-                  class="w-10 h-10 rounded-full border-2 border-white"
-                />
-                <img
-                  src="https://i.pravatar.cc/40?img=3"
-                  class="w-10 h-10 rounded-full border-2 border-white"
-                />
-                <img
-                  src="https://i.pravatar.cc/40?img=4"
-                  class="w-10 h-10 rounded-full border-2 border-white"
-                />
-                <div
-                  class="w-10 h-10 bg-red-500 text-white rounded-full flex items-center justify-center text-sm font-semibold border-2 border-white"
-                >
-                  +
-                </div>
+                <img src="https://i.pravatar.cc/40?img=1" class="w-10 h-10 rounded-full border-2 border-white" />
+                <img src="https://i.pravatar.cc/40?img=2" class="w-10 h-10 rounded-full border-2 border-white" />
+                <img src="https://i.pravatar.cc/40?img=3" class="w-10 h-10 rounded-full border-2 border-white" />
+                <img src="https://i.pravatar.cc/40?img=4" class="w-10 h-10 rounded-full border-2 border-white" />
+                <div class="w-10 h-10 bg-red-500 text-white rounded-full flex items-center justify-center text-sm font-semibold border-2 border-white">+</div>
               </div>
               <span class="text-gray-600 text-sm">12k+ Review</span>
             </div>
           </div>
 
-          <!-- Testimonial Card 1 -->
+          <!-- Testimonial Cards -->
           <div class="bg-white rounded-2xl shadow p-6">
             <div class="flex items-center space-x-4 mb-2">
-              <img
-                src="https://i.pravatar.cc/40?img=5"
-                class="w-12 h-12 rounded-full"
-              />
+              <img src="https://i.pravatar.cc/40?img=5" class="w-12 h-12 rounded-full" />
               <div>
                 <h3 class="font-semibold">David Salsa</h3>
                 <p class="text-sm text-gray-500">Park Street, L/k-2, USA</p>
                 <div class="text-yellow-400 text-sm mt-1">⭐⭐⭐⭐☆</div>
               </div>
             </div>
-            <p class="text-gray-700 text-sm mb-4">
-              “What an amazing service I had. I have ordered food for our family
-              by wala food delivery. The food was delivered within 20 minutes
-              and it was hot and very fresh cooked, as well as the delivery man
-              was very nice and humble. I highly recommend them.”
-            </p>
+            <p class="text-gray-700 text-sm mb-4">"What an amazing service I had. I have ordered food for our family by TasteCart delivery. The food was delivered within 20 minutes and it was hot and very fresh cooked, as well as the delivery man was very nice and humble. I highly recommend them."</p>
             <div class="text-gray-400 text-xs flex items-center space-x-1">
               <span>🕒</span><span>2 days ago</span>
             </div>
           </div>
 
-          <!-- Testimonial Card 2 -->
           <div class="bg-white rounded-2xl shadow p-6">
             <div class="flex items-center space-x-4 mb-2">
-              <img
-                src="https://i.pravatar.cc/40?img=6"
-                class="w-12 h-12 rounded-full"
-              />
+              <img src="https://i.pravatar.cc/40?img=6" class="w-12 h-12 rounded-full" />
               <div>
                 <h3 class="font-semibold">Lucia Martina</h3>
                 <p class="text-sm text-gray-500">Park Street, L/k-2, USA</p>
                 <div class="text-yellow-400 text-sm mt-1">⭐⭐⭐⭐☆</div>
               </div>
             </div>
-            <p class="text-gray-700 text-sm mb-4">
-              “An amazing service! I had ordered food for our family by wala
-              food delivery. The food was delivered within 20 minutes and it was
-              hot and very fresh cooked, as well as the delivery man was very
-              nice and humble. I highly recommend them.”
-            </p>
+            <p class="text-gray-700 text-sm mb-4">"An amazing service! I had ordered food for our family by TasteCart food delivery. The food was delivered within 20 minutes and it was hot and very fresh cooked, as well as the delivery man was very nice and humble. I highly recommend them."</p>
             <div class="text-gray-400 text-xs flex items-center space-x-1">
               <span>🕒</span><span>A Week ago</span>
             </div>
           </div>
         </div>
-
-        <!-- Arrows -->
-        <div class="flex justify-center mt-12 space-x-4">
-          <button
-            class="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center text-red-500 hover:bg-red-100"
-          >
-            &larr;
-          </button>
-          <button
-            class="w-10 h-10 rounded-full bg-red-500 text-white shadow flex items-center justify-center hover:bg-red-600"
-          >
-            &rarr;
-          </button>
-        </div>
       </section>
 
       <!-- Promo Section -->
       <section class="bg-gradient-to-r from-white to-pink-50 py-16 px-6">
-        <div
-          class="max-w-6xl mx-auto bg-white rounded-2xl shadow-md px-8 py-14 flex flex-col md:flex-row justify-between items-center relative"
-        >
-          <!-- Left Content -->
+        <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-md px-8 py-14 flex flex-col md:flex-row justify-between items-center relative">
           <div class="text-center md:text-left space-y-6">
             <h2 class="text-3xl md:text-4xl font-extrabold leading-snug">
               Never Feel Hungry! Are You Ready<br />
               To <span class="text-red-500">Order Your Food</span>?
             </h2>
-
             <div class="flex justify-center md:justify-start gap-4">
-              <button
-                class="bg-red-500 text-white px-6 py-3 rounded-md shadow hover:bg-red-600"
-              >
-                Order Now
-              </button>
-              <button
-                class="border border-red-500 text-red-500 px-6 py-3 rounded-md hover:bg-red-50"
-              >
-                Stay in Touch
-              </button>
+              <a href="{% url 'restaurants_view' %}"><button class="bg-red-500 text-white px-6 py-3 rounded-md shadow hover:bg-red-600 transition">Order Now</button></a>
+              <button class="border border-red-500 text-red-500 px-6 py-3 rounded-md hover:bg-red-50 transition">Stay in Touch</button>
             </div>
           </div>
-
-          <!-- Right Discount Tag -->
           <div class="mt-10 md:mt-0 relative">
-            <div
-              class="border-dashed border-2 border-red-400 p-6 rounded-lg text-center shadow bg-white"
-            >
+            <div class="border-dashed border-2 border-red-400 p-6 rounded-lg text-center shadow bg-white">
               <p class="text-2xl font-extrabold text-red-500">20% OFF</p>
               <p class="text-gray-600 mt-1 text-sm">
                 on <br />
@@ -465,103 +193,57 @@
                 <span class="font-bold text-gray-800">FOOD</span>
               </p>
             </div>
-            <!-- Optional dotted arrow or decoration can go here -->
           </div>
         </div>
       </section>
+    </div>
 
-      <!-- Footer -->
-      <footer class="bg-white border-t py-12 mt-12 space-y-6">
+    <!-- Footer -->
+    <footer class="bg-white border-t py-12 mt-auto w-full">
+      <div class="max-w-7xl mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-gray-700">
           <div>
             <h3 class="text-2xl font-bold text-red-500 mb-4">TasteCart</h3>
-            <p class="text-sm mb-4">
-              Delivered on time with the largest network of active food delivery
-              riders.
-            </p>
-            <div class="flex space-x-4 space-y-4">
-              <a href="#" class="mt-4"
-                ><img
-                  src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png"
-                  class="w-5 h-5"
-              /></a>
-              <a href="#"
-                ><img
-                  src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png"
-                  class="w-5 h-5"
-              /></a>
-              <a href="#"
-                ><img
-                  src="https://cdn-icons-png.flaticon.com/512/1384/1384062.png"
-                  class="w-5 h-5"
-              /></a>
+            <p class="text-sm mb-4">Delivered on time with the largest network of active food delivery riders.</p>
+            <div class="flex space-x-4">
+              <a href="#" class="hover:text-red-500 transition"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" class="w-5 h-5" /></a>
+              <a href="#" class="hover:text-red-500 transition"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png" class="w-5 h-5" /></a>
+              <a href="#" class="hover:text-red-500 transition"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384062.png" class="w-5 h-5" /></a>
             </div>
           </div>
-          <div class="space-y-4">
+          <div>
             <h4 class="font-semibold mb-3">Get in Touch</h4>
             <p>Park Street, L-62, USA</p>
             <p>tastecartworld@email.com</p>
             <p>+1 654 4253 8883</p>
           </div>
-          <div class="space-y-4">
-            <h4 class="font-semibold mb-3">Features</h4>
-            <ul class="space-y-4">
+          <div>
+            <h4 class="font-semibold mb-3">Quick Links</h4>
+            <ul class="space-y-2">
               <li>
-                <a href="#" class="hover:text-red-500 transition">Menu</a>
+                <a href="{% url 'menu' %}" class="hover:text-red-500 transition">Menu</a>
               </li>
               <li>
-                <a href="#" class="hover:text-red-500 transition">Promo</a>
+                <a href="{% url 'restaurants_view' %}" class="hover:text-red-500 transition">Restaurants</a>
               </li>
               <li>
                 <a href="#" class="hover:text-red-500 transition">Contact</a>
               </li>
               <li>
-                <a href="#" class="hover:text-red-500 transition">About us</a>
+                <a href="{% url "about" %}" class="hover:text-red-500 transition">About us</a>
               </li>
             </ul>
           </div>
-          <div class="space-y-4">
-            <h4 class="font-semibold mb-10 space-y-4">
-              Subscribe Our Newsletter
-            </h4>
-            <div class="space-y-4">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                class="w-full space-y-4 px-4 py-2 border rounded mb-2 focus:ring-red-400 focus:ring-2 transition"
-              />
-              <button
-                class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
-              >
-                Subscribe
-              </button>
-            </div>
+          <div>
+            <h4 class="font-semibold mb-3">Subscribe Our Newsletter</h4>
+            <form class="space-y-3">
+              <input type="email" placeholder="Enter your email" class="w-full px-4 py-2 border rounded focus:ring-red-400 focus:ring-2 transition" />
+              <button type="submit" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">Subscribe</button>
+            </form>
           </div>
         </div>
-        <div class="text-center text-gray-500 text-sm mt-6">
-          © 2025 TasteCart. All rights reserved.
-        </div>
-      </footer>
-    </div>
-
-    <!-- JavaScript for Filtering -->
-    <script>
-      window.addEventListener("DOMContentLoaded", () => {
-        const homeLink = document.getElementById("nav-home");
-        if (window.location.pathname === "/") {
-          homeLink.classList.add(
-            "bg-red-100",
-            "rounded",
-            "px-2",
-            "py-1",
-            "font-semibold",
-            "text-red-500"
-          );
-        }
-      });
-
-    </script>
-  </body>
-</html>
-
-
+        <div class="text-center text-gray-500 text-sm mt-8 pt-8 border-t">© 2025 TasteCart. All rights reserved.</div>
+      </div>
+    </footer>
+  </div>
+{% endblock %}

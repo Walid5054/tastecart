@@ -1,0 +1,262 @@
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TasteCart | Owner Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#0f172a',
+              accent: '#DC2626',
+              bg: '#f8fafc'
+            },
+          },
+        },
+      }
+    </script>
+  </head>
+  <body class="bg-bg text-gray-900">
+    <!-- Header -->
+    <header class="bg-primary text-white shadow-md">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold tracking-tight">
+          <a href="{% url 'index' %}" class="hover:text-accent">TasteCart</a> Owner
+        </h1>
+        <nav class="space-x-4 text-sm">
+          <a href="#" class="hover:text-accent">Dashboard</a>
+          <a href="{% url 'restaurant_settings' %}" class="hover:text-accent">Restaurant Settings</a>
+          <a href="#" class="hover:text-accent">Orders</a>
+          <a href="{% url 'logout' %}" class="hover:text-accent">Logout</a>
+        </nav>
+      </div>
+    </header>
+    {% include "kits/message.html" %}
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Menu Management -->
+    <section class="lg:col-span-2 space-y-6">
+      <div class="bg-white p-6 rounded-xl shadow-md flex justify-between items-center">
+        <h2 class="text-xl font-semibold">Your Menu</h2>
+        <button id="openModal" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md">+ Add Item</button>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <h3 class="text-lg font-semibold mb-4">Current Items</h3>
+        {% if menu_items %}
+        <ul class="space-y-4">
+          {% for item in menu_items %}
+          <li class="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
+            <div class="flex items-center gap-4">
+              {% if item.image %}
+              <img src="{{ item.image.url }}" alt="{{ item.item_name }}" class="w-16 h-16 rounded object-cover border" />
+              {% else %}
+              <div class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-gray-400">N/A</div>
+              {% endif %}
+              <div>
+                <p class="font-semibold">{{ item.item_name }}</p>
+                <p class="text-sm text-gray-500">{{ item.category }} | ৳{{ item.price }}</p>
+                <p class="text-xs text-gray-400">{{ item.description|truncatewords:10 }}</p>
+                <span class="text-xs bg-gray-100 px-2 py-1 rounded">⏱ {{ item.estimated_time_delivery }} min</span>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="openEditModal({{ item.id }})" 
+                      class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                Edit
+              </button>
+              <button onclick="openDeleteModal({{ item.id }}, '{{ item.item_name|escapejs }}')" 
+                      class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">
+                Delete
+              </button>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-sm text-gray-500">No menu items available.</p>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- Right Sidebar -->
+    <aside class="space-y-6">
+      <!-- Ongoing Orders -->
+      <section class="bg-white p-6 rounded-xl shadow-md">
+        <h3 class="text-lg font-semibold mb-4">Ongoing Orders</h3>
+        <div class="space-y-4">
+          <div class="bg-gray-50 p-4 rounded shadow-sm">
+            <div class="flex justify-between">
+              <div>
+                <h4 class="font-bold">Order #1001</h4>
+                <p class="text-sm">Rahat Hossain</p>
+                <p class="text-xs text-gray-500">Chicken Biryani, Butter Naan</p>
+              </div>
+              <div class="text-right">
+                <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Pending</span>
+                <p class="text-xs text-gray-400 mt-1">2:15 PM</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 p-4 rounded shadow-sm">
+            <div class="flex justify-between">
+              <div>
+                <h4 class="font-bold">Order #1002</h4>
+                <p class="text-sm">Samia Zaman</p>
+                <p class="text-xs text-gray-500">Thai Fried Rice, Mango Juice</p>
+              </div>
+              <div class="text-right">
+                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Approved</span>
+                <p class="text-xs text-gray-400 mt-1">2:30 PM</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analytics -->
+      <section class="bg-white p-6 rounded-xl shadow-md">
+        <h3 class="text-lg font-semibold mb-4">Insights</h3>
+        <div class="space-y-3">
+          <div>
+            <p class="text-sm font-medium">Top Dishes</p>
+            <div class="bg-gray-200 rounded h-3 mt-1">
+              <div class="bg-red-500 h-full rounded w-4/5"></div>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Grilled Chicken Set</p>
+            <div class="bg-gray-200 rounded h-3 mt-1">
+              <div class="bg-orange-400 h-full rounded w-3/5"></div>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Naga Wings</p>
+          </div>
+          <p>Total Orders: <strong>134</strong></p>
+          <p>Peak Hours: <strong>7:00 PM – 9:00 PM</strong></p>
+        </div>
+      </section>
+
+      <!-- Live Kitchen Toggle -->
+      <section class="bg-white p-6 rounded-xl shadow-md">
+        <h3 class="text-lg font-semibold mb-4">Live Kitchen</h3>
+        <label class="inline-flex items-center">
+          <input type="checkbox" class="accent-red-500" id="liveKitchenToggle" />
+          <span class="ml-2 text-sm">Enable Live Updates</span>
+        </label>
+      </section>
+
+      <!-- Restaurant Settings Quick Access -->
+      <section class="bg-white p-6 rounded-xl shadow-md">
+        <h3 class="text-lg font-semibold mb-4">Restaurant Settings</h3>
+        <div class="space-y-3">
+          <a href="{% url 'restaurant_settings' %}" class="block w-full bg-blue-500 hover:bg-blue-600 text-white text-center py-2 px-4 rounded-md text-sm transition duration-200">
+            ⚙️ Manage Restaurant
+          </a>
+          <div class="text-xs text-gray-600">
+            <p>• Update restaurant info</p>
+            <p>• Upload images</p>
+            <p>• Set operating hours</p>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <!-- Add Menu Modal -->
+  <div id="menuModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-40 flex items-center justify-center px-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl relative p-6">
+      <button id="closeModal" class="absolute top-3 right-3 text-gray-400 hover:text-gray-800 text-2xl">&times;</button>
+      <h2 class="text-xl font-semibold mb-4 text-center">Add New Menu Item</h2>
+
+      <form method="POST" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {% for field in form %}
+            {% if field.name != 'description' %}
+              <div>
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium mb-1">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}<p class="text-sm text-red-500 mt-1">{{ field.errors|striptags }}</p>{% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div>
+          <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium mb-1">{{ form.description.label }}</label>
+          {{ form.description }}
+          {% if form.description.errors %}<p class="text-sm text-red-500 mt-1">{{ form.description.errors|striptags }}</p>{% endif %}
+        </div>
+
+        <div>
+          <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-md">Add Menu Item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Menu Modal (using Django Form) -->
+  {% if edit_item %}
+  <div id="editModal" class="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center px-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl relative p-6">
+      <button onclick="closeEditModalAndRedirect()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-800 text-2xl">&times;</button>
+      <h2 class="text-xl font-semibold mb-4 text-center">Edit Menu Item</h2>
+
+      <form method="POST" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="edit">
+        <input type="hidden" name="item_id" value="{{ edit_item.id }}">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {% for field in edit_form %}
+            {% if field.name != 'description' %}
+              <div>
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium mb-1">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}<p class="text-sm text-red-500 mt-1">{{ field.errors|striptags }}</p>{% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div>
+          <label for="{{ edit_form.description.id_for_label }}" class="block text-sm font-medium mb-1">{{ edit_form.description.label }}</label>
+          {{ edit_form.description }}
+          {% if edit_form.description.errors %}<p class="text-sm text-red-500 mt-1">{{ edit_form.description.errors|striptags }}</p>{% endif %}
+        </div>
+
+        <div class="flex gap-4">
+          <button type="button" onclick="closeEditModalAndRedirect()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-md">Cancel</button>
+          <button type="submit" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-md">Update Item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-40 flex items-center justify-center px-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md relative p-6">
+      <h2 class="text-xl font-semibold mb-4 text-center">Delete Menu Item</h2>
+      <p class="text-gray-600 text-center mb-6">
+        Are you sure you want to delete <span id="deleteItemName" class="font-semibold"></span>? This action cannot be undone.
+      </p>
+
+      <form method="POST" class="space-y-4">
+        {% csrf_token %}
+        <input type="hidden" id="deleteItemId" name="item_id">
+        <input type="hidden" name="action" value="delete">
+        
+        <div class="flex gap-4">
+          <button type="button" onclick="closeDeleteModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-md">Cancel</button>
+          <button type="submit" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-md">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/dashboard.js' %}"></script>
+  </body>
+</html>
