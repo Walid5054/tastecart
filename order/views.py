@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 import json
 
 from order.models import Cart
+import restaurant
 from restaurant.models import Menu
 
 # Create your views here.
@@ -20,7 +21,7 @@ def cart(request):
     )
 
 
-def add_to_cart(request, item_id, quantity=1):
+def add_to_cart(request, res_slug, item_id, quantity=1):
     user = request.user
     item = get_object_or_404(Menu, id=item_id)
 
@@ -108,7 +109,13 @@ def remove_from_cart(request):
                 item.total_price for item in Cart.objects.filter(user=request.user)
             )
 
-            return JsonResponse({"success": True, "cart_total": f"{cart_total:.2f}"})
+            return JsonResponse(
+                {
+                    "success": True,
+                    "cart_total": f"{cart_total:.2f}",
+                    "cart_items": Cart.objects.filter(user=request.user).count(),
+                }
+            )
 
         except Cart.DoesNotExist:
             return JsonResponse({"success": False, "message": "Cart item not found"})

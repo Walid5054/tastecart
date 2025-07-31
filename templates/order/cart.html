@@ -33,7 +33,7 @@
         <div class="bg-white rounded-lg shadow-sm border">
           <div class="p-6 border-b">
             <h2 class="text-xl font-semibold text-gray-800">Order Summary</h2>
-            <p class="text-gray-600 text-sm mt-1">{{ cart_items|length }} item{{ cart_items|length|pluralize }} in your cart</p>
+            <p class="text-gray-600 text-sm mt-1" id="cartItemCount">{{ cart_items|length }} item{{ cart_items|length|pluralize }} in your cart</p>
           </div>
           
           <div class="divide-y">
@@ -54,7 +54,7 @@
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                       </svg>
-                      {{item.restaurant.name}}
+                      {{item.item.restaurant}}
                     </span>
                   </p>
                   <div class="mt-2 flex items-center justify-center md:justify-start gap-2">
@@ -146,15 +146,15 @@
                 <label class="cursor-pointer group">
                   <input type="radio" name="payment" value="tap" class="peer hidden" />
                   <div class="border-2 border-gray-200 peer-checked:border-blue-500 peer-checked:bg-blue-50 rounded-lg p-3 transition-all group-hover:border-gray-300">
-                    <img src="https://i.ibb.co/MNpFtP0/tap.png" alt="Tap" class="w-12 h-12 mx-auto object-contain" />
-                    <p class="text-xs text-center mt-2 font-medium">Tap</p>
+                    <img src="{% static 'img/bkash.png' %}" alt="Bkash" class="w-12 h-12 mx-auto object-contain" />
+                    <p class="text-xs text-center mt-2 font-medium">Bkash</p>
                   </div>
                 </label>
 
                 <label class="cursor-pointer group">
                   <input type="radio" name="payment" value="nagad" class="peer hidden" />
                   <div class="border-2 border-gray-200 peer-checked:border-blue-500 peer-checked:bg-blue-50 rounded-lg p-3 transition-all group-hover:border-gray-300">
-                    <img src="https://i.ibb.co/1znVNzP/nagad.png" alt="Nagad" class="w-12 h-12 mx-auto object-contain" />
+                    <img src="{% static 'img/nagad.png' %}" alt="Nagad" class="w-12 h-12 mx-auto object-contain" />
                     <p class="text-xs text-center mt-2 font-medium">Nagad</p>
                   </div>
                 </label>
@@ -162,7 +162,7 @@
                 <label class="cursor-pointer group">
                   <input type="radio" name="payment" value="rocket" class="peer hidden" />
                   <div class="border-2 border-gray-200 peer-checked:border-blue-500 peer-checked:bg-blue-50 rounded-lg p-3 transition-all group-hover:border-gray-300">
-                    <img src="https://i.ibb.co/hKsX90P/rocket.png" alt="Rocket" class="w-12 h-12 mx-auto object-contain" />
+                    <img src="{% static 'img/rocket_dbbl.png' %}" alt="Rocket" class="w-12 h-12 mx-auto object-contain" />
                     <p class="text-xs text-center mt-2 font-medium">Rocket</p>
                   </div>
                 </label>
@@ -201,7 +201,7 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
               </svg>
-              Continue Shopping
+              Continue Browsing Food
             </a>
           </div>
         </div>

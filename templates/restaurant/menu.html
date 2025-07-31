@@ -71,6 +71,7 @@
                  data-item-price="{{ item.price }}"
                  data-item-rating="{{ item.rating }}"
                  data-item-restaurant="{{ item.restaurant.restaurant_name }}"
+                 data-item-restaurant-slug="{{ item.restaurant.slug }}"
                  data-item-image="{{ item.image.url }}"
                  data-item-description="{{ item.description|default:'No description available' }}"
                  data-item-discount="{{ item.discount|default:0 }}"
@@ -86,7 +87,7 @@
                     {{ item.discount|default:0|floatformat:0 }}% OFF
                   </span>
                 {% endif %}
-                <a href="{% url "add_to_cart" item.id 1 %}" class="mt-auto bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition add-to-cart-btn inline-block text-center">Add to Cart</a>
+                <a href="{% url "add_to_cart" item.restaurant.slug item.id 1 %}" class="mt-auto bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition add-to-cart-btn inline-block text-center">Add to Cart</a>
               </div>
             </div>
             {% endfor %}
@@ -159,9 +160,9 @@
             
             <!-- Action Buttons -->
             <div class="flex space-x-3">
-              <button id="modalAddToCart" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 px-6 rounded-lg font-semibold transition transform hover:scale-105">
+                <a href="#" id="modalAddToCart" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 px-6 rounded-lg font-semibold transition transform hover:scale-105 text-center block">
                 Add to Cart
-              </button>
+                </a>
               <button id="buyNow" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white py-3 px-6 rounded-lg font-semibold transition transform hover:scale-105">
                 Buy Now
               </button>

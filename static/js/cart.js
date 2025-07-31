@@ -82,14 +82,17 @@ async function removeItem(itemId) {
           .closest(".p-6");
         itemElement.remove();
 
-        // Update cart total
+          // Update cart total
+        console.log(data);
+        const cartCount = document.getElementById("cartItemCount");
+        cartCount.textContent = `${data.cart_items} item${data.cart_items !== 1 ? 's' : ''} in your cart`;
+
         const totalElement = document.getElementById("total");
         if (totalElement) {
           totalElement.textContent = `৳${data.cart_total}`;
         }
 
-        // Check if cart is empty
-        checkEmptyCart();
+        if(data.cart_items === 0) checkEmptyCart();
       } else {
         alert(data.message || "Failed to remove item");
       }
@@ -107,7 +110,7 @@ function checkEmptyCart() {
   const cartContainer = document.getElementById("cartContainer");
   const cartItems = cartContainer.querySelectorAll(".p-6");
 
-  if (cartItems.length === 0) {
+  
     cartContainer.innerHTML = `
       <div class="bg-white rounded-lg shadow-sm border text-center py-16">
         <div class="max-w-md mx-auto">
@@ -133,7 +136,7 @@ function checkEmptyCart() {
     if (paymentSection) {
       paymentSection.style.display = "none";
     }
-  }
+  
 }
 
 // Function to get CSRF token

@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function updateModalAddToCartHref() {
     if (currentItem && modalAddToCartBtn) {
       // Construct the URL with item ID and quantity using the correct URL pattern
-      const addToCartUrl = `${location.origin}/add-to-cart/${currentItem.id}/${quantity}/`;
+      const addToCartUrl = `${location.origin}/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`;
       modalAddToCartBtn.href = addToCartUrl;
     }
   }
@@ -111,6 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
         price: this.dataset.itemPrice,
         rating: this.dataset.itemRating,
         restaurant: this.dataset.itemRestaurant,
+        restaurantSlug: this.dataset.itemRestaurantSlug,
         image: this.dataset.itemImage,
         description: this.dataset.itemDescription,
         discount: parseFloat(this.dataset.itemDiscount) || 0,
@@ -208,7 +209,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!currentItem) return;
 
     // Navigate directly to add to cart URL which will add the item and redirect to cart
-    const addToCartUrl = `/add-to-cart/${currentItem.id}/${quantity}/`;
+    const addToCartUrl = `/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`;
     window.location.href = addToCartUrl;
 
     // Note: The Django view will redirect to cart page after adding the item
