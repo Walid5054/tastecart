@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
           cartItemCountEl.textContent = `${data.cart_items} item${data.cart_items !== 1 ? "s" : ""} in your cart`;
           // Check if cart is empty
           if (data.cart_items === 0) {
-            const cartContainer = document.querySelector(".cart-container");
+            var cartContainer = document.getElementById("cartContainer");
             if (cartContainer) {
               cartContainer.innerHTML = `
                             <div class="text-center py-8">
