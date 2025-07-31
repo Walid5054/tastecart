@@ -26,11 +26,24 @@
         <h1 class="text-2xl font-bold tracking-tight">
           <a href="{% url 'index' %}" class="hover:text-accent">TasteCart</a> Owner
         </h1>
-        <nav class="space-x-4 text-sm">
-          <a href="#" class="hover:text-accent">Dashboard</a>
-          <a href="{% url 'restaurant_settings' %}" class="hover:text-accent">Restaurant Settings</a>
-          <a href="#" class="hover:text-accent">Orders</a>
-          <a href="{% url 'logout' %}" class="hover:text-accent">Logout</a>
+        <nav class="flex items-center gap-2 text-sm font-medium">
+          <a href="#" class="relative px-3 py-2 rounded-md transition hover:bg-white/10 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent">
+            Dashboard
+          </a>
+          <a href="{% url 'restaurant_settings' %}" class="relative px-3 py-2 rounded-md transition hover:bg-white/10 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent">
+            Restaurant Settings
+          </a>
+          <a href="{% url 'orders' %}" class="relative px-3 py-2 rounded-md transition hover:bg-white/10 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent">
+            Orders
+            {% if orders %}
+              <span class="absolute top-1 right-1 -mt-2 -mr-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-semibold bg-accent text-white shadow">
+          {{ orders|length }}
+              </span>
+            {% endif %}
+          </a>
+          <a href="{% url 'logout' %}" class="relative px-3 py-2 rounded-md transition hover:bg-white/10 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent">
+            Logout
+          </a>
         </nav>
       </div>
     </header>
@@ -87,34 +100,59 @@
       <!-- Ongoing Orders -->
       <section class="bg-white p-6 rounded-xl shadow-md">
         <h3 class="text-lg font-semibold mb-4">Ongoing Orders</h3>
-        <div class="space-y-4">
-          <div class="bg-gray-50 p-4 rounded shadow-sm">
-            <div class="flex justify-between">
-              <div>
-                <h4 class="font-bold">Order #1001</h4>
-                <p class="text-sm">Rahat Hossain</p>
-                <p class="text-xs text-gray-500">Chicken Biryani, Butter Naan</p>
+        {% if orders %}
+          {% regroup orders by user as user_orders %}
+          <div class="space-y-4">
+            {% for user_group in user_orders %}
+              <!-- User Group -->
+              <div class="border rounded-lg overflow-hidden">
+                <!-- User Header -->
+                <div class="bg-gray-50 px-3 py-2 border-b">
+                  <div class="flex items-center gap-2">
+                    <div class="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
+                      {% if user_group.grouper.name %}
+                        {{ user_group.grouper.name|first|upper }}
+                      {% else %}
+                        {{ user_group.grouper.username|first|upper }}
+                      {% endif %}
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-medium text-sm">
+                        {% if user_group.grouper.name %}
+                          {{ user_group.grouper.name }}
+                        {% else %}
+                          {{ user_group.grouper.username }}
+                        {% endif %}
+                      </p>
+                      <p class="text-xs text-gray-500">{{ user_group.list|length }} order{{ user_group.list|length|pluralize }}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- User's Orders -->
+                <div class="space-y-2 p-3">
+                  {% for order in user_group.list %}
+                    <div class="bg-gray-50 p-3 rounded shadow-sm">
+                      <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                          <h4 class="font-bold text-sm">Order #{{ order.id }}</h4>
+                          <p class="text-xs text-gray-500">{{ order.cart.item.item_name }}</p>
+                          <p class="text-xs text-gray-400">Qty: {{ order.cart.quantity }}</p>
+                        </div>
+                        <div class="text-right">
+                          <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">{{ order.status }}</span>
+                          <p class="text-xs text-gray-400 mt-1">{{ order.created_at|time:"SHORT" }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
               </div>
-              <div class="text-right">
-                <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Pending</span>
-                <p class="text-xs text-gray-400 mt-1">2:15 PM</p>
-              </div>
-            </div>
+            {% endfor %}
           </div>
-          <div class="bg-gray-50 p-4 rounded shadow-sm">
-            <div class="flex justify-between">
-              <div>
-                <h4 class="font-bold">Order #1002</h4>
-                <p class="text-sm">Samia Zaman</p>
-                <p class="text-xs text-gray-500">Thai Fried Rice, Mango Juice</p>
-              </div>
-              <div class="text-right">
-                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Approved</span>
-                <p class="text-xs text-gray-400 mt-1">2:30 PM</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        {% else %}
+          <p class="text-sm text-gray-500">No ongoing orders.</p>
+        {% endif %}
       </section>
 
       <!-- Analytics -->

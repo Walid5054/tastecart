@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+
+from order.models import Order
 from .models import Profile, User  # Assuming a custom User model with `user_type`
 from django.contrib import messages
 
@@ -54,11 +56,17 @@ def sign_in(request):
         user = authenticate(email=email, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, "Login successful.")
             if role == "user":
                 return redirect("index")
             else:
-                return redirect("dashboard")
+                if Order.objects.filter(
+                    cart__item__restaurant__owner=user, is_accepted=False
+                ).exists():
+                    messages.warning(
+                        request,
+                        "You have pending orders. Please check your orders before accessing the dashboard.",
+                    )
+                    return redirect("dashboard")
         else:
             messages.error(request, "Invalid email or password or role")
             return render(request, "authentication/sign_in.html")
@@ -85,7 +93,7 @@ def view_profile(request):
 
         profile.save()
         messages.success(request, "Profile updated successfully.")
-        return redirect("view_profile", id=id)
+        return redirect("view_profile")
 
     context = {
         "user": user,
