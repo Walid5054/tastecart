@@ -159,6 +159,30 @@
           snack — we ensure you'll leave with a happy heart and a full stomach.
         </p>
       </section>
+       <div class="mt-10 border-t pt-6">
+        <h2 class="text-xl font-bold mb-3">⭐ Leave a Review</h2>
+        <div class="flex items-center mb-4 space-x-1 text-yellow-500" id="starRating">
+          <span onclick="setRating(1)">★</span>
+          <span onclick="setRating(2)">★</span>
+          <span onclick="setRating(3)">★</span>
+          <span onclick="setRating(4)">★</span>
+          <span onclick="setRating(5)">★</span>
+        </div>
+        <textarea
+          id="reviewText"
+          rows="4"
+          class="w-full p-2 border rounded mb-3 focus:outline-none focus:ring-2 focus:ring-red-300"
+          placeholder="Write your experience here..."
+        ></textarea>
+        <button
+          onclick="submitReview()"
+          class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        >
+          Submit Review
+        </button>
+        <p id="reviewMessage" class="text-green-600 mt-2 hidden">✅ Thank you for your review!</p>
+      </div>
+    </div>
     </main>
 
     <script>
@@ -251,6 +275,25 @@
         localStorage.setItem("tasteCartCart", JSON.stringify(cart));
         updateCartCount();
       }
+       function setRating(star) {
+        const stars = document.querySelectorAll("#starRating span");
+        stars.forEach((s, i) => {
+          s.style.color = i < star ? "gold" : "gray";
+        });
+        window.selectedRating = star;
+      }
+
+      function submitReview() {
+        const text = document.getElementById("reviewText").value;
+        if (!window.selectedRating || !text) {
+          alert("Please give a rating and write a review.");
+          return;
+        }
+        document.getElementById("reviewMessage").classList.remove("hidden");
+        document.getElementById("reviewText").value = "";
+        setRating(0);
+      }
+
 
       // Initial menu load & cart count
       showMenu("breakfast");
