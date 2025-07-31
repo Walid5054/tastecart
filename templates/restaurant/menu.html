@@ -86,7 +86,7 @@
                     {{ item.discount|default:0|floatformat:0 }}% OFF
                   </span>
                 {% endif %}
-                <button class="mt-auto bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition add-to-cart-btn" onclick="event.stopPropagation()">Add to Cart</button>
+                <a href="{% url "add_to_cart" item.id 1 %}" class="mt-auto bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition add-to-cart-btn inline-block text-center">Add to Cart</a>
               </div>
             </div>
             {% endfor %}

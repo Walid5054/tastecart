@@ -20,9 +20,9 @@
         </div>
         <!-- Cart Icon with Counter -->
         <div>
-          <a href="cart.html" class="relative">
+          <a href="{% url "cart" %}" class="relative">
             <img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="Cart" class="w-10 h-10" />
-            <span id="cart-count" class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+            <span id="cart-count" class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-0.5 rounded-full">{{cart_count}}</span>
           </a>
         </div>
       </div>
@@ -65,7 +65,7 @@
                   {% if item.discount %}
                     <span class="bg-red-100 text-red-500 px-2 py-1 rounded text-sm font-medium mb-2 inline-block">{{ item.discount|default:0|floatformat:0 }}% OFF</span>
                   {% endif %}
-                  <button class="mt-auto bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition add-to-cart-btn" onclick="event.stopPropagation()">Add to Cart</button>
+                  <a href="{% url 'add_to_cart' item.id 1 %}" class="mt-auto bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition add-to-cart-btn" onclick="event.stopPropagation()">Add to Cart</a>
                 </div>
               </div>
             {% endfor %}
@@ -134,7 +134,7 @@
 
             <!-- Action Buttons -->
             <div class="flex space-x-3">
-              <button id="modalAddToCart" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 px-6 rounded-lg font-semibold transition transform hover:scale-105">Add to Cart</button>
+              <a href="#" id="modalAddToCart" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 px-6 rounded-lg font-semibold transition transform hover:scale-105 text-center flex items-center justify-center">Add to Cart</a>
               <button id="buyNow" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white py-3 px-6 rounded-lg font-semibold transition transform hover:scale-105">Buy Now</button>
             </div>
           </div>

@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
+from order.models import Cart
 from restaurant.forms import MenuForm, RestaurantForm
 from restaurant.models import Menu, Restaurant
 from restaurant.decorators import owner_required
@@ -7,10 +8,11 @@ from restaurant.decorators import owner_required
 # Create your views here.
 
 
-def restaurant_view(request,boom):
-    restaurant= Restaurant.objects.get(id=boom)
+def restaurant_view(request,slug):
+    restaurant= Restaurant.objects.get(slug=slug)
+    cart_count=Cart.objects.filter(user=request.user).count() if request.user.is_authenticated else 0
     menu_items = Menu.objects.filter(restaurant=restaurant)
-    return render(request, "restaurant/restaurant.html", {"restaurant": restaurant, "menu_items": menu_items})
+    return render(request, "restaurant/restaurant.html", {"restaurant": restaurant, "menu_items": menu_items, "cart_count": cart_count})
 
 def restaurants_view(request):
     restaurants = Restaurant.objects.all()

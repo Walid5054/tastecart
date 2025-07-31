@@ -42,24 +42,25 @@ class Restaurant(models.Model):
     estimated_delivery_time = models.IntegerField(
         default=30, blank=True, null=True
     )  # in minutes
+    slug = models.SlugField(max_length=255, unique=True, blank=True, null=True)
+
     def __str__(self):
         return self.restaurant_name
 
     def save(self, *args, **kwargs):
-        # Prevent owners from setting rating manually
-        if self.pk:  # Object already exists -> update
+        if not self.slug:
+            self.slug = self.restaurant_name.lower().replace(" ", "-")
+        if self.pk: 
             original = Restaurant.objects.get(pk=self.pk)
-            # If the owner is trying to update and changes the rating — block it
             if self.owner.user_type == "owner" and self.rating != original.rating:
                 raise ValueError(
                     "Owners are not allowed to modify the restaurant rating."
                 )
         else:
-            # On creation, force set restaurant_name and validate owner
             if self.owner.user_type != "owner":
                 raise ValueError("Only owners can create restaurants.")
             self.restaurant_name = self.owner.restaurant_name
-            self.rating = 0.0  # default rating during creation
+            self.rating = 0.0
 
         super().save(*args, **kwargs)
 
