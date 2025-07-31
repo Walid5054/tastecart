@@ -70,8 +70,8 @@ def sign_out(request):
     return redirect("index")
 
 
-def view_profile(request, id):
-    user = User.objects.get(id=id)
+def view_profile(request):
+    user = request.user
     profile, created = Profile.objects.get_or_create(user=user)
 
     if request.method == "POST":

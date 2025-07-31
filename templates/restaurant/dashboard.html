@@ -28,6 +28,7 @@
         </h1>
         <nav class="space-x-4 text-sm">
           <a href="#" class="hover:text-accent">Dashboard</a>
+          <a href="{% url 'restaurant_settings' %}" class="hover:text-accent">Restaurant Settings</a>
           <a href="#" class="hover:text-accent">Orders</a>
           <a href="{% url 'logout' %}" class="hover:text-accent">Logout</a>
         </nav>
@@ -143,6 +144,21 @@
           <input type="checkbox" class="accent-red-500" id="liveKitchenToggle" />
           <span class="ml-2 text-sm">Enable Live Updates</span>
         </label>
+      </section>
+
+      <!-- Restaurant Settings Quick Access -->
+      <section class="bg-white p-6 rounded-xl shadow-md">
+        <h3 class="text-lg font-semibold mb-4">Restaurant Settings</h3>
+        <div class="space-y-3">
+          <a href="{% url 'restaurant_settings' %}" class="block w-full bg-blue-500 hover:bg-blue-600 text-white text-center py-2 px-4 rounded-md text-sm transition duration-200">
+            ⚙️ Manage Restaurant
+          </a>
+          <div class="text-xs text-gray-600">
+            <p>• Update restaurant info</p>
+            <p>• Upload images</p>
+            <p>• Set operating hours</p>
+          </div>
+        </div>
       </section>
     </aside>
   </main>
