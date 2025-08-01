@@ -35,6 +35,9 @@ class Order(models.Model):
         ("Preparing", "Preparing"),
         ("Completed", "Completed"),
         ("Cancelled", "Cancelled"),
+        ("Delivered", "Delivered"),
+        ("Pending", "Pending"),
+
     ]
     PAYMENT_METHOD = [
         ("Cash on Delivery", "Cash on Delivery"),
@@ -65,6 +68,8 @@ class Order(models.Model):
         if not self.restaurant:
             self.restaurant = self.cart.item.restaurant
         self.total_price = self.cart.total_price
-        if self.is_accepted:
+        if not self.status:
+            self.status = "Pending"
+        if self.is_accepted and self.status == "Pending":
             self.status = "Preparing"
         super().save(*args, **kwargs)

@@ -1,9 +1,12 @@
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 import json
+from django.utils import timezone
+import datetime
 
 from authentication.models import User
 from home.models import notification
@@ -197,9 +200,12 @@ def checkout(request, user):
 @login_required
 def orders(request):
     user = request.user
-    orders = Order.objects.filter(cart__item__restaurant__owner=user).order_by(
-        "-created_at"
-    )
+    orders = Order.objects.filter(
+        Q(cart__item__restaurant__owner=user, is_accepted=False)
+        | Q(cart__item__restaurant__owner=user, status="Preparing")
+        | Q(cart__item__restaurant__owner=user, status="Pending")
+        | Q(cart__item__restaurant__owner=user, status="Completed")
+    ).order_by("-created_at")
     return render(request, "order/orders.html", {"orders": orders})
 
 
@@ -210,7 +216,6 @@ def update_order_status(request):
         try:
             order_id = request.POST.get("order_id")
             action = request.POST.get("action")
-
             order = get_object_or_404(Order, id=order_id)
 
             # Check if the user owns the restaurant for this order
@@ -238,6 +243,7 @@ def update_order_status(request):
             elif action == "complete":
                 order.status = "Completed"
                 order.save()
+                print(f"Order status after completion: {order.status}")
                 notification.objects.create(
                     user=order.user, message="Your order is ready for pickup/delivery!"
                 )
@@ -265,7 +271,6 @@ def update_order_status(request):
 
 @login_required
 def order_status(request):
-    """Display order status for the logged-in user"""
     user = request.user
     orders = Order.objects.filter(user=user).order_by("-created_at")
     return render(request, "order/status.html", {"orders": orders})
@@ -274,7 +279,6 @@ def order_status(request):
 @login_required
 @csrf_exempt
 def modify_order(request):
-    """Handle order modification (quantity change)"""
     if request.method == "POST":
         try:
             data = json.loads(request.body)
@@ -365,15 +369,12 @@ def modify_order(request):
 @login_required
 @csrf_exempt
 def cancel_order(request):
-    """Handle order cancellation"""
     if request.method == "POST":
         try:
             data = json.loads(request.body)
             order_id = data.get("order_id")
 
             order = get_object_or_404(Order, id=order_id, user=request.user)
-
-            # Check if order can be cancelled
             if order.status == "Cancelled":
                 return JsonResponse(
                     {"success": False, "message": "Order is already cancelled"}
@@ -392,11 +393,7 @@ def cancel_order(request):
                     }
                 )
 
-            # Allow cancellation only if not accepted or just accepted but still preparing
             if order.is_accepted and order.status == "Preparing":
-                # Check if it's been too long since acceptance (e.g., 10 minutes)
-                from django.utils import timezone
-                import datetime
 
                 time_since_creation = timezone.now() - order.created_at
                 if time_since_creation > datetime.timedelta(minutes=10):
@@ -407,20 +404,14 @@ def cancel_order(request):
                         }
                     )
 
-            # Cancel the order
             order.status = "Cancelled"
             order.save()
 
-            # Mark cart as not ordered so items go back to cart if needed
-            # (Optional: you might want to keep it ordered for record keeping)
-
-            # Create notification for the user
             notification.objects.create(
                 user=request.user,
                 message=f"Your order #{order.id} has been cancelled successfully. If payment was made, refund will be processed within 3-5 business days.",
             )
 
-            # Create notification for restaurant owner
             notification.objects.create(
                 user=order.cart.item.restaurant.owner,
                 message=f"Order #{order.id} has been cancelled by the customer.",

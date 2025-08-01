@@ -120,14 +120,6 @@
                               {% endif %}">
                               {{ order.status }}
                             </span>
-                            {% if not order.is_accepted %}
-                              <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-medium">Pending Acceptance</span>
-                            {% else %}
-                              <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">Accepted</span>
-                            {% endif %}
-                            {% if order.is_delivered %}
-                              <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">Delivered</span>
-                            {% endif %}
                             <span class="text-sm text-gray-500">{{ order.created_at|date:'M d, Y' }} at {{ order.created_at|time:'h:i A' }}</span>
                           </div>
 
@@ -167,17 +159,15 @@
 
                         <!-- Action Buttons -->
                         <div class="flex flex-col gap-2 ml-6">
-                          {% if not order.is_accepted %}
+                          {% if order.status == "Pending" %}
                             <button onclick="updateOrderStatus({{ order.id }}, 'accept')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors">Accept Order</button>
                             <button onclick="updateOrderStatus({{ order.id }}, 'reject')" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors">Reject Order</button>
-                          {% else %}
-                            {% if order.status == 'Preparing' %}
-                              <button onclick="updateOrderStatus({{ order.id }}, 'complete')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">Mark as Ready</button>
-                            {% endif %}
-                            {% if not order.is_delivered and order.status == 'Completed' %}
-                              <button onclick="updateOrderStatus({{ order.id }}, 'deliver')" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg transition-colors">Mark as Delivered</button>
-                            {% endif %}
+                          {% elif order.status == 'Preparing' %}
+                            <button onclick="updateOrderStatus({{ order.id }}, 'complete')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">Mark as Ready</button>
+                          {% elif order.status == 'Completed' and not order.is_delivered %}
+                            <button onclick="updateOrderStatus({{ order.id }}, 'deliver')" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg transition-colors">Mark as Delivered</button>
                           {% endif %}
+                          
                         </div>
                       </div>
                     </div>

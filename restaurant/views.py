@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from order.models import Cart, Order
 from restaurant.forms import MenuForm, RestaurantForm
@@ -34,7 +35,6 @@ def menu(request):
     return render(request, "restaurant/menu.html", {"menu_items": menu_items})
 
 
-
 @owner_required
 def restaurant_settings(request):
     user = request.user
@@ -57,7 +57,7 @@ def restaurant_settings(request):
     else:
         form = RestaurantForm(instance=restaurant)
     orders = Order.objects.filter(
-        cart__item__restaurant__owner=user, status="Preparing"
+        Q(cart__item__restaurant__owner=user, is_accepted=False) | Q(status="Preparing")
     ).order_by("-created_at")
     context = {
         "restaurant": restaurant,
@@ -118,8 +118,10 @@ def owner_dashboard(request):
                 return redirect("owner_dashboard")
 
     orders = Order.objects.filter(
-        cart__item__restaurant__owner=user, status="Preparing"
-    ).order_by("-created_at")
+        Q(cart__item__restaurant__owner=user, is_accepted=False)
+        | Q(cart__item__restaurant__owner=user, status="Preparing")
+        | Q(cart__item__restaurant__owner=user, status="Pending")
+    ).order_by("-created_at").exclude(status="Cancelled")
     context = {
         "menu_items": menu_items,
         "form": form,

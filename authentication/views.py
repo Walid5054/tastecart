@@ -66,7 +66,7 @@ def sign_in(request):
                         request,
                         "You have pending orders. Please check your orders before accessing the dashboard.",
                     )
-                    return redirect("dashboard")
+                return redirect("dashboard")
         else:
             messages.error(request, "Invalid email or password or role")
             return render(request, "authentication/sign_in.html")

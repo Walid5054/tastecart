@@ -8,6 +8,5 @@ def cart_count(request):
         cart_count = Cart.objects.filter(
             user=request.user, ordered=False, quantity__gt=0
         ).count()
-        print(f"Cart count for user {request.user.username}: {cart_count}")
 
     return {"cart_count": cart_count}

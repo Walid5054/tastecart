@@ -124,14 +124,20 @@
                           {{ user_group.grouper.username }}
                         {% endif %}
                       </p>
-                      <p class="text-xs text-gray-500">{{ user_group.list|length }} order{{ user_group.list|length|pluralize }}</p>
+                      <a href="{% url 'orders' %}" class="text-xs text-gray-500 hover:text-accent underline">
+                        {{ user_group.list|length }} order{{ user_group.list|length|pluralize }} in queue
+                      </a>
                     </div>
                   </div>
                 </div>
                 
                 <!-- User's Orders -->
                 <div class="space-y-2 p-3">
+                  {% comment %}Simple approach: Count pending orders by looping twice{% endcomment %}
+                  
+                  {% comment %}First, display orders with status{% endcomment %}
                   {% for order in user_group.list %}
+                    {% if order.status %}
                     <div class="bg-gray-50 p-3 rounded shadow-sm">
                       <div class="flex justify-between items-start">
                         <div class="flex-1">
@@ -145,7 +151,28 @@
                         </div>
                       </div>
                     </div>
+                    {% endif %}
                   {% endfor %}
+                  
+                  {% comment %}Then handle pending orders{% endcomment %}
+                  {% with pending_orders="" pending_shown=False %}
+                    {% for order in user_group.list %}
+                      {% if not order.status %}
+                        {% with pending_orders=pending_orders|add:"1" %}{% endwith %}
+                      {% endif %}
+                    {% endfor %}
+                    
+                    {% comment %}Show pending orders summary or individual{% endcomment %}
+                    {% if pending_orders|length > 1 %}
+                      <div class="bg-gray-100 p-3 rounded shadow-sm">
+                        <p class="text-sm text-gray-500">{{ pending_orders|length }} orders pending</p>
+                      </div>
+                    {% elif pending_orders|length == 1 %}
+                      <div class="bg-gray-100 p-3 rounded shadow-sm">
+                        <p class="text-sm text-gray-500">1 order pending</p>
+                      </div>
+                    {% endif %}
+                  {% endwith %}
                 </div>
               </div>
             {% endfor %}
