@@ -60,13 +60,10 @@ document.addEventListener("DOMContentLoaded", function () {
       modalDiscount.classList.add("hidden");
     }
 
-    // Update quantity and total
+
     updateQuantityAndTotal();
 
-    // Update the modal Add to Cart button href
     updateModalAddToCartHref();
-
-    // Show modal with animation
     modal.classList.remove("hidden");
     modal.classList.add("flex");
 
