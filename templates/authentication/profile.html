@@ -1,9 +1,5 @@
-{% extends "kits/base.html" %}
-{% load static %}
-
-{% block title %}Profile - TasteCart{% endblock title %}
-
-{% block content %}
+{% extends "kits/base.html" %} {% load static %} {% block title %}Profile -
+TasteCart{% endblock title %} {% block content %}
 <div class="min-h-screen bg-gray-50">
   <!-- Profile Section -->
   <section class="max-w-4xl mx-auto pt-8 p-6 bg-white rounded-xl shadow mt-8">
@@ -20,15 +16,13 @@
         </h2>
         <p class="text-gray-500" id="userEmail">{{ user.email }}</p>
         {% if user.phone %}
-          <p class="text-gray-500" id="userMobile">{{ user.phone }}</p>
+        <p class="text-gray-500" id="userMobile">{{ user.phone }}</p>
         {% endif %}
       </div>
     </div>
 
     <div class="mt-6">
-      <h3 class="text-xl font-semibold mb-3 text-gray-700">
-        Delivery Address
-      </h3>
+      <h3 class="text-xl font-semibold mb-3 text-gray-700">Delivery Address</h3>
       <div class="flex items-center space-x-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -43,11 +37,8 @@
           />
         </svg>
         <span id="userAddress">
-          {% if user.profile.address %}
-            {{ user.profile.address }}
-          {% else %}
-            No address added yet
-          {% endif %}
+          {% if user.profile.address %} {{ user.profile.address }} {% else %} No
+          address added yet {% endif %}
         </span>
         <button
           onclick="openEditModal()"
@@ -70,38 +61,44 @@
 
     <div class="mt-10">
       <h3 class="text-xl font-semibold text-gray-700 mb-4">Recent Orders</h3>
-        <ul class="space-y-4" id="orderHistory">
-
-          <li class="bg-gray-100 p-4 rounded shadow">
-            <div class="flex justify-between">
-              <div>
-                <p class="font-medium">Order #efsdf</p>
-                <p class="text-sm text-gray-500">dfdf</p>
-                <p class="text-sm text-gray-500">dfdf</p>
-              </div>
-              <div class="flex flex-col space-y-2">
-                <a href="#" class="text-sm text-blue-500 hover:underline">
-                  View Details
-                </a>
-                <button
-                  class="text-sm text-red-500 hover:underline"
-                  onclick="reorderItem('{{ order.id }}')"
-                >
-                  Reorder
-                </button>
-              </div>
+      <ul class="space-y-4" id="orderHistory">
+        <li class="bg-gray-100 p-4 rounded shadow">
+          <div class="flex justify-between">
+            <div>
+              <p class="font-medium">Order #efsdf</p>
+              <p class="text-sm text-gray-500">dfdf</p>
+              <p class="text-sm text-gray-500">dfdf</p>
             </div>
-          </li>
-   
-        </ul>
+            <div class="flex flex-col space-y-2 justify-center items-center">
+              <a href="#" class="text-sm text-blue-500 hover:underline">
+                View Details
+              </a>
+              <button
+                class="text-sm text-white bg-red-500 px-2 py-1 border rounded-2xl hover:underline"
+                onclick="reorderItem('{{ order.id }}')"
+              >
+                Reorder
+              </button>
+              <button
+                class="text-sm text-white bg-red-500 px-2 py-1 hover:underline border rounded-2xl"
+                onclick="reorderItem('{{ order.id }}')"
+              >
+                Give a review
+              </button>
+            </div>
+          </div>
+        </li>
+      </ul>
 
-        <div class="text-center py-8">
-          <p class="text-gray-500">No orders yet</p>
-          <a href="{% url 'restaurants_view' %}" class="mt-2 inline-block bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
-            Start Ordering
-          </a>
-        </div>
-
+      <div class="text-center py-8">
+        <p class="text-gray-500">No orders yet</p>
+        <a
+          href="{% url 'restaurants_view' %}"
+          class="mt-2 inline-block bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+        >
+          Start Ordering
+        </a>
+      </div>
     </div>
   </section>
 </div>
@@ -111,15 +108,23 @@
   id="editModal"
   class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden z-50"
 >
-  <div class="bg-white p-6 rounded-lg w-full max-w-md space-y-4 max-h-[90vh] overflow-y-auto">
+  <div
+    class="bg-white p-6 rounded-lg w-full max-w-md space-y-4 max-h-[90vh] overflow-y-auto"
+  >
     <h3 class="text-xl font-semibold text-gray-800">Edit Profile</h3>
-    
-    <form action="{% url 'view_profile' %}" method="post" enctype="multipart/form-data">
+
+    <form
+      action="{% url 'view_profile' %}"
+      method="post"
+      enctype="multipart/form-data"
+    >
       {% csrf_token %}
-      
+
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+          <label class="block text-sm font-medium text-gray-700 mb-2"
+            >Email</label
+          >
           <input
             type="email"
             name="email"
@@ -130,7 +135,9 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+          <label class="block text-sm font-medium text-gray-700 mb-2"
+            >Phone Number</label
+          >
           <input
             type="text"
             name="phone"
@@ -140,39 +147,51 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
-          <input 
-            type="file" 
+          <label class="block text-sm font-medium text-gray-700 mb-2"
+            >Profile Image</label
+          >
+          <input
+            type="file"
             name="profile_image"
-            accept="image/*" 
+            accept="image/*"
             class="w-full border px-3 py-2 rounded focus:ring-red-400 focus:ring-2 transition"
           />
           {% if user.profile.profile_image %}
-            <p class="text-xs text-gray-500 mt-1">Current: {{ user.profile.profile_image.name }}</p>
+          <p class="text-xs text-gray-500 mt-1">
+            Current: {{ user.profile.profile_image.name }}
+          </p>
           {% endif %}
         </div>
-        
+
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+          <label class="block text-sm font-medium text-gray-700 mb-2"
+            >Address</label
+          >
           <textarea
             name="address"
             placeholder="Enter your delivery address"
             rows="3"
             class="w-full border px-3 py-2 rounded focus:ring-red-400 focus:ring-2 transition"
-          >{{ user.profile.address|default:'' }}</textarea>
+          >
+{{ user.profile.address|default:'' }}</textarea
+          >
         </div>
-        
+
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+          <label class="block text-sm font-medium text-gray-700 mb-2"
+            >Bio</label
+          >
           <textarea
             name="bio"
             placeholder="Tell us about yourself"
             rows="4"
             class="w-full border px-3 py-2 rounded focus:ring-red-400 focus:ring-2 transition"
-          >{{ user.profile.bio|default:'' }}</textarea>
+          >
+{{ user.profile.bio|default:'' }}</textarea
+          >
         </div>
       </div>
-      
+
       <div class="flex space-x-2 pt-4">
         <button
           type="button"
