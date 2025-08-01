@@ -79,7 +79,12 @@
               <img src="{{ item.image.url }}" alt="{{ item.item_name }}" class="rounded-t object-cover w-full h-48 aspect-square" style="object-fit: cover;" />
               <div class="p-4 flex flex-col h-full">
                 <h3 class="font-bold text-lg mb-1">{{ item.item_name }}</h3>
-                <p class="text-gray-600 mb-1">From: <span class="font-medium">{{ item.restaurant.restaurant_name }}</span></p>
+                <p class="text-gray-600 mb-1">
+                  From: 
+                  <a href="{% url 'restaurant_view' item.restaurant.slug %}" class="font-medium text-red-500 hover:underline">
+                  {{ item.restaurant.restaurant_name }}
+                  </a>
+                </p>
                 <p class="text-gray-600 mb-1">৳{{ item.price }}</p>
                 <p class="text-yellow-500 mb-1">⭐️ {{ item.rating }}</p>
                 {% if item.discount %}

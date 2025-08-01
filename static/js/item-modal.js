@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
     modalImage.src = itemData.image;
     modalImage.alt = itemData.name;
     modalTitle.textContent = itemData.name;
-    modalRestaurant.textContent = `From: ${itemData.restaurant}`;
+    modalRestaurant.innerHTML = `From: <a href="${location.origin}/restaurant/${itemData.restaurantSlug}" class="font-medium text-red-500 hover:underline">${itemData.restaurant}</a>`;
     modalPrice.textContent = `৳${itemData.price}`;
     modalRating.querySelector("span:last-child").textContent = itemData.rating;
     modalDescription.textContent = itemData.description;
