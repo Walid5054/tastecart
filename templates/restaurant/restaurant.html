@@ -12,23 +12,24 @@
     </style>
   </head>
   <body class="bg-white text-gray-800">
-    <header class="bg-red-500 text-white py-6 shadow-lg relative">
-      <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-        <div>
-          <h1 class="text-4xl font-bold"><a href="{% url 'index' %}">TasteCart</a></h1>
-          <p class="text-lg mt-1">Discover a world of taste and flavor</p>
-        </div>
-        <!-- Cart Icon with Counter -->
-        <div>
-          <a href="{% url 'cart' %}" class="relative">
-            <img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="Cart" class="w-10 h-10" />
-            <span id="cartCount" class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-0.5 rounded-full">{{ cart_count }}</span>
-          </a>
-        </div>
-      </div>
-    </header>
+<header class="bg-red-500 text-white py-6 shadow-lg fixed top-0 w-full z-50">
+  <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+    <div>
+      <h1 class="text-4xl font-bold"><a href="{% url 'index' %}">TasteCart</a></h1>
+      <p class="text-lg mt-1">Discover a world of taste and flavor</p>
+    </div>
+    <!-- Cart Icon with Counter -->
+    <div>
+      <a href="{% url 'cart' %}" class="relative">
+        <img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="Cart" class="w-10 h-10" />
+        <span id="cartCount" class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-0.5 rounded-full">{{ cart_count }}</span>
+      </a>
+    </div>
+  </div>
+</header>
 
-    <main class="max-w-7xl mx-auto px-4 py-10">
+
+    <main class="max-w-7xl mx-auto px-4 py-10 pt-32">
       <!-- Restaurant Info -->
       <section class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
         <img src="{{ restaurant.restaurant_image.url }}" alt="Restaurant" class="rounded-2xl shadow-lg" />
