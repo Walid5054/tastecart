@@ -1,83 +1,149 @@
-{% extends 'kits/base.html' %}
-{% load static %}
-
-{% block title %}
-  TasteCart - Blog
-{% endblock %}
-
-{% block content %}
-  <div class="min-h-screen flex flex-col">
-    <div class="flex-grow max-w-7xl mx-auto px-4 py-10 w-full">
-      <!-- Featured Story -->
-      <section class="mt-8 rounded-lg overflow-hidden relative">
-        <img src="https://via.placeholder.com/800x400?text=Featured+Article" alt="Featured" class="w-full h-[400px] object-cover rounded-lg shadow" />
-        <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-center px-4">
-          <h1 class="text-white text-4xl md:text-5xl font-bold mb-4">Featured: Top 10 Bangladeshi Dishes You Must Try</h1>
-          <p class="text-gray-200 max-w-2xl mb-6">Explore the rich culinary tradition of Bangladesh with these must-try dishes and where to find them.</p>
-          <button class="bg-red-500 text-white px-6 py-3 rounded-full hover:bg-red-600 transition">Read More</button>
-        </div>
-      </section>
-
-      <!-- Filter Bar -->
-      <section class="mt-10 bg-gray-50 border rounded-lg p-4 flex flex-wrap gap-4 justify-center">
-        <button class="category-btn bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition" data-category="">All</button>
-        <button class="category-btn border px-4 py-2 rounded hover:bg-red-100 transition" data-category="News">News</button>
-        <button class="category-btn border px-4 py-2 rounded hover:bg-red-100 transition" data-category="Recipes">Recipes</button>
-        <button class="category-btn border px-4 py-2 rounded hover:bg-red-100 transition" data-category="Tips">Tips</button>
-      </section>
-
-      <!-- Blog Sections -->
-      <section class="py-12 space-y-16 bg-gray-50 rounded-lg mt-10" id="blogSections"></section>
-    </div>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t py-12 mt-auto w-full">
-      <div class="max-w-7xl mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-gray-700">
-          <div>
-            <h3 class="text-2xl font-bold text-red-500 mb-4">TasteCart</h3>
-            <p class="text-sm mb-4">The best place to read about food, cooking, and restaurant life in Bangladesh.</p>
-            <div class="flex space-x-4">
-              <a href="#" class="hover:text-red-500 transition"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" class="w-5 h-5" /></a>
-              <a href="#" class="hover:text-red-500 transition"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png" class="w-5 h-5" /></a>
-              <a href="#" class="hover:text-red-500 transition"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384062.png" class="w-5 h-5" /></a>
-            </div>
-          </div>
-          <div>
-            <h4 class="font-semibold mb-3">Get in Touch</h4>
-            <p>Park Street, L-62, Bangladesh</p>
-            <p>tastecartbd@email.com</p>
-            <p>+880 1234 567890</p>
-          </div>
-          <div>
-            <h4 class="font-semibold mb-3">Quick Links</h4>
-            <ul class="space-y-2">
-              <li>
-                <a href="{% url 'menu' %}" class="hover:text-red-500 transition">Menu</a>
-              </li>
-              <li>
-                <a href="{% url 'restaurants_view' %}" class="hover:text-red-500 transition">Restaurants</a>
-              </li>
-              <li>
-                <a href="#" class="hover:text-red-500 transition">Contact</a>
-              </li>
-              <li>
-                <a href="#" class="hover:text-red-500 transition">About us</a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 class="font-semibold mb-3">Subscribe Our Newsletter</h4>
-            <form class="space-y-3">
-              <input type="email" placeholder="Enter your email" class="w-full px-4 py-2 border rounded focus:ring-red-400 focus:ring-2 transition" />
-              <button type="submit" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">Subscribe</button>
-            </form>
-          </div>
-        </div>
-        <div class="text-center text-gray-500 text-sm mt-8 pt-8 border-t">© 2025 TasteCart. All rights reserved.</div>
+{% extends 'kits/base.html' %} {% load static %} {% block title %} TasteCart -
+Blog {% endblock %} {% block content %}
+<div class="min-h-screen flex flex-col pt-28">
+  <div class="flex-grow max-w-7xl mx-auto px-4 py-10 w-full">
+    <!-- Featured Story -->
+    <section class="mt-8 rounded-lg overflow-hidden relative">
+      <img
+        src="https://via.placeholder.com/800x400?text=Featured+Article"
+        alt="Featured"
+        class="w-full h-[400px] object-cover rounded-lg shadow"
+      />
+      <div
+        class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-center px-4"
+      >
+        <h1 class="text-white text-4xl md:text-5xl font-bold mb-4">
+          Featured: Top 10 Bangladeshi Dishes You Must Try
+        </h1>
+        <p class="text-gray-200 max-w-2xl mb-6">
+          Explore the rich culinary tradition of Bangladesh with these must-try
+          dishes and where to find them.
+        </p>
+        <button
+          class="bg-red-500 text-white px-6 py-3 rounded-full hover:bg-red-600 transition"
+        >
+          Read More
+        </button>
       </div>
-    </footer>
+    </section>
+
+    <!-- Filter Bar -->
+    <section
+      class="mt-10 bg-gray-50 border rounded-lg p-4 flex flex-wrap gap-4 justify-center"
+    >
+      <button
+        class="category-btn bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+        data-category=""
+      >
+        All
+      </button>
+      <button
+        class="category-btn border px-4 py-2 rounded hover:bg-red-100 transition"
+        data-category="News"
+      >
+        News
+      </button>
+      <button
+        class="category-btn border px-4 py-2 rounded hover:bg-red-100 transition"
+        data-category="Recipes"
+      >
+        Recipes
+      </button>
+      <button
+        class="category-btn border px-4 py-2 rounded hover:bg-red-100 transition"
+        data-category="Tips"
+      >
+        Tips
+      </button>
+    </section>
+
+    <!-- Blog Sections -->
+    <section
+      class="py-12 space-y-16 bg-gray-50 rounded-lg mt-10"
+      id="blogSections"
+    ></section>
   </div>
 
-  <script src="{% static 'js/blog.js' %}"></script>
+  <!-- Footer -->
+  <footer class="bg-white border-t py-12 mt-auto w-full">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-gray-700">
+        <div>
+          <h3 class="text-2xl font-bold text-red-500 mb-4">TasteCart</h3>
+          <p class="text-sm mb-4">
+            The best place to read about food, cooking, and restaurant life in
+            Bangladesh.
+          </p>
+          <div class="flex space-x-4">
+            <a href="#" class="hover:text-red-500 transition"
+              ><img
+                src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png"
+                class="w-5 h-5"
+            /></a>
+            <a href="#" class="hover:text-red-500 transition"
+              ><img
+                src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png"
+                class="w-5 h-5"
+            /></a>
+            <a href="#" class="hover:text-red-500 transition"
+              ><img
+                src="https://cdn-icons-png.flaticon.com/512/1384/1384062.png"
+                class="w-5 h-5"
+            /></a>
+          </div>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-3">Get in Touch</h4>
+          <p>Park Street, L-62, Bangladesh</p>
+          <p>tastecartbd@email.com</p>
+          <p>+880 1234 567890</p>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-3">Quick Links</h4>
+          <ul class="space-y-2">
+            <li>
+              <a href="{% url 'menu' %}" class="hover:text-red-500 transition"
+                >Menu</a
+              >
+            </li>
+            <li>
+              <a
+                href="{% url 'restaurants_view' %}"
+                class="hover:text-red-500 transition"
+                >Restaurants</a
+              >
+            </li>
+            <li>
+              <a href="#" class="hover:text-red-500 transition">Contact</a>
+            </li>
+            <li>
+              <a href="#" class="hover:text-red-500 transition">About us</a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-3">Subscribe Our Newsletter</h4>
+          <form class="space-y-3">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              class="w-full px-4 py-2 border rounded focus:ring-red-400 focus:ring-2 transition"
+            />
+            <button
+              type="submit"
+              class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+            >
+              Subscribe
+            </button>
+          </form>
+        </div>
+      </div>
+      <div class="text-center text-gray-500 text-sm mt-8 pt-8 border-t">
+        © 2025 TasteCart. All rights reserved.
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script src="{% static 'js/blog.js' %}"></script>
 {% endblock %}
