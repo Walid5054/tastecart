@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delivery Profile - TasteCart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow p-4 flex justify-between items-center sticky top-0 z-50">
+      <h1 class="text-2xl font-bold text-red-500">My Profile</h1>
+      <div class="flex gap-3">
+        <a href="{% url 'rider_dashboard' %}" class="bg-gray-200 text-gray-700 px-4 py-1 rounded-full hover:bg-gray-300 text-sm flex items-center">Back to Dashboard</a>
+        <a href="{% url 'logout' %}" class="bg-red-100 text-red-600 px-4 py-1 rounded-full hover:bg-red-200 text-sm flex items-center">Logout</a>
+      </div>
+    </header>
+
+    <!-- Profile Content -->
+    <main class="max-w-4xl mx-auto p-6 space-y-8">
+      <!-- Profile Info -->
+      <section class="bg-white rounded-xl shadow p-6 space-y-4">
+        <div class="flex items-center gap-6">
+          <img src="{% if request.user.profile.profile_image %}{{ request.user.profile.profile_image.url }}{% else %}https://via.placeholder.com/100{% endif %}" alt="Profile Photo" class="w-24 h-24 rounded-full object-cover border" />
+          <div>
+            <h2 class="text-xl font-semibold text-gray-800">{{request.user.name}}</h2>
+            <p class="text-sm text-gray-600">Delivery Partner</p>
+            <p class="text-sm text-gray-600">City: {{request.user.city}}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Editable Form -->
+      <section class="bg-white rounded-xl shadow p-6">
+        <h3 class="text-lg font-semibold text-gray-700 mb-4">Update Information</h3>
+        <form class="grid grid-cols-1 md:grid-cols-2 gap-4" action="{% url "rider_profile" %}" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div>
+            <label class="block text-sm font-medium text-gray-600">Full Name</label>
+            <input type="text" name="name" value="{{ request.user.name }}" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600">Phone Number</label>
+            <input type="tel" name="phone" value="{{ request.user.phone }}" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600">Email</label>
+            <input type="email" name="email" value="{{ request.user.email }}" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600">City</label>
+            <select class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2" name="city">
+              <option value="Dhaka" {% if request.user.city == "Dhaka" %}selected{% endif %}>Dhaka</option>
+              <option value="Chattogram" {% if request.user.city == "Chattogram" %}selected{% endif %}>Chattogram</option>
+              <option value="Rajshahi" {% if request.user.city == "Rajshahi" %}selected{% endif %}>Rajshahi</option>
+              <option value="Khulna" {% if request.user.city == "Khulna" %}selected{% endif %}>Khulna</option>
+            </select>
+
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600">Profile Photo</label>
+            <input type="file" name="profile_image" accept="image/*" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" />
+          </div>
+          <div class="col-span-full">
+            <label class="block text-sm font-medium text-gray-600">Address</label>
+            <textarea name="address" placeholder="Enter your address" rows="2" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2">{{ request.user.profile.address }}</textarea>
+          </div>
+          <div class="flex justify-end mt-6">
+            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full">Save Changes</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

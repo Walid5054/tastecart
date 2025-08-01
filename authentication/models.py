@@ -28,6 +28,7 @@ class User(AbstractBaseUser):
     USER_TYPE_CHOICES = (
         ("user", "user"),
         ("owner", "owner"),
+        ("rider", "rider"),
     )
     name = models.CharField(max_length=255)
     email = models.CharField(max_length=50, unique=True)
@@ -36,6 +37,7 @@ class User(AbstractBaseUser):
     user_type = models.CharField(
         max_length=10, choices=USER_TYPE_CHOICES, default="User"
     )
+    city= models.CharField(max_length=100, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
@@ -72,6 +74,6 @@ class Profile(models.Model):
         return f"{self.user.name}'s Profile"
 
     def save(self, *args, **kwargs):
-        if self.user.user_type != "user":
-            raise ValueError("Profiles can only be created for users.")
+        if self.user.user_type != "user" and self.user.user_type != "rider":
+            raise ValueError("Profiles can only be created for users and riders.")
         super().save(*args, **kwargs)

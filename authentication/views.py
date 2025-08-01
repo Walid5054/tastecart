@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 
@@ -18,7 +19,7 @@ def registration(request):
                 request, "authentication/reg.html", {"error": "Email already exists."}
             )
 
-        # Common user data
+        
         user_data = {
             "name": name,
             "email": email,
@@ -44,6 +45,64 @@ def registration(request):
 
     return render(request, "authentication/reg.html")
 
+def rider_registration(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        name = request.POST.get("name")
+        password = request.POST.get("password")
+
+        if User.objects.filter(email=email).exists():
+            return render(
+                request, "authentication/rider_reg.html", {"error": "Email already exists."}
+            )
+
+        user = User.objects.create(
+            name=name, email=email, user_type="rider", phone=request.POST.get("phone")
+        )
+        user.set_password(password)
+        user.save()
+
+        authenticated_user = authenticate(email=email, password=password)
+        if authenticated_user is not None:
+            login(request, authenticated_user)
+            return redirect("rider_dashboard")
+
+    return render(request, "authentication/rider_registration.html")
+
+def rider_login(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+
+        user = authenticate(email=email, password=password)
+        if user is not None and user.user_type == "rider":
+            login(request, user)
+            return redirect("rider_dashboard")
+        else:
+            messages.error(request, "Invalid email or password.")
+            return render(request, "authentication/rider_login.html")
+
+    return render(request, "authentication/rider_login.html")
+
+@login_required(login_url="rider_login")
+def rider_profile(request):
+    user = request.user
+    profile, _ = Profile.objects.get_or_create(user=user)
+
+    if request.method == "POST":
+        user.name = request.POST.get("name")
+        user.email = request.POST.get("email")
+        user.phone = request.POST.get("phone")
+        user.city = request.POST.get("city")
+        profile.address = request.POST.get("address")
+        if request.FILES.get("profile_image"):
+            profile.profile_image = request.FILES.get("profile_image")
+        profile.save()
+        user.save()
+
+        return redirect("rider_profile")
+
+    return render(request, "authentication/rider_profile.html")
 
 def sign_in(request):
     if request.method == "POST":
@@ -59,10 +118,14 @@ def sign_in(request):
             login(request, user)
             if role == "user":
                 return redirect("index")
-            else:
-                if Order.objects.filter(
-                    cart__item__restaurant__owner=user, is_accepted=False
-                ).exclude(status="Cancelled").exists():
+            elif role == "owner":
+                if (
+                    Order.objects.filter(
+                        cart__item__restaurant__owner=user, is_accepted=False
+                    )
+                    .exclude(status="Cancelled")
+                    .exists()
+                ):
                     messages.warning(
                         request,
                         "You have pending orders. Please check your orders before accessing the dashboard.",

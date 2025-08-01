@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load static %}
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -17,13 +17,12 @@
         <!-- City Selector -->
         <select
           id="citySelect"
-          class="border px-3 py-1 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+          class="border px-3 py-1 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-400"  name="city"
         >
-          <option value="">Select City</option>
-          <option value="Dhaka">Dhaka</option>
-          <option value="Chattogram">Chattogram</option>
-          <option value="Rajshahi">Rajshahi</option>
-          <option value="Khulna">Khulna</option>
+              <option value="Dhaka" {% if request.user.city == "Dhaka" %}selected{% endif %}>Dhaka</option>
+              <option value="Chattogram" {% if request.user.city == "Chattogram" %}selected{% endif %}>Chattogram</option>
+              <option value="Rajshahi" {% if request.user.city == "Rajshahi" %}selected{% endif %}>Rajshahi</option>
+              <option value="Khulna" {% if request.user.city == "Khulna" %}selected{% endif %}>Khulna</option>
         </select>
 
         <!-- Availability Toggle -->
@@ -33,12 +32,12 @@
         </label>
 
         <!-- Edit Profile -->
-        <button
-          onclick="alert('Redirecting to Edit Profile')"
+        <a
+          href="{% url 'rider_profile' %}"
           class="bg-gray-200 text-gray-700 px-4 py-1 rounded-full hover:bg-gray-300 text-sm"
         >
           Edit Profile
-        </button>
+        </a>
       </div>
     </header>
 
@@ -47,14 +46,17 @@
       <!-- New Order Notifications -->
       <section>
         <h2 class="text-xl font-semibold text-gray-700 mb-4">🛎️ New Orders</h2>
+        {% for order in orders %}
         <div class="space-y-4">
           <div
             class="bg-white rounded-xl shadow p-4 flex justify-between items-center"
           >
             <div>
-              <h3 class="text-lg font-semibold text-gray-800">Order #78910</h3>
-              <p class="text-sm text-gray-500">From: Spice Garden</p>
-              <p class="text-sm text-gray-500">To: Sector 10, Uttara</p>
+              <h3 class="text-lg font-semibold text-gray-800">Order #{{ order.id }}</h3>
+              <p class="text-sm text-gray-500">From: {{ order.cart.item.restaurant }}</p>
+              <p class="text-sm text-gray-500">To: {{ order.user }}</p>
+              <p class="text-sm text-gray-500">Address: {{ order.user.profile.address }}</p>
+              <p class="text-sm text-gray-500">Phone: {{ order.user.phone }}</p>
             </div>
             <button
               class="bg-green-500 text-white px-4 py-1 rounded-full hover:bg-green-600 text-sm"
@@ -63,6 +65,11 @@
             </button>
           </div>
         </div>
+        {% empty %}
+        <div class="bg-white rounded-xl shadow p-4 text-center">
+          <p class="text-gray-500">No new orders at the moment.</p>
+        </div>
+        {% endfor %}
       </section>
 
       <!-- Ongoing Deliveries -->

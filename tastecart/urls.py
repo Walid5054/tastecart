@@ -10,6 +10,7 @@ urlpatterns = [
     path("", include("home.urls")),
     path("", include("restaurant.urls")),
     path("", include("order.urls")),
+    path("", include("rider.urls")),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
