@@ -49,22 +49,22 @@ class RestaurantForm(forms.ModelForm):
                     "class": "w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400",
                 }
             ),
-            "restaurant_image": forms.ClearableFileInput(
+            "restaurant_image": forms.FileInput(
                 attrs={
                     "class": "w-full border border-gray-300 p-3 rounded-lg bg-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-red-50 file:text-red-700 hover:file:bg-red-100",
                 }
             ),
-            "inside_image1": forms.ClearableFileInput(
+            "inside_image1": forms.FileInput(
                 attrs={
                     "class": "w-full border border-gray-300 p-3 rounded-lg bg-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-red-50 file:text-red-700 hover:file:bg-red-100",
                 }
             ),
-            "inside_image2": forms.ClearableFileInput(
+            "inside_image2": forms.FileInput(
                 attrs={
                     "class": "w-full border border-gray-300 p-3 rounded-lg bg-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-red-50 file:text-red-700 hover:file:bg-red-100",
                 }
             ),
-            "inside_image3": forms.ClearableFileInput(
+            "inside_image3": forms.FileInput(
                 attrs={
                     "class": "w-full border border-gray-300 p-3 rounded-lg bg-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-red-50 file:text-red-700 hover:file:bg-red-100",
                 }
@@ -126,7 +126,7 @@ class RestaurantForm(forms.ModelForm):
                     "placeholder": "Chef's name",
                 }
             ),
-            "chef_image": forms.ClearableFileInput(
+            "chef_image": forms.FileInput(
                 attrs={
                     "class": "w-full border border-gray-300 p-3 rounded-lg bg-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-red-50 file:text-red-700 hover:file:bg-red-100",
                 }

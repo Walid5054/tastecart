@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // Edit Modal Functions
 function openEditModal(id) {
   // Set the item ID and redirect to edit view
-  window.location.href = `/owner-dashboard?edit=${id}`;
+  window.location.href = `/dashboard?edit=${id}`;
 }
 
 function closeEditModal() {
@@ -58,5 +58,5 @@ function closeDeleteModal() {
 
 // Close edit modal when clicking cancel or outside
 function closeEditModalAndRedirect() {
-  window.location.href = "/owner-dashboard";
+  window.location.href = "/dashboard";
 }

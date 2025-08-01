@@ -54,6 +54,7 @@ def sign_in(request):
             messages.error(request, "User does not exist or role mismatch.")
             return render(request, "authentication/sign_in.html")
         user = authenticate(email=email, password=password)
+        print(user)
         if user is not None:
             login(request, user)
             if role == "user":
@@ -61,7 +62,7 @@ def sign_in(request):
             else:
                 if Order.objects.filter(
                     cart__item__restaurant__owner=user, is_accepted=False
-                ).exists():
+                ).exclude(status="Cancelled").exists():
                     messages.warning(
                         request,
                         "You have pending orders. Please check your orders before accessing the dashboard.",

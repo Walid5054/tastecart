@@ -105,7 +105,7 @@ def owner_dashboard(request):
             menu_item = get_object_or_404(Menu, id=item_id, restaurant=restaurant)
             menu_item.delete()
             messages.success(request, "Menu item deleted successfully!")
-            return redirect("owner_dashboard")
+            return redirect("dashboard")
 
         else:
             # Handle add new item
