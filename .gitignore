@@ -5,3 +5,4 @@ script.py
 restaurants.csv
 menu.csv
 owners.csv
+db.sqlite3
