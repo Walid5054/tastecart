@@ -12,6 +12,7 @@ from authentication.models import User
 from home.models import notification
 from order.models import Cart, Order
 from restaurant.models import Menu
+from rider.models import Rider
 
 # Create your views here.
 
@@ -205,6 +206,8 @@ def orders(request):
         | Q(cart__item__restaurant__owner=user, status="Preparing")
         | Q(cart__item__restaurant__owner=user, status="Pending")
         | Q(cart__item__restaurant__owner=user, status="Completed")
+        | Q(cart__item__restaurant__owner=user, status="Completed with Rider")
+        | Q(cart__item__restaurant__owner=user, status="Rider Assigned")
     ).order_by("-created_at")
     return render(request, "order/orders.html", {"orders": orders})
 
@@ -241,23 +244,14 @@ def update_order_status(request):
                 )
                 message = "Order rejected"
             elif action == "complete":
-                order.status = "Completed"
+
+                order.status = "Completed with Rider" if order.status =="Rider Assigned" else "Completed"
                 order.save()
                 print(f"Order status after completion: {order.status}")
                 notification.objects.create(
                     user=order.user, message="Your order is ready for pickup/delivery!"
                 )
                 message = "Order marked as ready"
-            elif action == "deliver":
-                order.is_delivered = True
-                order.save()
-                notification.objects.create(
-                    user=order.user,
-                    message="Your order has been delivered. Thank you for choosing TasteCart!",
-                )
-                message = "Order marked as delivered"
-            else:
-                return JsonResponse({"success": False, "message": "Invalid action"})
 
             return JsonResponse({"success": True, "message": message})
 

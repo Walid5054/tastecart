@@ -3,11 +3,14 @@
 // Global variables to store CSRF token and URLs
 let csrfToken = "";
 let updateOrderStatusUrl = "";
+let getAvailableRidersUrl = "";
+let currentOrderId = null;
 
 // Initialize the order management system
-function initializeOrderManagement(csrf_token, update_url) {
+function initializeOrderManagement(csrf_token, update_url, riders_url) {
   csrfToken = csrf_token;
   updateOrderStatusUrl = update_url;
+  getAvailableRidersUrl = riders_url;
 
   // Add event listeners to filters
   document
@@ -113,3 +116,4 @@ function createMessagesContainer() {
   document.body.appendChild(container);
   return container;
 }
+
