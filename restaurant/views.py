@@ -1,23 +1,58 @@
 from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.defaulttags import comment
+from django.utils import timezone
+from home.models import Feedback, OrderHistory
 from order.models import Cart, Order
 from restaurant.forms import MenuForm, RestaurantForm
 from restaurant.models import Menu, Restaurant
 from restaurant.decorators import owner_required
+from django.utils import timezone
+import pytz
 
 # Create your views here.
 
 
 def restaurant_view(request, slug):
-    restaurant = Restaurant.objects.get(slug=slug)
-
+    restaurant = get_object_or_404(Restaurant, slug=slug)
     menu_items = Menu.objects.filter(restaurant=restaurant)
-    return render(
-        request,
-        "restaurant/restaurant.html",
-        {"restaurant": restaurant, "menu_items": menu_items},
-    )
+    reviews = Feedback.objects.filter(restaurant=restaurant).order_by("-created_at")
+    print(restaurant, "is_open:", restaurant.is_open)
+    is_closed = True
+    if restaurant.is_open:
+        is_closed = False
+    print(f"Restaurant is closed: {is_closed}")
+    if request.method == "POST":
+        review = request.POST.get("review", "").strip()
+        rating = request.POST.get("rating")
+
+        has_ordered = OrderHistory.objects.filter(
+            user=request.user, order__cart__item__restaurant=restaurant
+        ).exists()
+
+        if has_ordered and review and rating:
+            try:
+                Feedback.objects.create(
+                    restaurant=restaurant,
+                    user=request.user,
+                    comment=review,
+                    rating=int(rating),
+                )
+                messages.success(request, "Thank you for your review!")
+            except ValueError:
+                messages.error(request, "Invalid rating value.")
+        else:
+            messages.warning(
+                request, "You must place an order before leaving a review."
+            )
+    context = {
+        "restaurant": restaurant,
+        "menu_items": menu_items,
+        "reviews": reviews,
+        "is_closed": is_closed,
+    }
+    return render(request, "restaurant/restaurant.html", context)
 
 
 def restaurants_view(request):
@@ -25,7 +60,9 @@ def restaurants_view(request):
         place = request.POST.get("place")
         if place:
             restaurants = Restaurant.objects.filter(location__icontains=place)
-            return render(request, "restaurant/restaurants.html", {"restaurants": restaurants})
+            return render(
+                request, "restaurant/restaurants.html", {"restaurants": restaurants}
+            )
     restaurants = Restaurant.objects.all()
     return render(request, "restaurant/restaurants.html", {"restaurants": restaurants})
 
@@ -117,11 +154,15 @@ def owner_dashboard(request):
                 messages.success(request, "Menu item added successfully!")
                 return redirect("owner_dashboard")
 
-    orders = Order.objects.filter(
-        Q(cart__item__restaurant__owner=user, is_accepted=False)
-        | Q(cart__item__restaurant__owner=user, status="Preparing")
-        | Q(cart__item__restaurant__owner=user, status="Pending")
-    ).order_by("-created_at").exclude(status="Cancelled")
+    orders = (
+        Order.objects.filter(
+            Q(cart__item__restaurant__owner=user, is_accepted=False)
+            | Q(cart__item__restaurant__owner=user, status="Preparing")
+            | Q(cart__item__restaurant__owner=user, status="Pending")
+        )
+        .order_by("-created_at")
+        .exclude(status="Cancelled")
+    )
     context = {
         "menu_items": menu_items,
         "form": form,

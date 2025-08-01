@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from home.models import notification
+from home.models import OrderHistory, notification
 from order.models import Order
 
 # Create your models here.
@@ -55,6 +55,9 @@ def update_order_status(sender, instance, **kwargs):
     if instance.is_delivered:
         Order.objects.filter(id=instance.order.id).update(
             is_delivered=True, status="Delivered"
+        )
+        OrderHistory.objects.create(
+            user=instance.order.user, order=instance.order
         )
         notification.objects.create(
             user=instance.order.user,

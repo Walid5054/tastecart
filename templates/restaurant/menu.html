@@ -75,7 +75,8 @@
                  data-item-image="{{ item.image.url }}"
                  data-item-description="{{ item.description|default:'No description available' }}"
                  data-item-discount="{{ item.discount|default:0 }}"
-                 data-item-category="{{ item.category }}">
+                 data-item-category="{{ item.category }}"
+                 data-item-is-open="{% if item.restaurant.is_open %}true{% else %}false{% endif %}">
               <img src="{{ item.image.url }}" alt="{{ item.item_name }}" class="rounded-t object-cover w-full h-48 aspect-square" style="object-fit: cover;" />
               <div class="p-4 flex flex-col h-full">
                 <h3 class="font-bold text-lg mb-1">{{ item.item_name }}</h3>
@@ -92,8 +93,13 @@
                     {{ item.discount|default:0|floatformat:0 }}% OFF
                   </span>
                 {% endif %}
+                {% if item.restaurant.is_open %} 
                 <button onclick="event.stopPropagation(); addToCartAjax('{{ item.restaurant.slug }}', '{{ item.id }}', 1)" class="mt-auto bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition add-to-cart-btn inline-block text-center w-full">Add to Cart</button>
               </div>
+              {% else %}
+                <button class="mt-auto bg-gray-500 text-white px-4 py-2 rounded hover:bg-red-600 transition add-to-cart-btn inline-block text-center w-full">Restaurant is Closed</button>
+              </div>
+              {% endif %}
             </div>
             {% endfor %}
           </div>
@@ -163,8 +169,17 @@
               </div>
             </div>
             
+            <!-- Restaurant Closed Message -->
+            <div id="restaurantClosedMessage" class="hidden border-t pt-4">
+              <div class="bg-gray-100 border border-gray-300 rounded-lg p-4 text-center">
+                <p class="text-gray-600 font-medium">🕒 Restaurant is currently closed</p>
+                <p class="text-sm text-gray-500 mt-1">Please check back during business hours</p>
+              </div>
+            </div>
+            
             <!-- Action Buttons -->
-            <div class="flex space-x-3">
+            <div id="actionButtons" class="flex space-x-3">
+              
                 <a href="#" id="modalAddToCart" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 px-6 rounded-lg font-semibold transition transform hover:scale-105 text-center block">
                 Add to Cart
                 </a>

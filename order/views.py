@@ -66,7 +66,7 @@ def add_to_cart(request, res_slug, item_id, quantity=1):
 
     # Handle regular requests
     messages.success(request, f"{item.item_name} has been added to your cart.")
-    return redirect(request.META.get("HTTP_REFERER", request.path))
+    return redirect('cart')
 
 
 @login_required
@@ -194,8 +194,8 @@ def checkout(request, user):
             user=user,
             message=f"Your order has been placed! Payment method: {payment_method}. Please wait for the confirmation. Thank you for choosing TasteCart.",
         )
-
-        return redirect("index")
+        messages.success(request, "Your order has been placed successfully!")
+        return redirect("order_status")
 
 
 @login_required

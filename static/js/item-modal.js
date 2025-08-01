@@ -34,6 +34,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const increaseQtyBtn = document.getElementById("increaseQty");
   const modalAddToCartBtn = document.getElementById("modalAddToCart");
   const buyNowBtn = document.getElementById("buyNow");
+  const restaurantClosedMessage = document.getElementById(
+    "restaurantClosedMessage"
+  );
+  const actionButtons = document.getElementById("actionButtons");
 
   let currentItem = null;
   let quantity = 1;
@@ -43,59 +47,131 @@ document.addEventListener("DOMContentLoaded", function () {
     currentItem = itemData;
     quantity = 1;
 
-    // Populate modal with item data
-    modalImage.src = itemData.image;
-    modalImage.alt = itemData.name;
-    modalTitle.textContent = itemData.name;
-    modalRestaurant.innerHTML = `From: <a href="${location.origin}/restaurant/${itemData.restaurantSlug}" class="font-medium text-red-500 hover:underline">${itemData.restaurant}</a>`;
-    modalPrice.textContent = `৳${itemData.price}`;
-    modalRating.querySelector("span:last-child").textContent = itemData.rating;
-    modalDescription.textContent = itemData.description;
+    const trimmedIsOpen = itemData.isOpen?.toString().trim().toLowerCase();
+    const isRestaurantOpen =
+      trimmedIsOpen === "true" || itemData.isOpen === true;
+    console.log("isRestaurantOpen:", isRestaurantOpen);
+    if (!isRestaurantOpen) {
+      if (restaurantClosedMessage) {
+        restaurantClosedMessage.classList.remove("hidden");
+      }
+      if (actionButtons) {
+        actionButtons.classList.add("hidden");
+      }
 
-    // Handle discount
-    if (itemData.discount && itemData.discount > 0) {
-      modalDiscount.textContent = `${itemData.discount}% OFF`;
-      modalDiscount.classList.remove("hidden");
+      // Disable quantity controls
+      if (decreaseQtyBtn) {
+        decreaseQtyBtn.disabled = true;
+        decreaseQtyBtn.classList.add("opacity-50", "cursor-not-allowed");
+      }
+      if (increaseQtyBtn) {
+        increaseQtyBtn.disabled = true;
+        increaseQtyBtn.classList.add("opacity-50", "cursor-not-allowed");
+      }
     } else {
-      modalDiscount.classList.add("hidden");
+      console.log("Restaurant is OPEN - entering open logic");
+      // Restaurant is open - hide message and show action buttons
+      if (restaurantClosedMessage) {
+        restaurantClosedMessage.classList.add("hidden");
+      }
+      if (actionButtons) {
+        actionButtons.classList.remove("hidden");
+      }
+
+      // Enable quantity controls
+      if (decreaseQtyBtn) {
+        decreaseQtyBtn.disabled = false;
+        decreaseQtyBtn.classList.remove("opacity-50", "cursor-not-allowed");
+      }
+      if (increaseQtyBtn) {
+        increaseQtyBtn.disabled = false;
+        increaseQtyBtn.classList.remove("opacity-50", "cursor-not-allowed");
+      }
+    }
+    // Populate modal with item data
+    if (modalImage) {
+      modalImage.src = itemData.image;
+      modalImage.alt = itemData.name;
+    }
+    if (modalTitle) {
+      modalTitle.textContent = itemData.name;
+    }
+    if (modalRestaurant) {
+      modalRestaurant.innerHTML = `From: <a href="${location.origin}/restaurant/${itemData.restaurantSlug}" class="font-medium text-red-500 hover:underline">${itemData.restaurant}</a>`;
+    }
+    if (modalPrice) {
+      modalPrice.textContent = `৳${itemData.price}`;
+    }
+    if (modalRating) {
+      const ratingSpan = modalRating.querySelector("span:last-child");
+      if (ratingSpan) {
+        ratingSpan.textContent = itemData.rating;
+      }
+    }
+    if (modalDescription) {
+      modalDescription.textContent = itemData.description;
     }
 
+    // Handle discount
+    if (modalDiscount) {
+      if (itemData.discount && itemData.discount > 0) {
+        modalDiscount.textContent = `${itemData.discount}% OFF`;
+        modalDiscount.classList.remove("hidden");
+      } else {
+        modalDiscount.classList.add("hidden");
+      }
+    }
+
+    // Handle restaurant status
 
     updateQuantityAndTotal();
 
     updateModalAddToCartHref();
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
 
-    setTimeout(() => {
-      modalContent.classList.remove("scale-95", "opacity-0");
-      modalContent.classList.add("scale-100", "opacity-100");
-    }, 10);
+    if (modal) {
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
 
-    // Prevent body scroll
-    document.body.style.overflow = "hidden";
+      setTimeout(() => {
+        if (modalContent) {
+          modalContent.classList.remove("scale-95", "opacity-0");
+          modalContent.classList.add("scale-100", "opacity-100");
+        }
+      }, 10);
+
+      // Prevent body scroll
+      document.body.style.overflow = "hidden";
+    }
   }
 
   // Close modal function
   function closeModalFunc() {
-    modalContent.classList.remove("scale-100", "opacity-100");
-    modalContent.classList.add("scale-95", "opacity-0");
+    if (modalContent) {
+      modalContent.classList.remove("scale-100", "opacity-100");
+      modalContent.classList.add("scale-95", "opacity-0");
+    }
 
     setTimeout(() => {
-      modal.classList.remove("flex");
-      modal.classList.add("hidden");
+      if (modal) {
+        modal.classList.remove("flex");
+        modal.classList.add("hidden");
+      }
       document.body.style.overflow = "auto";
     }, 300);
   }
 
   // Update quantity and total price
   function updateQuantityAndTotal() {
-    quantityEl.textContent = quantity;
-    const basePrice = parseFloat(currentItem.price);
-    const discount = currentItem.discount || 0;
-    const discountedPrice = basePrice * (1 - discount / 100);
-    const total = discountedPrice * quantity;
-    totalPriceEl.textContent = `৳${total.toFixed(2)}`;
+    if (quantityEl) {
+      quantityEl.textContent = quantity;
+    }
+    if (currentItem && totalPriceEl) {
+      const basePrice = parseFloat(currentItem.price);
+      const discount = currentItem.discount || 0;
+      const discountedPrice = basePrice * (1 - discount / 100);
+      const total = discountedPrice * quantity;
+      totalPriceEl.textContent = `৳${total.toFixed(2)}`;
+    }
 
     // Update the modal Add to Cart button href when quantity changes
     updateModalAddToCartHref();
@@ -131,6 +207,7 @@ document.addEventListener("DOMContentLoaded", function () {
         image: this.dataset.itemImage,
         description: this.dataset.itemDescription,
         discount: parseFloat(this.dataset.itemDiscount) || 0,
+        isOpen: this.dataset.itemIsOpen,
       };
 
       openModal(itemData);
@@ -138,97 +215,133 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Close modal event listeners
-  closeModal.addEventListener("click", closeModalFunc);
+  if (closeModal) {
+    closeModal.addEventListener("click", closeModalFunc);
+  }
 
-  modal.addEventListener("click", function (e) {
-    if (e.target === modal) {
-      closeModalFunc();
-    }
-  });
+  if (modal) {
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) {
+        closeModalFunc();
+      }
+    });
+  }
 
   // Keyboard event for ESC key
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+    if (e.key === "Escape" && modal && !modal.classList.contains("hidden")) {
       closeModalFunc();
     }
   });
 
   // Quantity controls
-  decreaseQtyBtn.addEventListener("click", function () {
-    if (quantity > 1) {
-      quantity--;
-      updateQuantityAndTotal();
-    }
-  });
+  if (decreaseQtyBtn) {
+    decreaseQtyBtn.addEventListener("click", function () {
+      // Check if button is disabled (restaurant closed)
+      if (this.disabled) return;
 
-  increaseQtyBtn.addEventListener("click", function () {
-    if (quantity < 99) {
-      // Max quantity limit
-      quantity++;
-      updateQuantityAndTotal();
-    }
-  });
+      if (quantity > 1) {
+        quantity--;
+        updateQuantityAndTotal();
+      }
+    });
+  }
+
+  if (increaseQtyBtn) {
+    increaseQtyBtn.addEventListener("click", function () {
+      // Check if button is disabled (restaurant closed)
+      if (this.disabled) return;
+
+      if (quantity < 99) {
+        // Max quantity limit
+        quantity++;
+        updateQuantityAndTotal();
+      }
+    });
+  }
 
   // Add to cart from modal
-  modalAddToCartBtn.addEventListener("click", function (e) {
-    e.preventDefault(); // Prevent default link behavior
+  if (modalAddToCartBtn) {
+    modalAddToCartBtn.addEventListener("click", function (e) {
+      e.preventDefault(); // Prevent default link behavior
 
-    if (!currentItem) {
-      return;
-    }
+      if (!currentItem) {
+        return;
+      }
 
-    // Use AJAX function from cart-ajax.js
-    if (typeof addToCartAjax === "function") {
-      addToCartAjax(currentItem.restaurantSlug, currentItem.id, quantity);
+      // Check if restaurant is closed
+      const trimmedIsOpen = currentItem.isOpen?.toString().trim().toLowerCase();
+      const isRestaurantOpen =
+        trimmedIsOpen === "true" || currentItem.isOpen === true;
+      if (!isRestaurantOpen) {
+        showToast("Restaurant is currently closed", "error");
+        return;
+      }
 
-      // Close modal after adding to cart
-      setTimeout(() => {
-        closeModalFunc();
-      }, 1000);
-    } else {
-      // Fallback to regular form submission
-      const addToCartUrl = `${location.origin}/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`;
-      window.location.href = addToCartUrl;
-    }
-  });
+      // Use AJAX function from cart-ajax.js
+      if (typeof addToCartAjax === "function") {
+        addToCartAjax(currentItem.restaurantSlug, currentItem.id, quantity);
+
+        // Close modal after adding to cart
+        setTimeout(() => {
+          closeModalFunc();
+        }, 1000);
+      } else {
+        // Fallback to regular form submission
+        const addToCartUrl = `${location.origin}/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`;
+        window.location.href = addToCartUrl;
+      }
+    });
+  }
 
   // Buy now functionality
-  buyNowBtn.addEventListener("click", function () {
-    if (!currentItem) return;
+  if (buyNowBtn) {
+    buyNowBtn.addEventListener("click", function () {
+      if (!currentItem) return;
 
-    // Use AJAX to add to cart then redirect
-    if (typeof addToCartAjax === "function") {
-      // First add to cart via AJAX
-      fetch(
-        `/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken":
-              document.querySelector("[name=csrfmiddlewaretoken]")?.value ||
-              getCookie("csrftoken"),
-            "X-Requested-With": "XMLHttpRequest",
-          },
-          body: JSON.stringify({ ajax: true }),
-        }
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            // Redirect to cart after successful addition
-            window.location.href = "/cart";
+      // Check if restaurant is closed
+      const trimmedIsOpen = currentItem.isOpen?.toString().trim().toLowerCase();
+      const isRestaurantOpen =
+        trimmedIsOpen === "true" || currentItem.isOpen === true;
+      if (!isRestaurantOpen) {
+        showToast("Restaurant is currently closed", "error");
+        return;
+      }
+
+      // Use AJAX to add to cart then redirect
+      if (typeof addToCartAjax === "function") {
+        // First add to cart via AJAX
+        fetch(
+          `/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken":
+                document.querySelector("[name=csrfmiddlewaretoken]")?.value ||
+                getCookie("csrftoken"),
+              "X-Requested-With": "XMLHttpRequest",
+            },
+            body: JSON.stringify({ ajax: true }),
           }
-        })
-        .catch(() => {
-          // Fallback to regular URL navigation
-          window.location.href = `/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`;
-        });
-    } else {
-      // Fallback to regular navigation
-      window.location.href = `/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`;
-    }
-  });
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Redirect to cart after successful addition
+              window.location.href = "/cart";
+            }
+          })
+          .catch(() => {
+            // Fallback to regular URL navigation
+            window.location.href = `/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`;
+          });
+      } else {
+        // Fallback to regular navigation
+        window.location.href = `/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`;
+      }
+    });
+  }
 
   // Toast notification function (reuse from menu-filter.js or define here)
   function showToast(message, type = "success") {

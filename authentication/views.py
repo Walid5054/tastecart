@@ -1,8 +1,11 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 
+from home.models import OrderHistory
 from order.models import Order
+from restaurant.models import Restaurant
 from .models import Profile, User  # Assuming a custom User model with `user_type`
 from django.contrib import messages
 
@@ -19,7 +22,6 @@ def registration(request):
                 request, "authentication/reg.html", {"error": "Email already exists."}
             )
 
-        
         user_data = {
             "name": name,
             "email": email,
@@ -45,6 +47,7 @@ def registration(request):
 
     return render(request, "authentication/reg.html")
 
+
 def rider_registration(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -53,7 +56,9 @@ def rider_registration(request):
 
         if User.objects.filter(email=email).exists():
             return render(
-                request, "authentication/rider_reg.html", {"error": "Email already exists."}
+                request,
+                "authentication/rider_reg.html",
+                {"error": "Email already exists."},
             )
 
         user = User.objects.create(
@@ -69,6 +74,7 @@ def rider_registration(request):
 
     return render(request, "authentication/rider_registration.html")
 
+
 def rider_login(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -83,6 +89,7 @@ def rider_login(request):
             return render(request, "authentication/rider_login.html")
 
     return render(request, "authentication/rider_login.html")
+
 
 @login_required(login_url="rider_login")
 def rider_profile(request):
@@ -104,6 +111,7 @@ def rider_profile(request):
 
     return render(request, "authentication/rider_profile.html")
 
+
 def sign_in(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -119,17 +127,9 @@ def sign_in(request):
             if role == "user":
                 return redirect("index")
             elif role == "owner":
-                if (
-                    Order.objects.filter(
-                        cart__item__restaurant__owner=user, is_accepted=False
-                    )
-                    .exclude(status="Cancelled")
-                    .exists()
-                ):
-                    messages.warning(
-                        request,
-                        "You have pending orders. Please check your orders before accessing the dashboard.",
-                    )
+                restaurant, created = Restaurant.objects.get_or_create(owner=user)
+                restaurant.is_open = True
+                restaurant.save()
                 return redirect("dashboard")
         else:
             messages.error(request, "Invalid email or password or role")
@@ -138,6 +138,11 @@ def sign_in(request):
 
 
 def sign_out(request):
+    if request.user.user_type == "owner":
+        restaurant = Restaurant.objects.filter(owner=request.user).first()
+        if restaurant:
+            restaurant.is_open = False
+            restaurant.save()
     logout(request)
     return redirect("index")
 
@@ -145,7 +150,9 @@ def sign_out(request):
 def view_profile(request):
     user = request.user
     profile, created = Profile.objects.get_or_create(user=user)
-
+    order_history = OrderHistory.objects.filter(user=user).order_by(
+        "-order__created_at"
+    )
     if request.method == "POST":
         profile.address = request.POST.get("address")
         profile.bio = request.POST.get("bio")
@@ -162,6 +169,7 @@ def view_profile(request):
     context = {
         "user": user,
         "profile": profile,
+        "order_history": order_history,
         # Add other context data like recent_orders if needed
     }
     return render(request, "authentication/profile.html", context)

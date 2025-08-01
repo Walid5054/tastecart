@@ -1,8 +1,9 @@
-<div class="p-4" id="message-container" onmouseenter="clearTimeout(this.timer)" onmouseleave="this.timer = setTimeout(() => this.style.display = 'none', 3000)" style="animation: fadeout 0.5s ease-in-out 2.5s forwards;">
+<div id="message-container" class="fixed top-5 right-5 z-[9999] space-y-2 w-auto max-w-sm transition-all duration-500">
   <style>
     @keyframes fadeout {
       to {
         opacity: 0;
+        transform: translateY(-10px);
         visibility: hidden;
         height: 0;
         padding: 0;
@@ -13,26 +14,32 @@
 
   {% if messages %}
     {% for message in messages %}
-      <div class="mb-2 px-4 py-3 rounded-lg text-sm font-medium
+      <div class="flex items-start gap-3 p-4 rounded-lg shadow-lg text-sm font-medium transition-all duration-300
         {% if message.tags == 'success' %}
           bg-green-100 text-green-800
-
         {% elif message.tags == 'error' %}
           bg-red-100 text-red-800
-
         {% elif message.tags == 'warning' %}
           bg-yellow-100 text-yellow-800
-
         {% else %}
           bg-blue-100 text-blue-800
-        {% endif %}">{{ message }}</div>
+        {% endif %}"
+        onmouseenter="clearTimeout(this.timer)"
+        onmouseleave="this.timer = setTimeout(() => this.style.animation = 'fadeout 0.5s ease-in-out forwards', 3000)">
+        {{ message }}
+      </div>
     {% endfor %}
-
-    <script>
-      setTimeout(() => {
-        const msg = document.getElementById('message-container')
-        if (msg) msg.style.display = 'none'
-      }, 3000)
-    </script>
   {% endif %}
+
+  <script>
+    const container = document.getElementById("message-container");
+    if (container) {
+      const children = container.children;
+      Array.from(children).forEach((child) => {
+        child.timer = setTimeout(() => {
+          child.style.animation = "fadeout 0.5s ease-in-out forwards";
+        }, 3000);
+      });
+    }
+  </script>
 </div>

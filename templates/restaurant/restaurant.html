@@ -12,25 +12,22 @@
     </style>
   </head>
   <body class="bg-white text-gray-800">
-<header class="bg-red-500 text-white py-6 shadow-lg fixed top-0 w-full z-50">
-  <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-    <div>
-      <h1 class="text-4xl font-bold"><a href="{% url 'index' %}">TasteCart</a></h1>
-      <p class="text-lg mt-1">Discover a world of taste and flavor</p>
-    </div>
-    <!-- Cart Icon with Counter -->
-    <div>
-      <a href="{% url 'cart' %}" class="relative">
-        <img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="Cart" class="w-10 h-10" />
-        <span id="cartCount" class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-0.5 rounded-full">{{ cart_count }}</span>
-      </a>
-    </div>
-  </div>
-</header>
-
-
+    <header class="bg-red-500 text-white py-6 shadow-lg fixed top-0 w-full z-50">
+      <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+        <div>
+          <h1 class="text-4xl font-bold"><a href="{% url 'index' %}">TasteCart</a></h1>
+          <p class="text-lg mt-1">Discover a world of taste and flavor</p>
+        </div>
+        <div>
+          <a href="{% url 'cart' %}" class="relative">
+            <img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="Cart" class="w-10 h-10" />
+            <span id="cartCount" class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-0.5 rounded-full">{{ cart_count }}</span>
+          </a>
+        </div>
+      </div>
+    </header>
+    {% include 'kits/message.html' %}
     <main class="max-w-7xl mx-auto px-4 py-10 pt-32">
-      <!-- Restaurant Info -->
       <section class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
         <img src="{{ restaurant.restaurant_image.url }}" alt="Restaurant" class="rounded-2xl shadow-lg" />
         <div>
@@ -40,7 +37,6 @@
         </div>
       </section>
 
-      <!-- Menu Section -->
       <section class="mb-16">
         <h3 class="text-2xl font-semibold text-gray-800 mb-6">Our Menu</h3>
         <div class="flex space-x-4 mb-6">
@@ -54,7 +50,21 @@
         <div>
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {% for item in menu_items %}
-              <div class="bg-white rounded-lg shadow hover:shadow-lg transition transform hover:-translate-y-1 duration-300 flex flex-col cursor-pointer item-card" data-item-id="{{ item.id }}" data-item-name="{{ item.item_name }}" data-item-price="{{ item.price }}" data-item-rating="{{ item.rating }}" data-item-restaurant="{{ item.restaurant.restaurant_name }}" data-item-restaurant-slug="{{ item.restaurant.slug }}" data-item-image="{{ item.image.url }}" data-item-description="{{ item.description|default:'No description available' }}" data-item-discount="{{ item.discount|default:0 }}">
+              <div class="bg-white rounded-lg shadow hover:shadow-lg transition transform hover:-translate-y-1 duration-300 flex flex-col cursor-pointer item-card"
+                data-item-id="{{ item.id }}"
+                data-item-name="{{ item.item_name }}"
+                data-item-price="{{ item.price }}"
+                data-item-rating="{{ item.rating }}"
+                data-item-restaurant="{{ item.restaurant.restaurant_name }}"
+                data-item-restaurant-slug="{{ item.restaurant.slug }}"
+                data-item-image="{{ item.image.url }}"
+                data-item-description="{{ item.description|default:'No description available' }}"
+                data-item-discount="{{ item.discount|default:0 }}"
+                data-item-is-open="{% if item.restaurant.is_open %}
+                  true
+                {% else %}
+                  false
+                {% endif %}">
                 <img src="{{ item.image.url }}" alt="{{ item.item_name }}" class="rounded-t object-cover w-full h-48 aspect-square" style="object-fit: cover;" />
                 <div class="p-4 flex flex-col h-full">
                   <h3 class="font-bold text-lg mb-1">{{ item.item_name }}</h3>
@@ -66,7 +76,11 @@
                   {% if item.discount %}
                     <span class="bg-red-100 text-red-500 px-2 py-1 rounded text-sm font-medium mb-2 inline-block">{{ item.discount|default:0|floatformat:0 }}% OFF</span>
                   {% endif %}
-                  <button onclick="event.stopPropagation(); addToCartAjax('{{ item.restaurant.slug }}', '{{ item.id }}', 1)" class="mt-auto bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition add-to-cart-btn inline-block text-center w-full">Add to Cart</button>
+                  {% if is_closed %}
+                    <span class="text-gray-400 font-semibold">Closed</span>
+                  {% else %}
+                    <button onclick="event.stopPropagation(); addToCartAjax('{{ item.restaurant.slug }}', '{{ item.id }}', 1)" class="mt-auto bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition add-to-cart-btn inline-block text-center w-full">Add to Cart</button>
+                  {% endif %}
                 </div>
               </div>
             {% endfor %}
@@ -75,7 +89,6 @@
       </section>
       <div id="itemModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
-          <!-- Modal Header -->
           <div class="relative">
             <button id="closeModal" class="absolute top-4 right-4 z-10 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 transition">
               <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,7 +99,6 @@
             <div id="modalDiscount" class="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium hidden">0% OFF</div>
           </div>
 
-          <!-- Modal Body -->
           <div class="p-6 space-y-4">
             <div class="flex justify-between items-start">
               <div class="flex-1">
@@ -107,7 +119,6 @@
               <p id="modalDescription" class="text-gray-600 leading-relaxed"></p>
             </div>
 
-            <!-- Quantity Selector -->
             <div class="border-t pt-4">
               <h3 class="font-semibold text-gray-800 mb-3">Quantity</h3>
               <div class="flex items-center space-x-4">
@@ -125,7 +136,6 @@
               </div>
             </div>
 
-            <!-- Total Price -->
             <div class="border-t pt-4">
               <div class="flex justify-between items-center mb-4">
                 <span class="text-lg font-semibold text-gray-800">Total:</span>
@@ -133,16 +143,24 @@
               </div>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="flex space-x-3">
-              <a href="#" id="modalAddToCart" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 px-6 rounded-lg font-semibold transition transform hover:scale-105 text-center flex items-center justify-center">Add to Cart</a>
+            <!-- Restaurant Closed Message -->
+            <div id="restaurantClosedMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="font-medium">Restaurant is currently closed. You cannot place orders at this time.</span>
+              </div>
+            </div>
+
+            <div id="actionButtons" class="flex space-x-3">
+              <a href="#" id="modalAddToCart" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 px-6 rounded-lg font-semibold transition transform hover:scale-105 text-center block">Add to Cart</a>
               <button id="buyNow" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white py-3 px-6 rounded-lg font-semibold transition transform hover:scale-105">Buy Now</button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Kitchen Gallery -->
       <section class="mb-16">
         <h3 class="text-2xl font-semibold text-gray-800 mb-4">Kitchen Gallery</h3>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -152,7 +170,6 @@
         </div>
       </section>
 
-      <!-- Chef Section -->
       <section class="mb-16">
         <h3 class="text-2xl font-semibold text-gray-800 mb-4">Meet Our Chef</h3>
         <div class="flex flex-col md:flex-row items-center gap-8">
@@ -164,43 +181,82 @@
         </div>
       </section>
 
-      <!-- Live Kitchen -->
       <section class="mb-16">
         <h3 class="text-2xl font-semibold text-gray-800 mb-4">Live Kitchen Experience</h3>
         <p class="text-gray-700 text-lg">Experience your meal being prepared in front of you with our open kitchen setup. Feel the aroma, heat, and love go into every dish.</p>
       </section>
 
-      <!-- Restaurant Description -->
       <section class="mb-16">
         <h3 class="text-2xl font-semibold text-gray-800 mb-4">Why Choose Dhaka Grill Corner?</h3>
         <p class="text-gray-700 text-lg">{{ restaurant.about }}</p>
       </section>
-             <div class="mt-10 border-t pt-6">
-        <h2 class="text-xl font-bold mb-3">⭐ Leave a Review</h2>
-        <div class="flex items-center mb-4 space-x-1 text-yellow-500" id="starRating">
-          <span onclick="setRating(1)">★</span>
-          <span onclick="setRating(2)">★</span>
-          <span onclick="setRating(3)">★</span>
-          <span onclick="setRating(4)">★</span>
-          <span onclick="setRating(5)">★</span>
+      <section class="mb-16">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-4">Customer Reviews</h3>
+        {% if reviews %}
+          <div class="space-y-6">
+            {% for review in reviews %}
+              <div class="bg-gray-50 rounded-lg p-5 shadow">
+                <div class="flex items-center mb-2">
+                  <span class="font-bold text-gray-800 mr-2">{{ review.user }}</span>
+                  <div class="flex items-center text-yellow-500">
+                    {% for i in '12345'|slice:':review.rating'|make_list %}
+                      <span>★</span>
+                    {% endfor %}
+                    {% for i in '12345'|slice:'review.rating:'|make_list %}
+                      <span class="text-gray-300">★</span>
+                    {% endfor %}
+                  </div>
+                </div>
+                <p class="text-gray-700 mb-1">{{ review.comment }}</p>
+                <span class="text-xs text-gray-400">{{ review.created_at|date:'M d, Y H:i' }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-gray-500">No reviews yet. Be the first to review!</p>
+        {% endif %}
+      </section>
+      <section class="mb-16">
+        <div class="mt-10 border-t pt-6">
+          <h2 class="text-xl font-bold mb-4 text-gray-800">⭐ Leave a Review</h2>
+          <form id="reviewForm" method="POST" action="{% url 'restaurant_view' restaurant.slug %}" class="space-y-4">
+            {% csrf_token %}
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Your Rating</label>
+              <div class="flex items-center space-x-1 text-yellow-500 text-2xl cursor-pointer" id="starRating">
+                {% for i in "12345" %}
+                  <span onclick="setRating({{ i }})" id="star-{{ i }}">★</span>
+                {% endfor %}
+              </div>
+              <input type="hidden" name="rating" id="ratingValue" required />
+            </div>
+            <div>
+              <label for="reviewText" class="block text-sm font-medium text-gray-700 mb-1">Your Review</label>
+              <textarea id="reviewText" name="review" rows="4" required class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 placeholder-gray-400 text-gray-800" placeholder="Share your experience with this order..."></textarea>
+            </div>
+            <div>
+              <button type="submit" class="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition shadow">Submit Review</button>
+            </div>
+            <p id="reviewMessage" class="text-green-600 text-sm mt-2 hidden">✅ Thank you for your review!</p>
+          </form>
         </div>
-        <textarea
-          id="reviewText"
-          rows="4"
-          class="w-full p-2 border rounded mb-3 focus:outline-none focus:ring-2 focus:ring-red-300"
-          placeholder="Write your experience here..."
-        ></textarea>
-        <button
-          onclick="submitReview()"
-          class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-        >
-          Submit Review
-        </button>
-        <p id="reviewMessage" class="text-green-600 mt-2 hidden">✅ Thank you for your review!</p>
-      </div>
-    </div>
+      </section>
     </main>
   </body>
+
+  <script>
+    let selectedRating = 0
+    
+    function setRating(rating) {
+      selectedRating = rating
+      document.getElementById('ratingValue').value = rating
+    
+      for (let i = 1; i <= 5; i++) {
+        const star = document.getElementById(`star-${i}`)
+        star.style.color = i <= rating ? '#F59E0B' : '#D1D5DB'
+      }
+    }
+  </script>
   <script src="{% static 'js/item-modal.js' %}"></script>
   <script src="{% static 'js/restaurantFilter.js' %}"></script>
   <script src="{% static 'js/cart.js' %}"></script>
