@@ -202,9 +202,6 @@
                     {% for i in '12345'|slice:':review.rating'|make_list %}
                       <span>★</span>
                     {% endfor %}
-                    {% for i in '12345'|slice:'review.rating:'|make_list %}
-                      <span class="text-gray-300">★</span>
-                    {% endfor %}
                   </div>
                 </div>
                 <p class="text-gray-700 mb-1">{{ review.comment }}</p>

@@ -9,15 +9,7 @@
           src="{% if user.profile.profile_image %}
             {{ user.profile.profile_image.url }}
           {% else %}
-            
-            
-            
-            
             https://via.placeholder.com/120
-
-
-
-
           {% endif %}"
           alt="Profile"
           class="w-28 h-28 rounded-full object-cover border" />
@@ -151,6 +143,14 @@
     </div>
   </div>
   <script>
+    function openEditModal() {
+      document.getElementById("editModal").classList.remove("hidden");
+    }
+
+    function closeEditModal() {
+      document.getElementById("editModal").classList.add("hidden");
+    }
+
     document.getElementById('reorder').addEventListener('click', () => {
       window.location.href = "{% url 'restaurants_view' %}"
     })

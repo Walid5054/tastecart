@@ -38,7 +38,8 @@ def mark_notifications_read(request):
 
 
 
-
+def faq(request):
+    return render(request, "home/faq.html")
 
 
 

@@ -208,7 +208,9 @@ def orders(request):
         | Q(cart__item__restaurant__owner=user, status="Completed")
         | Q(cart__item__restaurant__owner=user, status="Completed with Rider")
         | Q(cart__item__restaurant__owner=user, status="Rider Assigned")
+        | Q(cart__item__restaurant__owner=user, status="Delivered")
     ).order_by("-created_at")
+    print(f"Orders for {user.username}: {orders}")
     return render(request, "order/orders.html", {"orders": orders})
 
 
@@ -221,7 +223,7 @@ def update_order_status(request):
             action = request.POST.get("action")
             order = get_object_or_404(Order, id=order_id)
 
-            # Check if the user owns the restaurant for this order
+
             if order.cart.item.restaurant.owner != request.user:
                 return JsonResponse(
                     {"success": False, "message": "Unauthorized access"}

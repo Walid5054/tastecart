@@ -10,4 +10,5 @@ urlpatterns = [
         views.mark_notifications_read,
         name="mark_notifications_read",
     ),
+    path("faq", views.faq, name="faq"),
 ]

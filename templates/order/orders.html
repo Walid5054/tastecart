@@ -61,120 +61,111 @@
 
         {% if orders %}
           {% regroup orders by user as user_orders %}
-          <div class="space-y-6">
+          <!-- Grid Layout for User Groups -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {% for user_group in user_orders %}
-              <!-- User Section -->
-              <div class="bg-white rounded-lg shadow-sm border-l-4 border-red-500">
+              <!-- User Section Card -->
+              <div class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                 <!-- User Header -->
-                <div class="bg-gray-50 px-6 py-4 border-b">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                      <div class="bg-red-500 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg">
-                        {% if user_group.grouper.name %}
-                          {{ user_group.grouper.name|first|upper }}
-                        {% else %}
-                          {{ user_group.grouper.username|first|upper }}
-                        {% endif %}
-                      </div>
-                      <div>
-                        <h3 class="text-lg font-semibold text-gray-900">
-                          {% if user_group.grouper.name %}
-                            {{ user_group.grouper.name }}
-                          {% else %}
-                            {{ user_group.grouper.username }}
-                          {% endif %}
-                        </h3>
-                        <p class="text-sm text-gray-500">{{ user_group.grouper.email }}</p>
-                        <p class="text-sm text-gray-500">{{ user_group.list|length }} order{{ user_group.list|length|pluralize }}</p>
-                      </div>
+                <div class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-4 rounded-t-lg">
+                  <div class="flex items-center gap-3">
+                    <div class="bg-white text-red-500 w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">
+                      {% if user_group.grouper.name %}
+                        {{ user_group.grouper.name|first|upper }}
+                      {% else %}
+                        {{ user_group.grouper.username|first|upper }}
+                      {% endif %}
                     </div>
-                    <div class="text-right">
-                      <p class="text-sm text-gray-600">Customer Total</p>
-                      <p class="text-lg font-bold text-red-500">{{ user_group.list|length }} order{{ user_group.list|length|pluralize }}</p>
+                    <div class="flex-1 min-w-0">
+                      <h3 class="text-lg font-semibold truncate">
+                        {% if user_group.grouper.name %}
+                          {{ user_group.grouper.name }}
+                        {% else %}
+                          {{ user_group.grouper.username }}
+                        {% endif %}
+                      </h3>
+                      <p class="text-red-100 text-sm truncate">{{ user_group.grouper.email }}</p>
+                      <p class="text-red-100 text-sm">{{ user_group.list|length }} order{{ user_group.list|length|pluralize }}</p>
                     </div>
                   </div>
                 </div>
 
-                <!-- User's Orders -->
-                <div class="divide-y divide-gray-200">
+                <!-- User's Orders Grid -->
+                <div class="p-4 space-y-4 max-h-96 overflow-y-auto">
                   {% for order in user_group.list %}
-                    <div class="order-item p-6" data-status="{{ order.status }}" data-accepted="{{ order.is_accepted|yesno:'true,false' }}" data-delivered="{{ order.is_delivered|yesno:'true,false' }}">
-                      <div class="flex items-start justify-between">
-                        <!-- Order Info -->
-                        <div class="flex-1">
-                          <div class="flex items-center gap-4 mb-3">
-                            <h4 class="text-lg font-semibold text-gray-900">Order #{{ order.id }}</h4>
-                            <span class="status-badge px-3 py-1 rounded-full text-sm font-medium
-                                                  {% if order.status == 'Preparing' %}
-                                
-                                
-                                bg-yellow-100 text-yellow-800
+                    <div class="order-item border border-gray-200 rounded-lg p-4 hover:border-red-300 transition-colors" data-status="{{ order.status }}" data-accepted="{{ order.is_accepted|yesno:'true,false' }}" data-delivered="{{ order.is_delivered|yesno:'true,false' }}">
+                      <!-- Order Header -->
+                      <div class="flex items-center justify-between mb-3">
+                        <h4 class="font-semibold text-gray-900">Order #{{ order.id }}</h4>
+                        <span class="status-badge px-2 py-1 rounded-full text-xs font-medium
+                                              {% if order.status == 'Preparing' %}
+                            
+                            
+                            bg-yellow-100 text-yellow-800
 
 
-                              {% elif order.status == 'Completed' %}
-                                
-                                
-                                bg-green-100 text-green-800
+                          {% elif order.status == 'Completed' %}
+                            
+                            
+                            bg-green-100 text-green-800
 
 
-                              {% elif order.status == 'Cancelled' %}
-                                
-                                
-                                bg-red-100 text-red-800
+                          {% elif order.status == 'Cancelled' %}
+                            
+                            
+                            bg-red-100 text-red-800
 
 
-                              {% endif %}">
-                              {% if order.status == "Completed with Rider" %}Rider is on it's way to pick up {% else %}{{ order.status }}{% endif %}
-                            </span>
-                            <span class="text-sm text-gray-500">{{ order.created_at|date:'M d, Y' }} at {{ order.created_at|time:'h:i A' }}</span>
+                          {% endif %}">
+                          {% if order.status == "Completed with Rider" %}Rider En Route{% else %}{{ order.status }}{% endif %}
+                        </span>
+                      </div>
+
+                      <!-- Order Date/Time -->
+                      <p class="text-xs text-gray-500 mb-3">{{ order.created_at|date:'M d, Y' }} • {{ order.created_at|time:'h:i A' }}</p>
+
+                      <!-- Order Item Preview -->
+                      <div class="bg-gray-50 rounded-lg p-3 mb-3">
+                        <div class="flex items-center gap-3">
+                          <img src="{{ order.cart.item.image.url }}" alt="{{ order.cart.item.item_name }}" class="w-10 h-10 object-cover rounded-lg flex-shrink-0" />
+                          <div class="flex-1 min-w-0">
+                            <p class="font-medium text-sm truncate">{{ order.cart.item.item_name }}</p>
+                            <p class="text-xs text-gray-500 truncate">{{ order.cart.item.restaurant.restaurant_name }}</p>
+                            <p class="text-xs text-gray-500">Qty: {{ order.cart.quantity }}</p>
                           </div>
-
-                          <!-- Order Items -->
-                          <div class="bg-gray-50 rounded-lg p-4 mb-4">
-                            <h5 class="font-medium mb-2">Order Items</h5>
-                            <div class="space-y-2">
-                              <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                  <img src="{{ order.cart.item.image.url }}" alt="{{ order.cart.item.item_name }}" class="w-12 h-12 object-cover rounded-lg" />
-                                  <div>
-                                    <p class="font-medium">{{ order.cart.item.item_name }}</p>
-                                    <p class="text-sm text-gray-500">{{ order.cart.item.restaurant.restaurant_name }}</p>
-                                    <p class="text-sm text-gray-500">Quantity: {{ order.cart.quantity }}</p>
-                                  </div>
-                                </div>
-                                <div class="text-right">
-                                  <p class="font-medium">৳{{ order.cart.item.price }}</p>
-                                  <p class="text-sm text-gray-500">Total: ৳{{ order.total_price }}</p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          <!-- Payment Info -->
-                          <div class="flex items-center gap-4 mb-4">
-                            <div>
-                              <p class="text-sm text-gray-600">Payment Method</p>
-                              <p class="font-medium">{{ order.payment_method }}</p>
-                            </div>
-                            <div>
-                              <p class="text-sm text-gray-600">Order Total</p>
-                              <p class="text-lg font-bold text-red-500">৳{{ order.total_price }}</p>
-                            </div>
+                          <div class="text-right flex-shrink-0">
+                            <p class="font-bold text-red-500 text-sm">৳{{ order.total_price }}</p>
                           </div>
                         </div>
+                      </div>
 
-                        <!-- Action Buttons -->
-                        <div class="flex flex-col gap-2 ml-6">
-                          {% if order.status == 'Pending' %}
-                            <button onclick="updateOrderStatus({{ order.id }}, 'accept')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors">Accept Order</button>
-                            <button onclick="updateOrderStatus({{ order.id }}, 'reject')" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors">Reject Order</button>
-                          {% elif order.status == 'Preparing' or order.status == 'Rider Assigned' %}
-                            <button onclick="updateOrderStatus({{ order.id }}, 'complete')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">Mark as Ready</button>
-                          {% endif %}
-                        </div>
+                      <!-- Payment Method -->
+                      <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs text-gray-600">Payment:</span>
+                        <span class="text-xs font-medium bg-gray-100 px-2 py-1 rounded">{{ order.payment_method }}</span>
+                      </div>
+
+                      <!-- Action Buttons -->
+                      <div class="space-y-2">
+                        {% if order.status == 'Pending' %}
+                          <div class="grid grid-cols-2 gap-2">
+                            <button onclick="updateOrderStatus({{ order.id }}, 'accept')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded text-xs font-medium transition-colors">Accept</button>
+                            <button onclick="updateOrderStatus({{ order.id }}, 'reject')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded text-xs font-medium transition-colors">Reject</button>
+                          </div>
+                        {% elif order.status == 'Preparing' or order.status == 'Rider Assigned' %}
+                          <button onclick="updateOrderStatus({{ order.id }}, 'complete')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded text-xs font-medium transition-colors">Mark Ready</button>
+                        {% endif %}
                       </div>
                     </div>
                   {% endfor %}
+                </div>
+
+                <!-- User Summary Footer -->
+                <div class="bg-gray-50 px-4 py-3 rounded-b-lg border-t">
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-600">Total Orders:</span>
+                    <span class="font-semibold text-red-500">{{ user_group.list|length }}</span>
+                  </div>
                 </div>
               </div>
             {% endfor %}

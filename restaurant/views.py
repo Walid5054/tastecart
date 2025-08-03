@@ -1,17 +1,11 @@
 from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
-from django.template.defaulttags import comment
-from django.utils import timezone
 from home.models import Feedback, OrderHistory
-from order.models import Cart, Order
+from order.models import Order
 from restaurant.forms import MenuForm, RestaurantForm
 from restaurant.models import Menu, Restaurant
 from restaurant.decorators import owner_required
-from django.utils import timezone
-import pytz
-
-# Create your views here.
 
 
 def restaurant_view(request, slug):
@@ -59,11 +53,11 @@ def restaurants_view(request):
     if request.method == "POST":
         place = request.POST.get("place")
         if place:
-            restaurants = Restaurant.objects.filter(location__icontains=place)
+            restaurants = Restaurant.objects.filter(location__icontains=place).order_by('-rating')
             return render(
                 request, "restaurant/restaurants.html", {"restaurants": restaurants}
             )
-    restaurants = Restaurant.objects.all()
+    restaurants = Restaurant.objects.all().order_by("-rating")
     return render(request, "restaurant/restaurants.html", {"restaurants": restaurants})
 
 
@@ -93,9 +87,15 @@ def restaurant_settings(request):
             messages.error(request, "Please correct the errors below.")
     else:
         form = RestaurantForm(instance=restaurant)
-    orders = Order.objects.filter(
-        Q(cart__item__restaurant__owner=user, is_accepted=False) | Q(status="Preparing")
-    ).order_by("-created_at")
+    orders = (
+        Order.objects.filter(
+            Q(cart__item__restaurant__owner=user, is_accepted=False)
+            | Q(cart__item__restaurant__owner=user, status="Preparing")
+            | Q(cart__item__restaurant__owner=user, status="Pending")
+        )
+        .order_by("-created_at")
+        .exclude(status="Cancelled")
+    )
     context = {
         "restaurant": restaurant,
         "form": form,

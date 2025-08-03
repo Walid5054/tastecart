@@ -93,6 +93,13 @@
           </div>
         </div>
       </section>
+      {% if restaurants|length < 10 %}
+        <div class="text-center text-gray-500 text-sm mt-6">
+          <a href="{% url 'restaurants_view' %}" class="inline-block bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 transition font-semibold">
+            Browse More Restaurants
+          </a>
+        </div>
+      {% endif %}
 
       <!-- Footer -->
       <footer class="bg-white border-t py-12 mt-12">
@@ -131,7 +138,7 @@
             <h4 class="font-semibold mb-3">Features</h4>
             <ul>
               <li>
-                <a href="#" class="hover:text-red-500 transition">Menu</a>
+                <a href="{% url "menu" %}" class="hover:text-red-500 transition">Menu</a>
               </li>
               <li>
                 <a href="#" class="hover:text-red-500 transition">Promo</a>
@@ -140,7 +147,7 @@
                 <a href="#" class="hover:text-red-500 transition">Contact</a>
               </li>
               <li>
-                <a href="#" class="hover:text-red-500 transition">About us</a>
+                <a href="{% url "about" %}" class="hover:text-red-500 transition">About us</a>
               </li>
             </ul>
           </div>

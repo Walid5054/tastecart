@@ -12,18 +12,7 @@
     <header class="bg-white shadow p-4 flex justify-between items-center sticky top-0 z-50">
       <h1 class="text-2xl font-bold text-red-500">TasteCart Delivery</h1>
       <div class="flex items-center gap-4">
-        <!-- City Selector -->
-        <select
-          id="citySelect"
-          class="border px-3 py-1 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-400"  name="city"
-        >
-              <option value="Dhaka" {% if request.user.city == "Dhaka" %}selected{% endif %}>Dhaka</option>
-              <option value="Chattogram" {% if request.user.city == "Chattogram" %}selected{% endif %}>Chattogram</option>
-              <option value="Rajshahi" {% if request.user.city == "Rajshahi" %}selected{% endif %}>Rajshahi</option>
-              <option value="Khulna" {% if request.user.city == "Khulna" %}selected{% endif %}>Khulna</option>
-        </select>
-        <!-- Availability Toggle -->
-        <label class="flex items-center gap-2 text-sm"><input type="checkbox" class="toggle-checkbox h-4 w-4" checked />Available</label>
+
 
         <!-- Edit Profile -->
         <a href="{% url 'rider_profile' %}" class="bg-gray-200 text-gray-700 px-4 py-1 rounded-full hover:bg-gray-300 text-sm">Edit Profile</a>

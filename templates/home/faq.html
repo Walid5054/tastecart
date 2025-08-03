@@ -1,41 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TasteCart - FAQ</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      html {
-        scroll-behavior: smooth;
-      }
-    </style>
-  </head>
-  <body class="bg-white text-gray-800 font-sans">
-    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Header -->
-      <header class="flex items-center justify-between py-5 border-b">
-        <div class="text-3xl font-bold text-red-500">TasteCart</div>
-        <nav class="hidden md:flex space-x-6 text-gray-700 font-medium">
-          <a href="Home.html" class="hover:text-red-500 transition">Home</a>
-          <a href="Restaurants.html" class="hover:text-red-500 transition"
-            >Restaurants</a
-          >
-          <a href="Menu.html" class="hover:text-red-500 transition">Menu</a>
-          <a href="Blog.html" class="hover:text-red-500 transition">Blog</a>
-          <a href="About.html" class="hover:text-red-500 transition"
-            >About Us</a
-          >
-          <a href="#" class="bg-red-100 text-red-500 px-3 py-1 rounded-lg"
-            >FAQ</a
-          >
-        </nav>
-        <button class="md:hidden text-2xl">&#9776;</button>
-      </header>
-
+{% extends 'kits/base.html' %} 
+{% block title %}FAQ - TasteCart{% endblock %}
+{% load static %}
+{% block content %}
       <!-- Hero Section -->
       <section
-        class="bg-red-50 mt-8 rounded-lg p-8 md:p-16 text-center space-y-6"
+        class="bg-red-50 mt-16 rounded-lg p-12 md:p-16 text-center space-y-6 "
       >
         <h1 class="text-4xl sm:text-5xl font-bold leading-tight">
           Frequently Asked <span class="text-red-500">Questions</span>
@@ -90,7 +59,7 @@
             <h4 class="font-semibold mb-3">Features</h4>
             <ul>
               <li>
-                <a href="#" class="hover:text-red-500 transition">Menu</a>
+                <a href="{% url "menu" %}" class="hover:text-red-500 transition">Menu</a>
               </li>
               <li>
                 <a href="#" class="hover:text-red-500 transition">Promo</a>
@@ -99,7 +68,7 @@
                 <a href="#" class="hover:text-red-500 transition">Contact</a>
               </li>
               <li>
-                <a href="#" class="hover:text-red-500 transition">About us</a>
+                <a href="{% url "about" %}" class="hover:text-red-500 transition">About us</a>
               </li>
             </ul>
           </div>
@@ -183,5 +152,5 @@
         });
       });
     </script>
-  </body>
-</html>
+
+    {% endblock %}
