@@ -32,9 +32,9 @@ class Rider(models.Model):
 
 @receiver(post_save, sender=Rider)
 def update_order_status(sender, instance, **kwargs):
-    if instance.is_accepted:
-        status=Order.objects.get(id=instance.order.id).status
-        if status=="Completed":
+    if instance.is_accepted and not instance.in_transit and not instance.is_delivered:
+        status = Order.objects.get(id=instance.order.id).status
+        if status == "Completed":
             Order.objects.filter(id=instance.order.id).update(
                 is_accepted=True, status="Completed with Rider"
             )
@@ -46,19 +46,17 @@ def update_order_status(sender, instance, **kwargs):
             user=instance.order.user,
             message=f"Rider {instance.user} has accepted your order {instance.order.cart.item.item_name} from {instance.order.cart.item.restaurant}. Once it's cooked, it will be picked up for delivery.",
         )
-    if instance.in_transit:
+    if instance.in_transit and instance.is_accepted and not instance.is_delivered:
         Order.objects.filter(id=instance.order.id).update(status="On the way")
         notification.objects.create(
             user=instance.order.user,
             message=f"Rider {instance.user} is on the way with your order {instance.order.cart.item.item_name} from {instance.order.cart.item.restaurant}.",
         )
-    if instance.is_delivered:
+    if instance.is_delivered and instance.is_accepted and instance.in_transit:
         Order.objects.filter(id=instance.order.id).update(
             is_delivered=True, status="Delivered"
         )
-        OrderHistory.objects.create(
-            user=instance.order.user, order=instance.order
-        )
+        OrderHistory.objects.create(user=instance.order.user, order=instance.order)
         notification.objects.create(
             user=instance.order.user,
             message=f"Your order {instance.order.cart.item.item_name} has been delivered.",

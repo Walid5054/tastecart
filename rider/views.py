@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.db.models import Q
 
@@ -6,7 +7,7 @@ from rider.models import Rider
 
 # Create your views here.
 
-
+@login_required(login_url="rider_login")
 def rider_dashboard(request):
     new_orders = Order.objects.filter(
         Q(
