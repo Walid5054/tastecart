@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // CSRF Token helper function
   function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== "") {
@@ -20,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const closeModal = document.getElementById("closeModal");
   const itemCards = document.querySelectorAll(".item-card");
 
-  // Modal elements
   const modalImage = document.getElementById("modalImage");
   const modalTitle = document.getElementById("modalTitle");
   const modalRestaurant = document.getElementById("modalRestaurant");
@@ -42,7 +40,6 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentItem = null;
   let quantity = 1;
 
-  // Open modal function
   function openModal(itemData) {
     currentItem = itemData;
     quantity = 1;
@@ -59,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function () {
         actionButtons.classList.add("hidden");
       }
 
-      // Disable quantity controls
       if (decreaseQtyBtn) {
         decreaseQtyBtn.disabled = true;
         decreaseQtyBtn.classList.add("opacity-50", "cursor-not-allowed");
@@ -70,7 +66,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     } else {
       console.log("Restaurant is OPEN - entering open logic");
-      // Restaurant is open - hide message and show action buttons
       if (restaurantClosedMessage) {
         restaurantClosedMessage.classList.add("hidden");
       }
@@ -78,7 +73,6 @@ document.addEventListener("DOMContentLoaded", function () {
         actionButtons.classList.remove("hidden");
       }
 
-      // Enable quantity controls
       if (decreaseQtyBtn) {
         decreaseQtyBtn.disabled = false;
         decreaseQtyBtn.classList.remove("opacity-50", "cursor-not-allowed");
@@ -88,7 +82,6 @@ document.addEventListener("DOMContentLoaded", function () {
         increaseQtyBtn.classList.remove("opacity-50", "cursor-not-allowed");
       }
     }
-    // Populate modal with item data
     if (modalImage) {
       modalImage.src = itemData.image;
       modalImage.alt = itemData.name;
@@ -122,8 +115,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
 
-    // Handle restaurant status
-
     updateQuantityAndTotal();
 
     updateModalAddToCartHref();
@@ -139,12 +130,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }, 10);
 
-      // Prevent body scroll
+
       document.body.style.overflow = "hidden";
     }
   }
 
-  // Close modal function
   function closeModalFunc() {
     if (modalContent) {
       modalContent.classList.remove("scale-100", "opacity-100");
@@ -173,23 +163,23 @@ document.addEventListener("DOMContentLoaded", function () {
       totalPriceEl.textContent = `৳${total.toFixed(2)}`;
     }
 
-    // Update the modal Add to Cart button href when quantity changes
+    
     updateModalAddToCartHref();
   }
 
   // Update modal Add to Cart button href with current item ID and quantity
   function updateModalAddToCartHref() {
     if (currentItem && modalAddToCartBtn) {
-      // Construct the URL with item ID and quantity using the correct URL pattern
+   
       const addToCartUrl = `${location.origin}/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`;
       modalAddToCartBtn.href = addToCartUrl;
     }
   }
 
-  // Event listeners for item cards
+ 
   itemCards.forEach((card) => {
     card.addEventListener("click", function (e) {
-      // Don't open modal if clicking on Add to Cart button
+    
       if (
         e.target.classList.contains("add-to-cart-btn") ||
         e.target.closest(".add-to-cart-btn")
@@ -214,7 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Close modal event listeners
+  
   if (closeModal) {
     closeModal.addEventListener("click", closeModalFunc);
   }
@@ -227,14 +217,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Keyboard event for ESC key
+ 
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && modal && !modal.classList.contains("hidden")) {
       closeModalFunc();
     }
   });
 
-  // Quantity controls
+  
   if (decreaseQtyBtn) {
     decreaseQtyBtn.addEventListener("click", function () {
       // Check if button is disabled (restaurant closed)
@@ -269,7 +259,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      // Check if restaurant is closed
+      
       const trimmedIsOpen = currentItem.isOpen?.toString().trim().toLowerCase();
       const isRestaurantOpen =
         trimmedIsOpen === "true" || currentItem.isOpen === true;
@@ -278,7 +268,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      // Use AJAX function from cart-ajax.js
+ 
       if (typeof addToCartAjax === "function") {
         addToCartAjax(currentItem.restaurantSlug, currentItem.id, quantity);
 
@@ -287,19 +277,19 @@ document.addEventListener("DOMContentLoaded", function () {
           closeModalFunc();
         }, 1000);
       } else {
-        // Fallback to regular form submission
+
         const addToCartUrl = `${location.origin}/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`;
         window.location.href = addToCartUrl;
       }
     });
   }
 
-  // Buy now functionality
+
   if (buyNowBtn) {
     buyNowBtn.addEventListener("click", function () {
       if (!currentItem) return;
 
-      // Check if restaurant is closed
+
       const trimmedIsOpen = currentItem.isOpen?.toString().trim().toLowerCase();
       const isRestaurantOpen =
         trimmedIsOpen === "true" || currentItem.isOpen === true;
@@ -308,9 +298,9 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      // Use AJAX to add to cart then redirect
+
       if (typeof addToCartAjax === "function") {
-        // First add to cart via AJAX
+
         fetch(
           `/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`,
           {
@@ -328,16 +318,13 @@ document.addEventListener("DOMContentLoaded", function () {
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
-              // Redirect to cart after successful addition
               window.location.href = "/cart";
             }
           })
           .catch(() => {
-            // Fallback to regular URL navigation
             window.location.href = `/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`;
           });
       } else {
-        // Fallback to regular navigation
         window.location.href = `/add-to-cart/${currentItem.restaurantSlug}/${currentItem.id}/${quantity}/`;
       }
     });
@@ -367,12 +354,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.body.appendChild(toast);
 
-    // Animate in
     setTimeout(() => {
       toast.style.transform = "translateX(0)";
     }, 100);
 
-    // Auto remove after 3 seconds
     setTimeout(() => {
       toast.style.transform = "translateX(100%)";
       toast.style.opacity = "0";
