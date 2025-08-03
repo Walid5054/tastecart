@@ -1,6 +1,5 @@
 myenv
 __pycache__/
-media/
 script.py
 restaurants.csv
 menu.csv
