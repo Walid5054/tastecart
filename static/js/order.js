@@ -1,6 +1,4 @@
-// Order Management JavaScript Functions
 
-// Global variables to store CSRF token and URLs
 let csrfToken = "";
 let updateOrderStatusUrl = "";
 let getAvailableRidersUrl = "";

@@ -1,7 +1,4 @@
-/**
- * AJAX Cart Operations
- * Handles add to cart, update quantity, and remove from cart without page reload
- */
+
 
 document.addEventListener("DOMContentLoaded", function () {
   // CSRF Token for Django
