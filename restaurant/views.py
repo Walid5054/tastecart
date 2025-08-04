@@ -132,7 +132,7 @@ def owner_dashboard(request):
             if edit_form.is_valid():
                 edit_form.save()
                 messages.success(request, "Menu item updated successfully!")
-                return redirect("owner_dashboard")
+                return redirect("dashboard")
             else:
                 edit_item = menu_item  # Keep the modal open with errors
 
@@ -152,7 +152,7 @@ def owner_dashboard(request):
                 menu_item.restaurant = restaurant
                 menu_item.save()
                 messages.success(request, "Menu item added successfully!")
-                return redirect("owner_dashboard")
+                return redirect("dashboard")
 
     orders = (
         Order.objects.filter(
@@ -163,6 +163,8 @@ def owner_dashboard(request):
         .order_by("-created_at")
         .exclude(status="Cancelled")
     )
+    if orders:
+        messages.warning(request,"You have new orders")
     context = {
         "menu_items": menu_items,
         "form": form,
