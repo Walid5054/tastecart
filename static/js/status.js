@@ -218,7 +218,7 @@ function startAutoRefresh() {
     ) {
       checkOrderUpdates();
     }
-  }, 30000);
+  }, 2000);
 }
 
 function checkOrderUpdates() {
